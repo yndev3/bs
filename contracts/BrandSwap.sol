@@ -2,14 +2,12 @@
 
 pragma solidity ^0.8.18;
 
-import "@openzeppelin/contracts@4.8.3/token/ERC721/ERC721.sol";
-import "@openzeppelin/contracts@4.8.3/token/ERC721/extensions/ERC721URIStorage.sol";
-import "@openzeppelin/contracts@4.8.3/token/ERC721/extensions/ERC721Burnable.sol";
-import "@openzeppelin/contracts@4.8.3/token/ERC721/extensions/ERC721Pausable.sol";
-import "@openzeppelin/contracts@4.8.3/access/AccessControl.sol";
-import "@openzeppelin/contracts@4.8.3/access/Ownable.sol";
-import "@openzeppelin/contracts@4.8.3/utils/Counters.sol";
-import "@openzeppelin/contracts@4.8.3/utils/Strings.sol";
+import "@openzeppelin/contracts/token/ERC721/extensions/ERC721Pausable.sol";
+import "@openzeppelin/contracts/token/ERC721/extensions/ERC721Burnable.sol";
+import "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol";
+import "@openzeppelin/contracts/access/AccessControl.sol";
+import "@openzeppelin/contracts/access/Ownable.sol";
+import "@openzeppelin/contracts/utils/Counters.sol";
 
 contract BrandSwap is ERC721Pausable, ERC721Burnable, ERC721URIStorage, AccessControl, Ownable {
 
@@ -22,7 +20,7 @@ contract BrandSwap is ERC721Pausable, ERC721Burnable, ERC721URIStorage, AccessCo
     /**
      * @dev Record who set what URI to which tokenId when setting URI
      */
-    event TokenURIChanged(address indexed sender, uint256 indexed tokenId, string uri);
+    event nftMinted(address indexed sender, uint256 indexed tokenId, string uri);
 
     constructor() ERC721("BrandSwap", "BS") {
         _grantRole(DEFAULT_ADMIN_ROLE, msg.sender);
@@ -58,15 +56,13 @@ contract BrandSwap is ERC721Pausable, ERC721Burnable, ERC721URIStorage, AccessCo
      *
      * emit TokenURIChanged
      */
-    function nftMint() public onlyRole(DEFAULT_ADMIN_ROLE) {
+    function nftMint(string memory uri) public onlyRole(DEFAULT_ADMIN_ROLE) {
         _tokenIds.increment();
         uint256 newTokenId = _tokenIds.current();
-        _mint(_msgSender(), newTokenId);
-        // string memory jsonFile = string(abi.encodePacked('metadata', Strings.toString(newTokenId), '.json'));
-        string memory jsonFile = "testnote";
-        _setTokenURI(newTokenId, jsonFile);
+        _safeMint(_msgSender(), newTokenId);
+        _setTokenURI(newTokenId, uri);
 
-        emit TokenURIChanged(_msgSender(), newTokenId, jsonFile);
+        emit nftMinted(_msgSender(), newTokenId, uri);
     }
 
     /**
