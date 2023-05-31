@@ -59,6 +59,11 @@ describe("BrandSwap Contract", function () {
         expect(await brandSwap.tokenURI(1)).to.equal(baseURI.concat(tokenUri1));
         expect(await brandSwap.tokenURI(2)).to.equal(baseURI.concat(tokenUri2));
     });
+    it("Event should emit when NFT is created", async function () {
+        await expect(brandSwap.nftMint(tokenUri1))
+            .to.emit(brandSwap, 'nftMinted')
+            .withArgs(await brandSwap.owner(), 1, tokenUri1);
+    });
 
 });
 
