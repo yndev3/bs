@@ -35,13 +35,12 @@ contract BrandSwap is ERC721Pausable, ERC721Burnable, ERC721URIStorage, AccessCo
     }
 
     /**
-     * [WIP] can revoke self.
-     *
      * @dev Revoke administrative privileges
      * emit RoleRevoked(role, account, _msgSender())
      */
-    function revokeAdmin(address account) public onlyRole(DEFAULT_ADMIN_ROLE) {
-        return super.renounceRole(DEFAULT_ADMIN_ROLE, account);
+    function revokeAdmin(address account) public onlyOwner {
+        require(account == owner(), "AccessControl: Can not revoke roles for owner");
+        return super._revokeRole(DEFAULT_ADMIN_ROLE, account);
     }
 
     /**
@@ -53,10 +52,11 @@ contract BrandSwap is ERC721Pausable, ERC721Burnable, ERC721URIStorage, AccessCo
 
     /**
      * @dev Only addresses set as administrators to this contract can be minted
+     * @param uri string can not unchanged
      *
      * emit TokenURIChanged
      */
-    function nftMint(string memory uri) public onlyRole(DEFAULT_ADMIN_ROLE) {
+    function nftMint(string calldata uri) external onlyRole(DEFAULT_ADMIN_ROLE) {
         _tokenIds.increment();
         uint256 newTokenId = _tokenIds.current();
         _safeMint(_msgSender(), newTokenId);
