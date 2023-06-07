@@ -2,52 +2,43 @@
 
 pragma solidity ^0.8.18;
 
+import "@openzeppelin/contracts/token/ERC721/extensions/ERC721Enumerable.sol";
 import "@openzeppelin/contracts/token/ERC721/extensions/ERC721Pausable.sol";
 import "@openzeppelin/contracts/token/ERC721/extensions/ERC721Burnable.sol";
 import "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol";
-import "@openzeppelin/contracts/access/AccessControl.sol";
+import "@openzeppelin/contracts/access/AccessControlDefaultAdminRules.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/utils/Counters.sol";
 
-contract BrandSwap is ERC721Pausable, ERC721Burnable, ERC721URIStorage, AccessControl, Ownable {
+contract BrandSwap is ERC721Enumerable, ERC721Burnable, ERC721Pausable, ERC721URIStorage, AccessControlDefaultAdminRules{
 
-    /**
-     * @dev counter for NFT tokenId
-     */
+    /// @dev counter for NFT tokenId
     using Counters for Counters.Counter;
     Counters.Counter private _tokenIds;
 
-    /**
-     * @dev Record who set what URI to which tokenId when setting URI
-     */
+    /// @dev role for minter and burner
+//    bytes32 public constant ADMIN_ROLE = keccak256("ADMIN_ROLE");
+    bytes32 public constant MINTER_ROLE = keccak256("MINTER_ROLE");
+    bytes32 public constant BURNER_ROLE = keccak256("BURNER_ROLE");
+
+    /// @dev Record who set what URI to which tokenId when setting URI
     event nftMinted(address indexed sender, uint256 indexed tokenId, string uri);
 
-    constructor() ERC721("BrandSwap", "BS") {
-        _grantRole(DEFAULT_ADMIN_ROLE, msg.sender);
+    constructor()
+    AccessControlDefaultAdminRules(3 days, _msgSender())
+    ERC721("BrandSwap", "BS")
+    {
+        _grantRole(MINTER_ROLE, _msgSender());
+        _grantRole(BURNER_ROLE, _msgSender());
     }
 
     /**
-     * @dev Grant administrative privileges to an account
-     * emit RoleGranted(role, account, _msgSender())
+     * @dev override
+     * AccessControlDefaultAdminRules.owner() returns address(0)
+     * if DEFAULT_ADMIN_ROLE is not set
      */
-    function grantAdminRole(address account) public onlyRole(DEFAULT_ADMIN_ROLE) {
-        _grantRole(DEFAULT_ADMIN_ROLE, account);
-    }
-
-    /**
-     * @dev Revoke administrative privileges
-     * emit RoleRevoked(role, account, _msgSender())
-     */
-    function revokeAdmin(address account) public onlyOwner {
-        require(account == owner(), "AccessControl: Can not revoke roles for owner");
-        return super._revokeRole(DEFAULT_ADMIN_ROLE, account);
-    }
-
-    /**
-     * @dev return ture if account has admin role
-     */
-    function isAdmin(address account) public view returns (bool) {
-        return super.hasRole(DEFAULT_ADMIN_ROLE, account);
+    function owner() public view override returns (address) {
+        return super.owner();
     }
 
     /**
@@ -56,13 +47,13 @@ contract BrandSwap is ERC721Pausable, ERC721Burnable, ERC721URIStorage, AccessCo
      *
      * emit TokenURIChanged
      */
-    function nftMint(string calldata uri) external onlyRole(DEFAULT_ADMIN_ROLE) {
+    function nftMint(string calldata uri) external onlyRole(MINTER_ROLE) {
         _tokenIds.increment();
         uint256 newTokenId = _tokenIds.current();
-        _safeMint(_msgSender(), newTokenId);
+        _safeMint(owner(), newTokenId);
         _setTokenURI(newTokenId, uri);
 
-        emit nftMinted(_msgSender(), newTokenId, uri);
+        emit nftMinted(owner(), newTokenId, uri);
     }
 
     /**
@@ -92,7 +83,7 @@ contract BrandSwap is ERC721Pausable, ERC721Burnable, ERC721URIStorage, AccessCo
     function supportsInterface(bytes4 interfaceId)
     public
     view
-    override(ERC721, AccessControl)
+    override(ERC721, ERC721Enumerable, ERC721URIStorage, AccessControlDefaultAdminRules)
     returns (bool)
     {
         return super.supportsInterface(interfaceId);
@@ -106,7 +97,7 @@ contract BrandSwap is ERC721Pausable, ERC721Burnable, ERC721URIStorage, AccessCo
         address to,
         uint256 tokenId,
         uint256 batchSize
-    ) internal override(ERC721, ERC721Pausable) {
+    ) internal override(ERC721, ERC721Enumerable, ERC721Pausable) {
         super._beforeTokenTransfer(from, to, tokenId, batchSize);
     }
 
@@ -115,6 +106,14 @@ contract BrandSwap is ERC721Pausable, ERC721Burnable, ERC721URIStorage, AccessCo
      */
     function tokenURI(uint256 tokenId) public view override(ERC721, ERC721URIStorage) returns (string memory) {
         return super.tokenURI(tokenId);
+    }
+
+    /**
+     * @dev NFT can be burned by owner or burner
+     */
+    function burn(uint256 tokenId) public override {
+        require(hasRole(BURNER_ROLE, _msgSender()), "BrandSwap: must have burner role to burn");
+        _burn(tokenId);
     }
 
     /**

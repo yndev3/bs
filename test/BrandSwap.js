@@ -10,6 +10,15 @@ describe("BrandSwap Contract", function () {
     const tokenUri1 = 'testUri1';
     const tokenUri2 = 'testUri2';
 
+    const DEFAULT_ADMIN_ROLE =  hre.ethers.utils
+        .keccak256(
+            hre.ethers.utils.toUtf8Bytes("DEFAULT_ADMIN_ROLE")
+        );
+    const BURNER_ROLE =  hre.ethers.utils
+            .keccak256(
+                hre.ethers.utils.toUtf8Bytes("BURNER_ROLE")
+            );
+
     beforeEach(async function () {
         [owner, addr1] = await hre.ethers.getSigners();
         BrandSwap = await hre.ethers.getContractFactory("BrandSwap");
@@ -25,26 +34,33 @@ describe("BrandSwap Contract", function () {
         expect(await brandSwap.owner()).to.equal(owner.address);
     });
     it('Owner should have admin rights', async function () {
-        expect(await brandSwap.isAdmin(await brandSwap.owner())).to.equal(true);
+        expect(await brandSwap.defaultAdmin()).to.equal(owner.address);
     });
-    it('User should not have admin rights', async function () {
-        expect(await brandSwap.isAdmin(addr1.address)).to.equal(false);
+    it('Account should not have admin rights', async function () {
+        expect(await brandSwap.hasRole(DEFAULT_ADMIN_ROLE, addr1.address)).to.equal(false);
     });
-    it("Should owner is able to grant admin role", async function () {
-        await brandSwap.grantAdminRole(addr1.address);
-        expect(await brandSwap.isAdmin(addr1.address)).to.equal(true);
-    });
-    it("Should not user is able to grant admin role", async function () {
-        expect(brandSwap.connect(addr1).grantAdminRole(addr1.address)).to.be.reverted;
+    it("Default admin can change", async function () {
+        await brandSwap.beginDefaultAdminTransfer(addr1.address);
+        expect(await brandSwap.defaultAdmin()).to.equal(await brandSwap.owner());
+        await brandSwap.changeDefaultAdminDelay(86400 * 2);
+        // to delay 3days
+        await hre.network.provider.send("evm_increaseTime", [86400 * 5]);
+        await hre.network.provider.send("evm_mine");
+        await brandSwap.connect(addr1).acceptDefaultAdminTransfer();
+
+        expect(await brandSwap.defaultAdmin()).to.equal(addr1.address);
     });
 
-    it("Can't remove owner permissions", async function () {
-        expect(await brandSwap.revokeAdmin(await brandSwap.owner()))
-            .to.be.revertedWith("AccessControl: Can not revoke roles for owner");
+    it("Owners can assign roles to accounts", async function () {
+        await brandSwap.grantRole(DEFAULT_ADMIN_ROLE, addr1.address);
+        expect(await brandSwap.hasRole(DEFAULT_ADMIN_ROLE, addr1.address)).to.equal(true);
     });
+    it("Should not user is able to grant admin role", async function () {
+        expect(brandSwap.connect(addr1).grantRole(DEFAULT_ADMIN_ROLE, addr1.address)).to.be.reverted;
+    });
+
     it("Owner role should not be revoked by user", async function () {
-        expect(brandSwap.connect(addr1).revokeAdmin(await brandSwap.owner()))
-            .to.be.revertedWith("Ownable: caller is not the owner");
+        expect(brandSwap.connect(addr1).revokeRole(DEFAULT_ADMIN_ROLE, owner.address)).to.be.reverted;
     });
     it("Only administrators can mint", async function () {
         await brandSwap.nftMint(tokenUri1);
@@ -64,7 +80,20 @@ describe("BrandSwap Contract", function () {
             .to.emit(brandSwap, 'nftMinted')
             .withArgs(await brandSwap.owner(), 1, tokenUri1);
     });
-
+    it("NFT can be burned by owner", async function () {
+        await brandSwap.nftMint(tokenUri1);
+        await brandSwap.burn(1);
+        expect(await brandSwap.balanceOf(await brandSwap.owner())).to.equal(0);
+        // another account can burn
+        await brandSwap.grantRole(BURNER_ROLE, addr1.address);
+        await brandSwap.nftMint(tokenUri2);
+        await brandSwap.connect(addr1).burn(2);
+        expect(await brandSwap.balanceOf(await brandSwap.owner())).to.equal(0);
+    });
+    it("Only accounts with roles can be burned.", async function () {
+        await brandSwap.nftMint(tokenUri1);
+        await expect(brandSwap.connect(addr1).burn(1)).to.be.reverted;
+    });
 });
 
 
