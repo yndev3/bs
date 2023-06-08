@@ -268,9 +268,6 @@ $( document ).ready(function() {
             loop: true,
             slidesPerView: 1,
             spaceBetween: 0,
-            pagination: {
-                el: '.swiper-pagination'
-            },
             navigation: false,
             pagination: {
                 el: '.swiper-pagination',
