@@ -17,9 +17,11 @@ contract BrandSwap is ERC721Enumerable, ERC721Burnable, ERC721Pausable, ERC721UR
     Counters.Counter private _tokenIds;
 
     /// @dev role for minter and burner
-//    bytes32 public constant ADMIN_ROLE = keccak256("ADMIN_ROLE");
     bytes32 public constant MINTER_ROLE = keccak256("MINTER_ROLE");
     bytes32 public constant BURNER_ROLE = keccak256("BURNER_ROLE");
+
+    /// @dev record which tokenId is paused
+    mapping(uint256 => bool) private _pausedTokens;
 
     /// @dev Record who set what URI to which tokenId when setting URI
     event nftMinted(address indexed sender, uint256 indexed tokenId, string uri);
@@ -77,6 +79,18 @@ contract BrandSwap is ERC721Enumerable, ERC721Burnable, ERC721Pausable, ERC721UR
         _unpause();
     }
 
+    function pauseToken(uint256 tokenId) public {
+        // チェック：呼び出し元がトークンの所有者であること
+        require(_isApprovedOrOwner(_msgSender(), tokenId), "Caller is not owner nor approved");
+        _pausedTokens[tokenId] = true;
+    }
+
+    function unpauseToken(uint256 tokenId) public {
+        // チェック：呼び出し元がトークンの所有者であること
+        require(_isApprovedOrOwner(_msgSender(), tokenId), "Caller is not owner nor approved");
+        _pausedTokens[tokenId] = false;
+    }
+
     /**
      * @dev overrides
      */
@@ -99,6 +113,7 @@ contract BrandSwap is ERC721Enumerable, ERC721Burnable, ERC721Pausable, ERC721UR
         uint256 batchSize
     ) internal override(ERC721, ERC721Enumerable, ERC721Pausable) {
         super._beforeTokenTransfer(from, to, tokenId, batchSize);
+        require(!_pausedTokens[tokenId], "ERC721Pausable: token transfer while paused");
     }
 
     /**
