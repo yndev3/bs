@@ -5,11 +5,15 @@ import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
 import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 import "@openzeppelin/contracts/security/ReentrancyGuard.sol";
 import "@openzeppelin/contracts/access/AccessControlDefaultAdminRules.sol";
-
+import "./BrandSwap.sol";
+import "@openzeppelin/contracts/token/ERC20/presets/ERC20PresetFixedSupply.sol";
 contract Marketplace is Context, ReentrancyGuard, AccessControlDefaultAdminRules {
-    ERC721 private _nft;
+    BrandSwap private _nft;
 
     bytes32 public constant SET_SALE_ROLE = keccak256("SET_SALE_ROLE");
+
+    /// @dev ERC20 token used for payment
+    address private  _tokenContract;
 
     struct Sale {
         address seller;
@@ -19,37 +23,57 @@ contract Marketplace is Context, ReentrancyGuard, AccessControlDefaultAdminRules
 
     mapping(uint256 => Sale) private _sales;
 
+    event TokenSold(uint256 indexed tokenId, address newOwner, uint256 price, IERC20 token);
+
     constructor(address nftAddress, address adminAddress)
     AccessControlDefaultAdminRules(3 days, adminAddress) {
-        _nft = ERC721(nftAddress);
+        _nft = BrandSwap(nftAddress);
         _grantRole(SET_SALE_ROLE, adminAddress);
     }
 
-    function setSale(uint256 tokenId, uint256 price, bool isSale) public onlyRole(SET_SALE_ROLE) {
-        require(_nft.ownerOf(tokenId) == _msgSender(), "Not token owner");
-        _sales[tokenId] = Sale(_msgSender(), price, isSale);
+    /**
+    * @dev setting for nft selling price
+    */
+    function setSale(uint256 tokenId, uint256 price) external onlyRole(SET_SALE_ROLE) {
+         require(_nft.ownerOf(tokenId) == _msgSender(), "Not token owner");
+        _sales[tokenId] = Sale(_msgSender(), price, true);
     }
 
-    function buy(uint256 tokenId, IERC20 tokenAddress) public payable nonReentrant {
-        // Ensure that tokenAddress is a valid ERC20
-        require(tokenAddress.totalSupply() > 0, "Invalid ERC20 token");
+    function getSale(uint256 tokenId) external view returns (Sale memory) {
+        return _sales[tokenId];
+    }
 
-        Sale storage sale = _sales[tokenId];
+    function setTokenContract(address tokenContract) external onlyRole(SET_SALE_ROLE) {
+        _tokenContract = tokenContract;
+    }
 
-        // Ensure the NFT is up for sale
-        require(sale.isSale, "NFT is not for sale");
+    function getTokenContract() external view returns (address) {
+        return _tokenContract;
+    }
 
-        // Check buyer balance
-        require(tokenAddress.balanceOf(_msgSender()) >= sale.price, "Insufficient balance");
+    /**
+    * @dev buy nft with ERC20 token
+    */
+    function buyWithERC20(uint256 tokenId, uint256 payment, IERC20 token) external {
+        Sale memory sale = _sales[tokenId];
+        require(sale.isSale, "Marketplace: The token is not for sale");
+        require(_tokenContract == address(token), "Marketplace: The token is not for sale for this ERC20 token");
+        require(token.balanceOf(msg.sender) >= sale.price, "Marketplace: Insufficient balance");
+        require(payment == sale.price, "Marketplace: Please submit the asking price in order to complete the purchase");
 
-        // First, transfer the NFT to ensure it's possible
-        _nft.transferFrom(sale.seller, _msgSender(), tokenId);
+        // transfer the ERC20 token to the seller
+        require(
+            token.transferFrom(msg.sender, sale.seller, payment),
+            "Marketplace: Transfer of payment token failed"
+        );
 
-        // Then, transfer the ERC20 token from buyer to seller
-        tokenAddress.transferFrom(_msgSender(), sale.seller, sale.price);
+        // transfer the NFT token to the buyer
+        _nft.safeTransferFrom(sale.seller, msg.sender, tokenId);
 
-        // Delete the sale
+        // remove the token from sale
         delete _sales[tokenId];
+
+        emit TokenSold(tokenId, msg.sender, payment, token);
     }
 
     /**
