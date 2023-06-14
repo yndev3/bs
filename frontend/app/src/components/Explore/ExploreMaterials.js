@@ -79,42 +79,6 @@ const data = [
         price: "0.69 ETH",
         count: "1 of 1",
         btnText: "Place a Bid"
-    },
-    {
-        id: "9",
-        img: "/img/Materials.jpg",
-        title: "Photography",
-        owner: "Sara",
-        price: "2.3 ETH",
-        count: "1 of 1",
-        btnText: "Place a Bid"
-    },
-    {
-        id: "10",
-        img: "/img/Materials.jpg",
-        title: "Zed Run",
-        owner: "SpaceMan",
-        price: "3.7 ETH",
-        count: "1 of 1",
-        btnText: "Place a Bid"
-    },
-    {
-        id: "11",
-        img: "/img/Materials.jpg",
-        title: "Rare Tyres",
-        owner: "Monas",
-        price: "2.2 ETH",
-        count: "1 of 1",
-        btnText: "Place a Bid"
-    },
-    {
-        id: "12",
-        img: "/img/Materials.jpg",
-        title: "World of Women",
-        owner: "Victor",
-        price: "4.3 ETH",
-        count: "1 of 1",
-        btnText: "Place a Bid"
     }
 ]
 
@@ -150,7 +114,7 @@ class ExploreMaterials extends Component {
                     <div className="row items">
                         {this.state.data.map((item, idx) => {
                             return (
-                                <div key={`exo_${idx}`} className="col-12 col-sm-6 col-lg-3 item">
+                                <div key={`exo_${idx}`} className="mt-3 col-12 col-sm-6 col-lg-3 itemmaterial">
                                     <div className="card">
                                         <div className="image-over">
                                             <a href="/item-details">
@@ -184,7 +148,7 @@ class ExploreMaterials extends Component {
                     </div>
                     <div className="row">
                         <div className="col-12 text-center">
-                            <a id="load-btn" className="btn btn-bordered-white mt-5" href="#">{this.state.initData.btn_2}</a>
+                            <a id="load-btn-material" className="btn btn-bordered-white mt-5" href="#">{this.state.initData.btn_2}</a>
                         </div>
                     </div>
                 </div>

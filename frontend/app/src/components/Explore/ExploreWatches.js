@@ -79,42 +79,6 @@ const data = [
         price: "0.69 ETH",
         count: "1 of 1",
         btnText: "Place a Bid"
-    },
-    {
-        id: "9",
-        img: "/img/Watches.jpg",
-        title: "Photography",
-        owner: "Sara",
-        price: "2.3 ETH",
-        count: "1 of 1",
-        btnText: "Place a Bid"
-    },
-    {
-        id: "10",
-        img: "/img/Watches.jpg",
-        title: "Zed Run",
-        owner: "SpaceMan",
-        price: "3.7 ETH",
-        count: "1 of 1",
-        btnText: "Place a Bid"
-    },
-    {
-        id: "11",
-        img: "/img/Watches.jpg",
-        title: "Rare Tyres",
-        owner: "Monas",
-        price: "2.2 ETH",
-        count: "1 of 1",
-        btnText: "Place a Bid"
-    },
-    {
-        id: "12",
-        img: "/img/Watches.jpg",
-        title: "World of Women",
-        owner: "Victor",
-        price: "4.3 ETH",
-        count: "1 of 1",
-        btnText: "Place a Bid"
     }
 ]
 
@@ -129,16 +93,6 @@ class ExploreWatches extends Component {
             data: data
         })
     }
-
-    clickHandler (e) {
-        e.preventDefault();
-
-        document.querySelector(".load-more .item:hidden").slice(0, 4).slideDown();
-
-        if (document.querySelector(".load-more .item:hidden").length == 0) {
-            document.getElementsById("#load-more").fadeOut('slow');
-        }
-    } 
     render() {
         return (
             <section className="explore-area load-more p-0 mb-5">
@@ -160,7 +114,7 @@ class ExploreWatches extends Component {
                     <div className="row items">
                         {this.state.data.map((item, idx) => {
                             return (
-                                <div key={`exo_${idx}`} className="col-12 col-sm-6 col-lg-3 item">
+                                <div key={`exo_${idx}`} className="mt-3 col-12 col-sm-6 col-lg-3 itemwatch">
                                     <div className="card">
                                         <div className="image-over">
                                             <a href="/item-details">
@@ -194,7 +148,7 @@ class ExploreWatches extends Component {
                     </div>
                     <div className="row">
                         <div className="col-12 text-center">
-                            <a id="load-more" onClick={this.clickHandler} className="btn btn-bordered-white mt-5" href="#">{this.state.initData.btn_2}</a>
+                            <a id="load-btn-watch" className="btn btn-bordered-white mt-5" href="#">{this.state.initData.btn_2}</a>
                         </div>
                     </div>
                 </div>

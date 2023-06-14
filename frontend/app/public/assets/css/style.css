@@ -819,7 +819,15 @@ aside {
 .posted-on a:not(.btn) {
   font-weight: 600;
 }
-
+.load-more .itemwatch {
+  display: none;
+}
+.load-more .itemjewelry {
+  display: none;
+}
+.load-more .itemmaterial {
+  display: none;
+}
 .sidebar .item {
   margin-bottom: 35px;
 }
@@ -1727,6 +1735,21 @@ header .navbar-expand .dropdown:hover > .dropdown-menu {
   position: relative;
   background-color: var(--footer-bg-color);
   z-index: 1;
+  padding: 142px 0 60px !important;
+}
+
+.hero-section .button-group a{
+  color: #fff;
+}
+
+.hero-section .button-group a:hover{
+  color: var(--primary-color);
+}
+
+@media(max-width:428px){
+  .hero-section{
+    padding: 60px 0 60px !important;
+  }
 }
 
 .hero-section span {
@@ -1754,6 +1777,13 @@ header .navbar-expand .dropdown:hover > .dropdown-menu {
 
 .hero-section p {
   font-size: 1.2rem;
+}
+.hero-section p.f140 {
+  font-size: 1.4rem;
+}
+
+.work-area {
+padding: 100px 0 140px !important;
 }
 
 .countdown {

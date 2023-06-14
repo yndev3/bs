@@ -373,21 +373,57 @@ $( document ).ready(function() {
 
         'use strict';
 
-        $(".load-more .item").slice(0, 4).show();
+        $(".load-more .itemwatch").slice(0, 4).show();
 
-        $("#load-btn").on('click', function (e) {
+        $("#load-btn-watch").on('click', function (e) {
 
             e.preventDefault();
 
-            $(".load-more .item:hidden").slice(0, 4).slideDown();
+            $(".load-more .itemwatch:hidden").slice(0, 4).slideDown();
 
-            if ($(".load-more .item:hidden").length == 0) {
-                $("#load-btn").fadeOut('slow');
+            if ($(".load-more .itemwatch:hidden").length == 0) {
+                $("#load-btn-watch").fadeOut('slow');
             }
 
         });
     }(jQuery));
+    (function ($) {
 
+        'use strict';
+
+        $(".load-more .itemjewelry").slice(0, 4).show();
+
+        $("#load-btn-jewelry").on('click', function (e) {
+
+            e.preventDefault();
+
+            $(".load-more .itemjewelry:hidden").slice(0, 4).slideDown();
+
+            if ($(".load-more .itemjewelry:hidden").length == 0) {
+                $("#load-btn-jewelry").fadeOut('slow');
+            }
+
+        });
+    }(jQuery));
+    (function ($) {
+
+        'use strict';
+
+        $(".load-more .itemmaterial").slice(0, 4).show();
+
+        $("#load-btn-material").on('click', function (e) {
+
+            e.preventDefault();
+
+            $(".load-more .itemmaterial:hidden").slice(0, 4).slideDown();
+
+            if ($(".load-more .itemmaterial:hidden").length == 0) {
+                $("#load-btn-material").fadeOut('slow');
+            }
+
+        });
+    }(jQuery));
+    
     /*----------------------------------------------
     6. Shuffle
     ----------------------------------------------*/
