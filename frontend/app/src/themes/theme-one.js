@@ -2,10 +2,9 @@ import React, { Component } from 'react';
 
 import Header from '../components/Header/Header';
 import Hero from '../components/Hero/Hero';
-import Auctions from '../components/Auctions/AuctionsOne';
-import TopSeller from '../components/TopSeller/TopSellerOne';
-import Collections from '../components/Collections/Collections';
-import Explore from '../components/Explore/ExploreOne';
+import ExploreWatches from '../components/Explore/ExploreWatches';
+import ExploreJewelrys from '../components/Explore/ExploreJewelrys';
+import ExploreMaterials from '../components/Explore/ExploreMaterials';
 import Work from '../components/Work/Work';
 import Footer from '../components/Footer/Footer';
 import ModalSearch from '../components/Modal/ModalSearch';
@@ -18,11 +17,10 @@ class ThemeOne extends Component {
             <div className="main">
                 <Header />
                 <Hero />
-                <Auctions />
-                <TopSeller />
-                <Collections />
-                <Explore />
                 <Work />
+                <ExploreWatches />
+                <ExploreJewelrys />
+                <ExploreMaterials />
                 <Footer />
                 <ModalSearch />
                 <ModalMenu />
