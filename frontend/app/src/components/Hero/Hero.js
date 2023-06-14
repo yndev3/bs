@@ -43,8 +43,8 @@ class Hero extends Component {
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 465" version="1.1">
                         <defs>
                             <linearGradient x1="49.7965246%" y1="28.2355058%" x2="49.7778147%" y2="98.4657689%" id="linearGradient-1">
-                            <stop stopColor="rgba(69,40,220, 0.15)" offset="0%" />
-                            <stop stopColor="rgba(87,4,138, 0.15)" offset="100%" />
+                            <stop stopColor="#FFD700" stopOpacity="0.15" offset="0%" />
+                            <stop stopColor="#C0C0C0" stopOpacity="0.15" offset="100%" />
                             </linearGradient>
                         </defs>
                         <g id="Page-1" stroke="none" strokeWidth={1} fill="none" fillRule="evenodd">
