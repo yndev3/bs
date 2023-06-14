@@ -52,6 +52,9 @@ const Header = () => {
                         <li className="nav-item">
                             <a href="/contact" className="nav-link">Contact</a>
                         </li>
+                        <li className="nav-item">
+                            <a href="/contact" className="nav-link">AdminSetting</a>
+                        </li>
                     </ul>
                     {/* Navbar Icons */}
                     <ul className="navbar-nav icons">

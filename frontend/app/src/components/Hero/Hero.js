@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
 
 const initData = {
-    pre_heading: "NetStorm",
-    heading: "Discover, collect, and sell extraordinary NFTs",
+    pre_heading: "Luxury Goods Marketplace",
+    heading: "BRAND SWAP",
     content: "Explore on the world's best & largest NFT marketplace",
     btn_1: "Explore",
     btn_2: "Create"
