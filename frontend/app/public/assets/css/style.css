@@ -1188,7 +1188,7 @@ aside {
 }
 
 .breadcrumb-area {
-  background: rgba(0, 0, 0, 0) url("/img/inner_bg.jpg") no-repeat scroll top center/cover;
+  background: rgba(0, 0, 0, 0) url("/img/inner_bg.jpg") no-repeat scroll bottom center/cover;
 }
 
 .breadcrumb-area.bg-overlay::after {
@@ -2562,7 +2562,7 @@ padding: 100px 0 140px !important;
 }
 
 .breadcrumb-area {
-  height: 450px;
+  height: 320px;
   z-index: 1;
 }
 
