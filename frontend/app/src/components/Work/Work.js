@@ -29,7 +29,7 @@ class Work extends Component {
                             <div className="intro mb-4">
                                 <div className="intro-content">
                                     <span>{this.state.data.preHeading}</span>
-                                    <h3 className="mt-3 mb-0">{this.state.data.heading}</h3>
+                                    <h3 className="mt-3 mb-0 silver-color">{this.state.data.heading}</h3>
                                 </div>
                             </div>
                         </div>
