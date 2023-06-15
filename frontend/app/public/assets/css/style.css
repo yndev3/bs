@@ -97,6 +97,18 @@
   --footer-bg-color: #121117;
 }
 
+.gold-color{
+	color: transparent;
+	background: linear-gradient(0deg, #B67B03 0%, #DAAF08 45%, #FEE9A0 70%, #DAAF08 85%, #B67B03 90% 100%); 
+	-webkit-background-clip: text;
+}
+
+.silver-color{
+  color: transparent;
+	background: linear-gradient(0deg, #757575 0%, #c5c5c5 45%, #E8E8E8 70%, #9E9E9E 85%, #757575 90% 100%); 
+	-webkit-background-clip: text;
+}
+
 /* #endregion Root */
 /*----------------------------------------------
 3. Reset
@@ -782,6 +794,14 @@ aside {
 
 .intro.text-center span::after {
   content: none;
+}
+
+.card-caption .seller a h6{
+  font-weight: 200 !important;
+  width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .list-group-item {
@@ -1642,6 +1662,17 @@ header .navbar-expand .dropdown:hover > .dropdown-menu {
   margin-top: 0;
 }
 
+.card .card-body h5 {
+  font-size: 110%;
+  width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.card-caption .card-body .seller {
+  font-size: 90%;
+}
 .card .card-body .card-bottom span {
   color: var(--white-color);
 }
@@ -2002,6 +2033,11 @@ padding: 100px 0 140px !important;
   width: 60%;
   visibility: visible;
   opacity: 1;
+}
+.explore-area .intro h3 {
+	color: transparent;
+	background: linear-gradient(0deg, #757575 0%, #9E9E9E 45%, #E8E8E8 70%, #9E9E9E 85%, #757575 90% 100%); 
+	-webkit-background-clip: text;
 }
 
 .explore-area .card .card-body a h5 {

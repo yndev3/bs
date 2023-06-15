@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 
 const initData = {
-    pre_heading: "Watches Assets NFTs",
+    pre_heading: "Assets NFT",
     heading: "Watches",
     btn_1: "View All",
     btn_2: "Load More"
@@ -11,74 +11,58 @@ const data = [
     {
         id: "1",
         img: "/img/Watches.jpg",
-        title: "Walking On Air",
-        owner: "Richard",
-        price: "1.5 ETH",
-        count: "1 of 1",
-        btnText: "Place a Bid"
+        title: "DAYTONA PAUL NEWMANDAYTONA PAUL NEWMANDAYTONA PAUL NEWMANDAYTONA PAUL NEWMAN",
+        brand: "ROREXROREXROREXROREXROREXROREX",
+        price: "1,000",
     },
     {
         id: "2",
         img: "/img/Watches.jpg",
-        title: "Domain Names",
-        owner: "John Deo",
-        price: "2.7 ETH",
-        count: "1 of 1",
-        btnText: "Place a Bid"
+        title: "DAYTONA PAUL NEWMAN",
+        brand: "ROREX",
+        price: "1,000",
     },
     {
         id: "3",
         img: "/img/Watches.jpg",
-        title: "Trading Cards",
-        owner: "Arham",
-        price: "2.3 ETH",
-        count: "1 of 1",
-        btnText: "Place a Bid"
+        title: "DAYTONA PAUL NEWMAN",
+        brand: "ROREX",
+        price: "1,000",
     },
     {
         id: "4",
         img: "/img/Watches.jpg",
-        title: "Industrial Revolution",
-        owner: "Yasmin",
-        price: "1.8 ETH",
-        count: "1 of 1",
-        btnText: "Place a Bid"
+        title: "DAYTONA PAUL NEWMAN",
+        brand: "ROREX",
+        price: "1,000",
     },
     {
         id: "5",
         img: "/img/Watches.jpg",
-        title: "Utility",
-        owner: "Junaid",
-        price: "1.7 ETH",
-        count: "1 of 1",
-        btnText: "Place a Bid"
+        title: "DAYTONA PAUL NEWMAN",
+        brand: "ROREX",
+        price: "1,000",
     },
     {
         id: "6",
         img: "/img/Watches.jpg",
-        title: "Sports",
-        owner: "ArtNox",
-        price: "1.9 ETH",
-        count: "1 of 1",
-        btnText: "Place a Bid"
+        title: "DAYTONA PAUL NEWMAN",
+        brand: "ROREX",
+        price: "1,000",
     },
     {
         id: "7",
         img: "/img/Watches.jpg",
-        title: "Cartoon Heroes",
-        owner: "Junaid",
-        price: "3.2 ETH",
-        count: "1 of 1",
-        btnText: "Place a Bid"
+        title: "DAYTONA PAUL NEWMAN",
+        brand: "ROREX",
+        price: "1,000",
     },
     {
         id: "8",
         img: "/img/Watches.jpg",
-        title: "Gaming Chair",
-        owner: "Johnson",
-        price: "0.69 ETH",
-        count: "1 of 1",
-        btnText: "Place a Bid"
+        title: "DAYTONA PAUL NEWMAN",
+        brand: "ROREX",
+        price: "1,000",
     }
 ]
 
@@ -128,17 +112,19 @@ class ExploreWatches extends Component {
                                                 <a href="/item-details">
                                                     <h5 className="mb-0">{item.title}</h5>
                                                 </a>
-                                                <div className="seller d-flex align-items-center my-3">
-                                                    <span>Owned By</span>
+                                                <div className="seller align-items-center my-3">
+                                                    <span>Brand by</span>
                                                     <a href="/author">
-                                                        <h6 className="ml-2 mb-0">{item.owner}</h6>
+                                                        <h6 className="mb-0">{item.brand}</h6>
                                                     </a>
                                                 </div>
                                                 <div className="card-bottom d-flex justify-content-between">
-                                                    <span>{item.price}</span>
-                                                    <span>{item.count}</span>
+                                                    <span>{item.price} USDT</span>
+                                                    <span>1 of 1</span>
                                                 </div>
-                                                <a className="btn btn-bordered-white btn-smaller mt-3" href="/login"><i className="icon-handbag mr-2" />{item.btnText}</a>
+                                                <div className="col-12 text-center mt-2">
+                                                    <a className="btn btn-bordered-white btn-smaller mt-3" href="/login"><i className="icon-handbag mr-2" />Place a Buy</a>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
