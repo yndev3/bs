@@ -1,19 +1,20 @@
 import axios from 'axios';
 
-const JWT =  process.env.REACT_APP_PINATA_JWT;
-export async function pinFolderToIPFS(selectedFiles) {
+const JWT = `Bearer ${process.env.REACT_APP_PINATA_JWT}`;
+console.log(JWT);
+export async function pinFolderToIPFS(itemName, selectedFiles) {
   const formData = new FormData();
   Array.from(selectedFiles).forEach((file) => {
     formData.append("file", file);
   })
 
   const metadata = JSON.stringify({
-    name: 'Folder name',
+    name: Date.now() +'_'+ itemName,
   });
   formData.append('pinataMetadata', metadata);
 
   const options = JSON.stringify({
-    cidVersion: 1,
+    cidVersion: 0,
   })
   formData.append('pinataOptions', options);
 
@@ -27,14 +28,13 @@ export async function pinFolderToIPFS(selectedFiles) {
       Authorization: JWT,
     },
   }).then(function(response) {
-    console.log(response.data);
     return {
       success: true,
+      hash: response.data.IpfsHash,
       pinataUrl:
           'https://gateway.pinata.cloud/ipfs/' + response.data.IpfsHash,
     };
   }).catch(function(error) {
-    console.log(error);
     return {
       success: false,
       message: error.message,
