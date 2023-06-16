@@ -101,12 +101,16 @@
 	color: transparent;
 	background: linear-gradient(0deg, #B67B03 0%, #DAAF08 45%, #FEE9A0 70%, #DAAF08 85%, #B67B03 90% 100%); 
 	-webkit-background-clip: text;
+  -moz-background-clip: text;
+  background-clip: text;
 }
 
 .silver-color{
   color: transparent;
 	background: linear-gradient(0deg, #757575 0%, #c5c5c5 45%, #E8E8E8 70%, #9E9E9E 85%, #757575 90% 100%); 
 	-webkit-background-clip: text;
+  -moz-background-clip: text;
+  background-clip: text;
 }
 
 /* #endregion Root */
@@ -2037,7 +2041,9 @@ padding: 100px 0 140px !important;
 .explore-area .intro h3 {
 	color: transparent;
 	background: linear-gradient(0deg, #757575 0%, #9E9E9E 45%, #E8E8E8 70%, #9E9E9E 85%, #757575 90% 100%); 
-	-webkit-background-clip: text;
+  -webkit-background-clip: text;
+  -moz-background-clip: text;
+  background-clip: text;
 }
 
 .explore-area .card .card-body a h5 {
