@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 const JWT = `Bearer ${process.env.REACT_APP_PINATA_JWT}`;
-console.log(JWT);
+
 export async function pinFolderToIPFS(itemName, selectedFiles) {
   const formData = new FormData();
   Array.from(selectedFiles).forEach((file) => {
