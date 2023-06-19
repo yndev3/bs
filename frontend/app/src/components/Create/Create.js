@@ -129,10 +129,8 @@ export default function Create() {
                       <button className="btn w-100 mt-3 mt-sm-4"
                               onClick={ submitHandler }>
                         {
-                          loading ?
-                              <div className="spinner-border" role="status">
-                                <span className="visually-hidden"></span>
-                              </div>
+                          loading
+                              ? <div className="spinner-border" role="status"></div>
                               : 'Create Item'
                         }
                       </button>
