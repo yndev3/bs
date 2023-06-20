@@ -1,42 +1,62 @@
 import React, { useState } from 'react';
 import AuthorProfile from '../AuthorProfile/AuthorProfile';
 import { pinFolderToIPFS } from '../../helpers/pinata/pinFolderToIPFS';
+import pinJSONToIPFS from '../../helpers/pinata/pinJSONToIPFS';
 
 export default function Create() {
-  // category
-  // Brand
-  // Weight (g)
-  // color
-  // material
-  // Size
-  // Accessories
-  // Price
-  // SKU
-  // Items State
-
-  const [selectedFile, setSelectedFile] = useState('');
-  const [itemName, setItemName] = useState('');
-  const [description, setDescription] = useState('');
-  const [amount, setAmount] = useState('');
-
   const [loading, setLoading] = useState(false);
+  const [errors, setErrors] = useState(false);
+  const [selectedFile, setSelectedFile] = useState('');
+  const [jsonInput, setJsonInput] = useState({
+    itemName: '',
+    description: '',
+    image: '',
+    category: '',
+    brand: '',
+    weight: '',
+    color: '',
+    material: '',
+    size: '',
+    accessories: '',
+    price: '',
+    SKU: '',
+    itemsState: {
+      isSale: false,
+      pending: false,
+    },
+  });
 
-  const submitHandler = async () => {
-    // バリデーション
-    // ローディング追加
-    setLoading(true);
-    await pinFolderToIPFS(itemName, selectedFile).then((result) => {
-      console.log(result);
-      result.success
-          ? alert('success') // todo JSON作成
-          : alert(result.message);
-    }).finally(() => {
-      setLoading(false);
-    });
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setJsonInput({ ...jsonInput, [name]: value });
+  }
 
-
-
-
+  const handleSubmit = async (e) => {
+    // todo バリデーション
+    e.preventDefault();
+    // if (validateForm()) {
+      setLoading(true);
+      try {
+        const folderRes = await pinFolderToIPFS(jsonInput.itemName, selectedFile);
+        if (folderRes.success) {
+          const newJsonInput = { ...jsonInput, image: folderRes.hash };
+          // todo jsonのファイル名はNFT_tokenIDにする
+          const jsonRes = await pinJSONToIPFS(newJsonInput);
+          if (jsonRes.success) {
+            console.log(jsonRes.pinataUrl);
+          } else {
+            throw new Error('Failed to pin JSON to IPFS');
+          }
+        } else {
+          throw new Error('Failed to pin folder to IPFS');
+        }
+      } catch (err) {
+        console.log(err.message);
+        setErrors({ submit: err.message });
+      } finally {
+        setLoading(false);
+      }
+    //}
   };
 
   return (
@@ -57,7 +77,7 @@ export default function Create() {
                   </div>
                 </div>
                 {/* Item Form */ }
-                <form className="item-form card no-hover">
+                <form className="item-form card no-hover" onSubmit={handleSubmit}>
                   <div className="row">
                     <div className="col-12">
                       <div className="input-group form-group">
@@ -65,28 +85,28 @@ export default function Create() {
                           <input type="file" className="custom-file-input"
                                  id="inputGroupFile01" directory=""
                                  webkitdirectory=""
-                                 onChange={ (e) => setSelectedFile(
-                                     e.target.files) }/>
+                                 onChange={ (e) => setSelectedFile(e.target.files) }/>
                           <label className="custom-file-label"
-                                 htmlFor="inputGroupFile01">Choose file</label>
+                                 htmlFor="inputGroupFile01">Choose file
+                          </label>
                         </div>
                       </div>
                     </div>
                     <div className="col-12">
                       <div className="form-group mt-3">
-                        <input type="text" className="form-control" name="name"
+                        <input type="text" className="form-control" name="itemName"
                                placeholder="Item Name"
-                               onChange={ (e) => setItemName(e.target.value) }/>
+                               onChange={handleChange}
+                               required
+                        />
                       </div>
                     </div>
                     <div className="col-12">
                       <div className="form-group">
-                      <textarea className="form-control" name="textarea"
+                      <textarea className="form-control" name="description"
                                 placeholder="Description" cols={ 30 } rows={ 3 }
                                 defaultValue={ '' }
-                                onChange={ (e) => setDescription(
-                                    e.target.value) }
-                                required
+                                onChange={handleChange}
                       />
                       </div>
                     </div>
@@ -95,39 +115,11 @@ export default function Create() {
                         <input type="number" className="form-control"
                                name="price"
                                placeholder="Item Price"
-                               onChange={ (e) => setAmount(e.target.value) }/>
-                      </div>
-                    </div>
-
-                    <div className="col-12">
-                      <div className="form-group mt-3">
-                        <div className="form-check form-check-inline">
-                          <input className="form-check-input" type="radio"
-                                 name="inlineRadioOptions" id="inlineRadio1"
-                                 defaultValue="option1" defaultChecked/>
-                          <label className="form-check-label"
-                                 htmlFor="inlineRadio1">Put on Sale</label>
-                        </div>
-                        <div className="form-check form-check-inline">
-                          <input className="form-check-input" type="radio"
-                                 name="inlineRadioOptions" id="inlineRadio2"
-                                 defaultValue="option2"/>
-                          <label className="form-check-label"
-                                 htmlFor="inlineRadio2">Instant Sale
-                            Price</label>
-                        </div>
-                        <div className="form-check form-check-inline">
-                          <input className="form-check-input" type="radio"
-                                 name="inlineRadioOptions" id="inlineRadio3"
-                                 defaultValue="option3"/>
-                          <label className="form-check-label"
-                                 htmlFor="inlineRadio3">Unlock Purchased</label>
-                        </div>
+                               onChange={handleChange}/>
                       </div>
                     </div>
                     <div className="col-12">
-                      <button className="btn w-100 mt-3 mt-sm-4"
-                              onClick={ submitHandler }>
+                      <button className="btn w-100 mt-3 mt-sm-4" type="submit">
                         {
                           loading
                               ? <div className="spinner-border" role="status"></div>
