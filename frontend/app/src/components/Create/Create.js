@@ -32,9 +32,8 @@ export default function Create() {
   }
 
   const handleSubmit = async (e) => {
-    // todo バリデーション
     e.preventDefault();
-    // if (validateForm()) {
+    if (validateForm()) {
       setLoading(true);
       try {
         const folderRes = await pinFolderToIPFS(jsonInput.itemName, selectedFile);
@@ -56,8 +55,26 @@ export default function Create() {
       } finally {
         setLoading(false);
       }
-    //}
+    }
   };
+
+  const validateForm = () => {
+    let isValid = true;
+    let newErrors = {};
+    for (const key in jsonInput) {
+      if (key !== 'itemsState' && !jsonInput[key].trim()) {
+        newErrors[key] = 'This field is required';
+        isValid = false;
+      }
+    }
+    if (selectedFile.length === 0) {
+      newErrors['image'] = 'This field is required';
+      isValid = false;
+    }
+
+    setErrors(newErrors);
+    return isValid;
+  }
 
   return (
       <>
@@ -91,14 +108,15 @@ export default function Create() {
                           </label>
                         </div>
                       </div>
+                      { errors.image && <p>{ errors.image }</p> }
                     </div>
                     <div className="col-12">
                       <div className="form-group mt-3">
                         <input type="text" className="form-control" name="itemName"
                                placeholder="Item Name"
                                onChange={handleChange}
-                               required
                         />
+                        { errors.itemName && <p>{ errors.itemName }</p> }
                       </div>
                     </div>
                     <div className="col-12">
@@ -108,6 +126,7 @@ export default function Create() {
                                 defaultValue={ '' }
                                 onChange={handleChange}
                       />
+                        { errors.description && <p>{ errors.description }</p> }
                       </div>
                     </div>
                     <div className="col-12 col-md-6">
@@ -116,6 +135,7 @@ export default function Create() {
                                name="price"
                                placeholder="Item Price"
                                onChange={handleChange}/>
+                        { errors.price && <p>{ errors.price }</p> }
                       </div>
                     </div>
                     <div className="col-12">
