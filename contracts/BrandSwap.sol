@@ -62,7 +62,7 @@ contract BrandSwap is ERC721Enumerable, ERC721Burnable, ERC721Pausable, ERC721UR
      * @dev settings for URI prefix
      */
     function _baseURI() internal pure override returns (string memory) {
-        return "ipfs://aaa/";
+        return "ipfs://";
     }
 
     /**
