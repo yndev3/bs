@@ -1,28 +1,33 @@
 import React, { useState } from 'react';
 import AuthorProfile from '../AuthorProfile/AuthorProfile';
 import { pinFolderToIPFS } from '../../helpers/pinata/pinFolderToIPFS';
-import pinJSONToIPFS from '../../helpers/pinata/pinJSONToIPFS';
+import {
+  pinJSONToIPFS,
+} from '../../helpers/pinata/pinJSONToIPFS';
 
 export default function Create() {
   const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState(false);
   const [selectedFile, setSelectedFile] = useState('');
   const [jsonInput, setJsonInput] = useState({
-    itemName: '',
+    name: '',
     description: '',
     image: '',
-    category: '',
-    brand: '',
-    weight: '',
-    color: '',
-    material: '',
-    size: '',
-    accessories: '',
-    price: '',
-    SKU: '',
-    itemsState: {
-      isSale: false,
-      pending: false,
+    subImages: [],
+    options: {
+      category: '',
+      brand: '',
+      weight: '',
+      color: '',
+      material: '',
+      size: '',
+      accessories: '',
+      price: '',
+      SKU: '',
+      itemsState: {
+        isSale: false,
+        pending: false,
+      },
     },
   });
 
@@ -33,19 +38,27 @@ export default function Create() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (validateForm()) {
+    // if (validateForm()) {
       setLoading(true);
       try {
-        const folderRes = await pinFolderToIPFS(jsonInput.itemName, selectedFile);
+        const folderRes = await pinFolderToIPFS(selectedFile);
         if (folderRes.success) {
-          const newJsonInput = { ...jsonInput, image: folderRes.hash };
+          const newJsonInput = { ...jsonInput, image: `ipfs://${folderRes.files.pop().cid}`}
+          const arr  = folderRes.files.map((file) => `ipfs://${file.cid}`);
+          const addSubImage = { ...newJsonInput, subImages : arr}
           // todo jsonのファイル名はNFT_tokenIDにする
-          const jsonRes = await pinJSONToIPFS(newJsonInput);
-          if (jsonRes.success) {
-            console.log(jsonRes.pinataUrl);
-          } else {
-            throw new Error('Failed to pin JSON to IPFS');
-          }
+        pinJSONToIPFS(addSubImage).then((res) => {
+          // todo ミント実行
+              console.log(res);
+              return res;
+            }
+        ).catch(errors => console.log(errors));
+          // if (jsonRes.success) {
+          //
+          //   console.log(jsonRes.result);
+          // } else {
+          //   throw new Error('Failed to pin JSON to IPFS');
+          // }
         } else {
           throw new Error('Failed to pin folder to IPFS');
         }
@@ -55,7 +68,7 @@ export default function Create() {
       } finally {
         setLoading(false);
       }
-    }
+    // }
   };
 
   const validateForm = () => {
@@ -66,10 +79,6 @@ export default function Create() {
         newErrors[key] = 'This field is required';
         isValid = false;
       }
-    }
-    if (selectedFile.length === 0) {
-      newErrors['image'] = 'This field is required';
-      isValid = false;
     }
 
     setErrors(newErrors);
@@ -100,8 +109,8 @@ export default function Create() {
                       <div className="input-group form-group">
                         <div className="custom-file">
                           <input type="file" className="custom-file-input"
-                                 id="inputGroupFile01" directory=""
-                                 webkitdirectory=""
+                                 id="inputGroupFile01"
+                                 multiple={true}
                                  onChange={ (e) => setSelectedFile(e.target.files) }/>
                           <label className="custom-file-label"
                                  htmlFor="inputGroupFile01">Choose file
