@@ -1,58 +1,60 @@
-import React, { Component } from 'react';
+import React from 'react';
+import WalletCard from './WalletCard';
 import axios from 'axios';
 
-const BASE_URL = "https://my-json-server.typicode.com/themeland/netstorm-json-1/wallet";
+export default function Wallet() {
 
-class Activity extends Component {
-    state = {
-        data: {},
-        walletData: []
+  const connectWithMetamask = async (e) => {
+    const { ethereum } = window;
+    if (ethereum) {
+      try {
+        const accounts = await ethereum.request({
+          method: 'eth_requestAccounts',
+        });
+        console.log(`accounts: ${ accounts }`);
+        const chain = await ethereum.request({
+          method: 'eth_chainId',
+        });
+        console.log(`chain: ${ chain }`);
+        const balance = await ethereum.request({
+          method: 'eth_getBalance',
+          params: [accounts[0], 'latest'],
+        });
+        console.log(`balance: ${ balance }`);
+        const res = await axios.get(`https://api.covalenthq.com/v1/${ chain }/address/${ accounts[0] }/balances_v2/?key=ckey_5c8e2e0b8e0c4b0f8b4c6f0d8e7`);
+        console.log(res.data.data.items);
+      } catch (err) {
+        console.log(err);
+      }
     }
-    componentDidMount(){
-        axios.get(`${BASE_URL}`)
-            .then(res => {
-                this.setState({
-                    data: res.data,
-                    walletData: res.data.walletData
-                })
-                // console.log(this.state.data)
-            })
-        .catch(err => console.log(err))
-    }
-    render() {
-        return (
-            <section className="wallet-connect-area">
-                <div className="container">
-                    <div className="row justify-content-center">
-                        <div className="col-12 col-md-8 col-lg-7">
-                            {/* Intro */}
-                            <div className="intro text-center">
-                                <span>{this.state.data.preHeading}</span>
-                                <h3 className="mt-3 mb-0">{this.state.data.heading}</h3>
-                                <p>{this.state.data.content}</p>
-                            </div>
-                        </div>
-                    </div>
-                    <div className="row justify-content-center items">
-                        {this.state.walletData.map((item, idx) => {
-                            return (
-                                <div key={`wd_${idx}`} className="col-12 col-md-6 col-lg-4 item">
-                                    {/* Single Wallet */}
-                                    <div className="card single-wallet">
-                                        <a className="d-block text-center" href="/login">
-                                            <img className="avatar-lg" src={item.img} alt="" />
-                                            <h4 className="mb-0">{item.title}</h4>
-                                            <p>{item.content}</p>
-                                        </a>
-                                    </div>
-                                </div>
-                            );
-                        })}
-                    </div>
-                </div>
-            </section>
-        );
-    }
-}
+  };
 
-export default Activity;
+  const connectWithWalletConnect = async (e) => {
+
+  };
+  return (
+      <section className="wallet-connect-area">
+        <div className="container">
+          <div className="row justify-content-center">
+            <div className="col-12 col-md-8 col-lg-7">
+              {/* Intro */ }
+              <div className="intro text-center">
+                <span>WALLET CONNECT</span>
+                <h3 className="mt-3 mb-0">Connect your Wallet</h3>
+              </div>
+            </div>
+          </div>
+          <div className="row justify-content-center items">
+            <WalletCard title="MetaMask"
+                        img="/img/metamask.png"
+                        content=""
+                        onClick={connectWithMetamask}/>
+            <WalletCard title="WalletConnect"
+                        img="/img/walletconnect.png"
+                        content=""
+                        onClick={connectWithWalletConnect}/>
+          </div>
+        </div>
+      </section>
+  );
+};
