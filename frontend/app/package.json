@@ -17,7 +17,9 @@
     "react-router-dom": "^5.2.0",
     "react-scripts": "4.0.3",
     "react-zoom-pan-pinch": "^3.0.8",
-    "web-vitals": "^1.1.2"
+    "recoil": "^0.7.7",
+    "web-vitals": "^1.1.2",
+    "web3.storage": "^4.5.4"
   },
   "scripts": {
     "start": "react-scripts start",

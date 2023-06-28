@@ -1,37 +1,60 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import WalletCard from './WalletCard';
-import axios from 'axios';
+import { useRecoilState} from 'recoil';
+import { walletAddressAtom } from '../../atoms/WalletAddressAtom';
+
+const mumbaiId = '0x13881';
 
 export default function Wallet() {
+  const [address, setAddress] = useRecoilState(walletAddressAtom);
+  const [chainId, setChainId] = useState(false);
+  console.log(`address: ${ address }`);
+  console.log(`chainId: ${ chainId }`);
 
-  const connectWithMetamask = async (e) => {
-    const { ethereum } = window;
+  const connectWithMetamask = async () => {
+    const {ethereum} = window;
     if (ethereum) {
       try {
         const accounts = await ethereum.request({
           method: 'eth_requestAccounts',
         });
-        console.log(`accounts: ${ accounts }`);
-        const chain = await ethereum.request({
-          method: 'eth_chainId',
-        });
-        console.log(`chain: ${ chain }`);
-        const balance = await ethereum.request({
-          method: 'eth_getBalance',
-          params: [accounts[0], 'latest'],
-        });
-        console.log(`balance: ${ balance }`);
-        const res = await axios.get(`https://api.covalenthq.com/v1/${ chain }/address/${ accounts[0] }/balances_v2/?key=ckey_5c8e2e0b8e0c4b0f8b4c6f0d8e7`);
-        console.log(res.data.data.items);
+        setAddress(accounts[0]);
+        // todo chainをグローバルにセット
+        // todo 設定されたchainがpolygonのchainでなければ、alertを出す
+
       } catch (err) {
         console.log(err);
       }
     }
   };
 
-  const connectWithWalletConnect = async (e) => {
+  const connectWithWalletConnect = async (e) => {};
+  const disconnectMetamask = async () => setAddress(null);
 
+  const checkChainId = async () => {
+    const {ethereum} = window;
+    if (ethereum) {
+      const chain = await ethereum.request({
+        method: 'eth_chainId',
+      });
+      console.log(`checkChainId: ${ chain }`);
+      if (chain !== mumbaiId) {
+        alert('Mumbaiに接続してください');
+        setChainId(false);
+      } else {
+        setChainId(true);
+      }
+    }
   };
+
+  useEffect(() => {
+    const {ethereum} = window;
+    if (ethereum) {
+      ethereum.on('accountsChanged', disconnectMetamask);
+      ethereum.on('chainChanged', checkChainId);
+    }
+  }, [address, chainId]);
+
   return (
       <section className="wallet-connect-area">
         <div className="container">
@@ -48,11 +71,20 @@ export default function Wallet() {
             <WalletCard title="MetaMask"
                         img="/img/metamask.png"
                         content=""
-                        onClick={connectWithMetamask}/>
+                        onClick={ address === null
+                            ? connectWithMetamask
+                            : disconnectMetamask }
+                        buttonText={ address === null
+                            ? 'Connect'
+                            : 'Disconnect' }
+            />
             <WalletCard title="WalletConnect"
                         img="/img/walletconnect.png"
                         content=""
-                        onClick={connectWithWalletConnect}/>
+                        onClick={ connectWithWalletConnect }
+                        buttonText="Coming Soon"
+
+            />
           </div>
         </div>
       </section>
