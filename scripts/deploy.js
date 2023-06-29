@@ -1,4 +1,4 @@
-import fs from 'fs';
+const fs = require("fs");
 
 const tokenURI = 'bafkreih3ybpzqlxcg25peckyyzd6iddoldpbrxl46dng7ggg4tovookwvq';
 const addr = '0xD38Eb334caC02650c1Dc01f6f98b78dbdFAC7A67';
@@ -14,7 +14,7 @@ const main = async () => {
   console.log('NFT#1 minted...');
 
   fs.writeFileSync(
-      './memberNFTContract.js',
+      './brandSwapContract.js',
       `
             module.exports = "${ brandSwap.address }"
           `,

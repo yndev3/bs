@@ -9,7 +9,7 @@ export async function pinJSONToIPFS(JSONBody) {
     const rootCidOfMetadata = await client.put(file);
     return {
       success: true,
-      result: rootCidOfMetadata
+      metadata: rootCidOfMetadata
     }
   } catch (err) {
     return err;
