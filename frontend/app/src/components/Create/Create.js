@@ -20,7 +20,7 @@ export default function Create() {
     name: '',
     description: '',
     image: '',
-    subImages: [],
+    imageList: [],
     options: {
       category: 'Watches',
       brand: 'Tiffany&Co',
@@ -43,6 +43,7 @@ export default function Create() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    // todo バリデーション
     // if (validateForm()) {
     setLoading(true);
     try {
@@ -50,23 +51,31 @@ export default function Create() {
       if (folderRes.success) {
         const newJsonInput = {
           ...jsonInput,
-          image: `ipfs://${ folderRes.files.pop().cid }`,
+          image: `ipfs://${ folderRes.files[0].cid }`,
         };
-        console.log();
+
         const arr = folderRes.files.map((file) => `ipfs://${ file.cid }`);
-        const addSubImage = {...newJsonInput, subImages: arr};
+        const addSubImage = {...newJsonInput, imageList: arr};
         const jsonRes = await pinJSONToIPFS(addSubImage);
+
         const { ethereum } = window;
         const provider = new ethers.providers.Web3Provider(ethereum);
         const signer = provider.getSigner();
+
         const mintContract = new ethers.Contract(
             BrandSwapAddress,
             BrandSwap.abi,
             await signer,
         );
-        // todo jsonのファイル名はNFT_tokenIDにする
+
         const tx = await mintContract.nftMint(`${ jsonRes.metadata }/metadata.json`);
-        await tx.wait();
+        const receipt = await tx.wait();
+
+        const tokenId = receipt.events[0].args.tokenId.toString(); // トークンIDを取得
+
+        // DBに保存
+        console.log({tokenId:tokenId, metadata:jsonRes.metadata});
+
         const balance = await mintContract.balanceOf(signer.getAddress());
         console.log(`nftBalance: ${ balance.toNumber() }`);
       }
@@ -109,20 +118,20 @@ export default function Create() {
 
     if (balance.toNumber() > 0) {
       for (let i = 0; i < balance.toNumber(); i++) {
-        console.log(i);
-        const tokenId = await mintContract.tokenOfOwnerByIndex(signer.getAddress(), i);
+
+        let tokenId = await mintContract.tokenOfOwnerByIndex(signer.getAddress(), i);
         let tokenURI = await mintContract.tokenURI(tokenId);
         tokenURI = tokenURI.replace('ipfs://', 'https://ipfs.io/ipfs/');
         const meta = await axios.get(tokenURI);
 
-        const name = meta.data.name;
-        const description = meta.data.description;
-        const imageURI = meta.data.image.replace(
+        let name = meta.data.name;
+        let description = meta.data.description;
+        let imageURI = meta.data.image?.replace(
             'ipfs://',
             'https://ipfs.io/ipfs/',
         );
 
-        const item = {
+        let item = {
           tokenId,
           name,
           description,
