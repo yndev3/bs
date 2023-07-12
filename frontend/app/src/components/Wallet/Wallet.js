@@ -38,7 +38,8 @@ export default function Wallet() {
         method: 'eth_chainId',
       });
       console.log(`checkChainId: ${ chain }`);
-      if (chain !== mumbaiId) {
+      // todo localNetworkのchainIdを削除
+      if (chain !== mumbaiId || chain !== "0x7a69") {
         alert('Mumbaiに接続してください');
         setChainId(false);
       } else {
