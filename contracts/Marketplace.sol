@@ -8,15 +8,15 @@ import "@openzeppelin/contracts/access/AccessControlDefaultAdminRules.sol";
 import "./BrandSwap.sol";
 import "@openzeppelin/contracts/token/ERC20/presets/ERC20PresetFixedSupply.sol";
 contract Marketplace is Context, ReentrancyGuard, AccessControlDefaultAdminRules {
-    BrandSwap private _nft;
-
     bytes32 public constant SET_SALE_ROLE = keccak256("SET_SALE_ROLE");
 
+    BrandSwap private _nft;
     /// @dev ERC20 token used for payment
     address private  _tokenContract;
+    address private  _adminAddress;
 
     struct Sale {
-        address seller;
+        uint256 tokenId;
         uint256 price;
         bool isSale;
     }
@@ -24,19 +24,21 @@ contract Marketplace is Context, ReentrancyGuard, AccessControlDefaultAdminRules
     mapping(uint256 => Sale) private _sales;
 
     event TokenSold(uint256 indexed tokenId, address newOwner, uint256 price, IERC20 token);
+    event changeSaleState(uint256 indexed tokenId, address excutor, uint256 price, bool isSale);
 
     constructor(address nftAddress, address adminAddress)
     AccessControlDefaultAdminRules(3 days, adminAddress) {
         _nft = BrandSwap(nftAddress);
         _grantRole(SET_SALE_ROLE, adminAddress);
+        _adminAddress = adminAddress;
     }
 
     /**
     * @dev setting for nft selling price
     */
-    function setSale(uint256 tokenId, uint256 price) external onlyRole(SET_SALE_ROLE) {
-         require(_nft.ownerOf(tokenId) == _msgSender(), "Not token owner");
-        _sales[tokenId] = Sale(_msgSender(), price, true);
+    function setSale(uint256 tokenId, uint256 price, bool isSale) external onlyRole(SET_SALE_ROLE) {
+        _sales[tokenId] = Sale(tokenId, price, isSale);
+        emit changeSaleState(tokenId, _msgSender(), price, isSale);
     }
 
     function getSale(uint256 tokenId) external view returns (Sale memory) {
@@ -63,12 +65,12 @@ contract Marketplace is Context, ReentrancyGuard, AccessControlDefaultAdminRules
 
         // transfer the ERC20 token to the seller
         require(
-            token.transferFrom(msg.sender, sale.seller, payment),
+            token.transferFrom(msg.sender, _adminAddress, payment),
             "Marketplace: Transfer of payment token failed"
         );
 
         // transfer the NFT token to the buyer
-        _nft.safeTransferFrom(sale.seller, msg.sender, tokenId);
+        _nft.safeTransferFrom(_adminAddress, msg.sender, tokenId);
 
         // remove the token from sale
         delete _sales[tokenId];

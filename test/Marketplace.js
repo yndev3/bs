@@ -45,11 +45,10 @@ describe("Marketplace Contract", function () {
         // Setting NFT for sale
         const price = hre.ethers.utils.parseEther("10"); // price is 1 ERC20 token
         const payment = hre.ethers.utils.parseEther("10");// price is 1 ERC20 token
-        await marketplace.connect(owner).setSale(1, price);
+        await marketplace.connect(owner).setSale(1, price, true);
 
         // Checking the sale
         const sale = await marketplace.getSale(1);
-        expect(sale.seller).to.equal(owner.address);
         expect(sale.price).to.equal(price);
         expect(sale.isSale).to.be.true;
 

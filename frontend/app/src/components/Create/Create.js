@@ -11,7 +11,8 @@ import { walletAddressAtom } from '../../atoms/WalletAddressAtom';
 import axios from 'axios';
 
 export default function Create() {
-  const BrandSwapAddress = '0x68350e6bC48E43E76e9b692a7Ae82e6b37d656cE';
+  const BrandSwapAddress = process.env.REACT_APP_BRANDSWAP_ADDRESS;
+  // todo 状態として取得
   const address = '0x8cbCD52AA99322ccfab2cf525aDF3065a74983b5';
   const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState(false);

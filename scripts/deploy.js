@@ -1,8 +1,11 @@
 const fs = require("fs");
+const hre = require('hardhat');
 
 const tokenURI = 'bafkreih3ybpzqlxcg25peckyyzd6iddoldpbrxl46dng7ggg4tovookwvq';
-const addr = '0xD38Eb334caC02650c1Dc01f6f98b78dbdFAC7A67';
+const addr = '0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266';
 const main = async () => {
+  let owner, buyer, attacker, mocker;
+  [owner, buyer, attacker, mocker] = await hre.ethers.getSigners();
   let BrandSwap = await ethers.getContractFactory('BrandSwap');
   let brandSwap = await BrandSwap.deploy();
   await brandSwap.deployed();
@@ -19,6 +22,28 @@ const main = async () => {
             module.exports = "${ brandSwap.address }"
           `,
   );
+
+  let Marketplace = await ethers.getContractFactory('Marketplace');
+  let marketplace = await Marketplace.deploy(brandSwap.address, addr);
+  await marketplace.deployed();
+
+  const ERC20 = await hre.ethers.getContractFactory("ERC20PresetFixedSupply");
+  const erc20 = await ERC20.deploy(
+      'Test Token',
+      'TXT',
+      hre.ethers.utils.parseEther("1000"),
+      buyer.address
+  );
+  await erc20.deployed();
+  console.log({
+    brandSwap: brandSwap.address,
+    marketplace: marketplace.address,
+    erc20: erc20.address,
+  });
+  console.log({
+    owner:owner.address,
+    buyer:buyer.address
+  });
 };
 
 const deploy = async () => {
