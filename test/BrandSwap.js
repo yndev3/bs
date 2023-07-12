@@ -6,7 +6,7 @@ describe("BrandSwap Contract", function () {
     let BrandSwap;
     let brandSwap;
     let owner;
-    const baseURI = 'ipfs://aaa/';
+    const baseURI = 'ipfs://';
     const tokenUri1 = 'testUri1';
     const tokenUri2 = 'testUri2';
 
