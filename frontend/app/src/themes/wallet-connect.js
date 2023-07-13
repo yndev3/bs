@@ -13,7 +13,7 @@ class WalletConnect extends Component {
         return (
             <div className="main">
                 <Header />
-                <Breadcrumb title="Wallet Connect" subpage="Pages" page="Wallet Connect" />
+                <Breadcrumb title="Wallet Connect" subpage="Wallet Connect" page="Wallet Connect" />
                 <Wallet />
                 <Footer />
                 <ModalSearch />

@@ -12,7 +12,7 @@ class Breadcrumb extends Component {
                                 <h2 className="m-0">{this.props.title}</h2>
                                 <ol className="breadcrumb d-flex justify-content-center">
                                     <li className="breadcrumb-item"><a href="/">Home</a></li>
-                                    <li className="breadcrumb-item"><a href="#">{this.props.subpage}</a></li>
+                                    <li className="breadcrumb-item"><a href="#">{this.props.page}</a></li>
                                 </ol>
                             </div>
                         </div>

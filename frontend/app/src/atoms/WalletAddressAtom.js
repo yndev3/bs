@@ -1,10 +1,9 @@
 import { atom } from "recoil";
+import { recoilPersist } from"recoil-persist";
 
-/** todo
- * Headerのアドレス情報をグローバルに保持しているが,ページ遷移すると消えてしまう
- * defaultをlocalstorageに保存した値をつかうようにする
-**/
+const { persistAtom } = recoilPersist()
 export const walletAddressAtom = atom({
   key: 'walletAddressAtom',
-  default: null
+  default: null,
+  effects_UNSTABLE: [persistAtom],
 });

@@ -8,8 +8,6 @@ const mumbaiId = '0x13881';
 export default function Wallet() {
   const [address, setAddress] = useRecoilState(walletAddressAtom);
   const [chainId, setChainId] = useState(false);
-  console.log(`address: ${ address }`);
-  console.log(`chainId: ${ chainId }`);
 
   const connectWithMetamask = async () => {
     const {ethereum} = window;
