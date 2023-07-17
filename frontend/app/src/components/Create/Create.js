@@ -9,11 +9,11 @@ import BrandSwap from '../../contracts/BrandSwap.json';
 import { useRecoilValue } from 'recoil';
 import { walletAddressAtom } from '../../atoms/WalletAddressAtom';
 import axios from 'axios';
+import { WatchForm , JewelryForm, MaterialForm}  from './CategoryForm';
 
-export default function Create() {
+const Create = () => {
   const BrandSwapAddress = process.env.REACT_APP_BRANDSWAP_ADDRESS;
-  // todo 状態として取得
-  const address = '0x8cbCD52AA99322ccfab2cf525aDF3065a74983b5';
+  const address = useRecoilValue(walletAddressAtom);
   const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState(false);
   const [selectedFile, setSelectedFile] = useState('');
@@ -36,9 +36,13 @@ export default function Create() {
       Note: '',
     },
   });
+  const [category, setCategory] = useState("");
 
   const handleChange = (e) => {
     const {name, value} = e.target;
+    if (name === 'category') {
+      setCategory(value);
+    }
     setJsonInput({...jsonInput, [name]: value});
   };
 
@@ -59,7 +63,7 @@ export default function Create() {
         const addSubImage = {...newJsonInput, imageList: arr};
         const jsonRes = await pinJSONToIPFS(addSubImage);
 
-        const { ethereum } = window;
+        const {ethereum} = window;
         const provider = new ethers.providers.Web3Provider(ethereum);
         const signer = provider.getSigner();
 
@@ -69,13 +73,14 @@ export default function Create() {
             await signer,
         );
 
-        const tx = await mintContract.nftMint(`${ jsonRes.metadata }/metadata.json`);
+        const tx = await mintContract.nftMint(
+            `${ jsonRes.metadata }/metadata.json`);
         const receipt = await tx.wait();
 
         const tokenId = receipt.events[0].args.tokenId.toString(); // トークンIDを取得
 
         // DBに保存
-        console.log({tokenId:tokenId, metadata:jsonRes.metadata});
+        console.log({tokenId: tokenId, metadata: jsonRes.metadata});
 
         const balance = await mintContract.balanceOf(signer.getAddress());
         console.log(`nftBalance: ${ balance.toNumber() }`);
@@ -120,7 +125,8 @@ export default function Create() {
     if (balance.toNumber() > 0) {
       for (let i = 0; i < balance.toNumber(); i++) {
 
-        let tokenId = await mintContract.tokenOfOwnerByIndex(signer.getAddress(), i);
+        let tokenId = await mintContract.tokenOfOwnerByIndex(
+            signer.getAddress(), i);
         let tokenURI = await mintContract.tokenURI(tokenId);
         tokenURI = tokenURI.replace('ipfs://', 'https://ipfs.io/ipfs/');
         const meta = await axios.get(tokenURI);
@@ -175,7 +181,8 @@ export default function Create() {
                                  onChange={ (e) => setSelectedFile(
                                      e.target.files) }/>
                           <label className="custom-file-label"
-                                 htmlFor="inputGroupFile01">Choose file
+                                 htmlFor="inputGroupFile01">
+                            Choose file
                           </label>
                         </div>
                       </div>
@@ -183,33 +190,116 @@ export default function Create() {
                     </div>
                     <div className="col-12">
                       <div className="form-group mt-3">
-                        <input type="text" className="form-control"
+                        <label htmlFor="itemName" className="mb-1">
+                          Item name
+                        <span className="text-danger">*</span></label>
+                        <input type="text"
+                               id="itemName"
+                               className="form-control "
                                name="itemName"
-                               placeholder="Item Name"
-                               onChange={ handleChange }
-                        />
-                        { errors.itemName && <p>{ errors.itemName }</p> }
+                               placeholder="Somthing item name"
+                               onChange={ handleChange }/>
+                        { errors.itemName && <span>{ errors.itemName }</span> }
                       </div>
                     </div>
                     <div className="col-12">
                       <div className="form-group">
-                      <textarea className="form-control" name="description"
-                                placeholder="Description" cols={ 30 } rows={ 3 }
-                                defaultValue={ '' }
-                                onChange={ handleChange }
-                      />
-                        { errors.description && <p>{ errors.description }</p> }
+                        <label htmlFor="description"
+                               className="mb-1">Description<span className="text-danger">*</span></label>
+                        <textarea id="description"
+                                  className="form-control"
+                                  name="description"
+                                  placeholder="Description"
+                                  cols="30"
+                                  rows="3"
+                                  defaultValue=""
+                                  onChange={ handleChange }/>
+                        { errors.description && <span>{ errors.description }</span> }
                       </div>
                     </div>
-                    <div className="col-12 col-md-6">
+                    <div className="col-12">
                       <div className="form-group">
-                        <input type="number" className="form-control"
-                               name="price"
-                               placeholder="Item Price"
-                               onChange={ handleChange }/>
-                        { errors.price && <p>{ errors.price }</p> }
+                        <label htmlFor="sku" className="mb-1">SKU<span className="text-danger">*</span></label>
+                        <input type="text"
+                               id="sku"
+                               className="form-control"
+                               name="sku"
+                               placeholder="SKU"
+                               onChange={ handleChange }
+                        />
+                        { errors.sku && <span>{ errors.sku }</span> }
                       </div>
                     </div>
+                    <div className="col-12">
+                      <div className="form-group">
+                        <label htmlFor="color" className="mb-1">Color<span className="text-danger">*</span></label>
+                        <input id="color"
+                            type="text"
+                               className="form-control"
+                               name="color"
+                               placeholder="red, blue, green"
+                               onChange={ handleChange }
+                        />
+                        { errors.color && <span>{ errors.color }</span> }
+                      </div>
+                    </div>
+                    <div className="col-12">
+                      <div className="form-group">
+                        <label htmlFor="Material" className="mb-1">Material<span className="text-danger">*</span></label>
+                        <input id="Material"
+                               type="text"
+                               className="form-control"
+                               name="material"
+                               placeholder="silver, gold, diamond"
+                               onChange={ handleChange }
+                        />
+                        { errors.material && <span>{ errors.material }</span> }
+                      </div>
+                    </div>
+                    <div className="col-12">
+                      <div className="form-group">
+                        <label htmlFor="size" className="mb-1">Size<span className="text-danger">*</span></label>
+                        <input type="text"
+                               className="form-control"
+                               name="size"
+                               placeholder="Item Size"
+                               onChange={ handleChange }/>
+                        { errors.size && <span>{ errors.size }</span> }
+                      </div>
+                    </div>
+                    <div className="col-12">
+                      <div className="form-group">
+                        <label htmlFor="category" className="mb-1">Category<span className="text-danger">*</span></label>
+                        <select id="category"
+                                className="form-select"
+                                name="category"
+                                onChange={ handleChange }>
+                          <option value="">Select Category</option>
+                          <option value="Watches">Watches</option>
+                          <option value="Jewelry">Jewelry</option>
+                          <option value="Materials">Materials</option>
+                        </select>
+                        { errors.category && <span>{ errors.category }</span> }
+                      </div>
+                    </div>
+                    <div className="col-12">
+                      <div className="form-group">
+                        <label htmlFor="note" className="mb-1">Note</label>
+                        <textarea id="note"
+                                  className="form-control"
+                                  name="note"
+                                  placeholder="note"
+                                  cols="30"
+                                  rows="3"
+                                  defaultValue=""
+                                  onChange={ handleChange }/>
+                        { errors.note && <span>{ errors.note }</span> }
+                      </div>
+                    </div>
+                    { category === 'Watches' && <WatchForm handleChange={handleChange} errors={errors} /> }
+                    { category === 'Jewelry' && <JewelryForm handleChange={handleChange} errors={errors} /> }
+                    { category === 'Materials' && <MaterialForm handleChange={handleChange} errors={errors} /> }
+
                     <div className="col-12">
                       <button className="btn w-100 mt-3 mt-sm-4" type="submit">
                         {
@@ -226,7 +316,8 @@ export default function Create() {
             </div>
           </div>
         </section>
-        <button onClick={ checkNft }>btn</button>
       </>
   );
-}
+};
+
+export default Create;
