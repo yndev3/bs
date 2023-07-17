@@ -1,15 +1,13 @@
 import React, { useState } from 'react';
 import AuthorProfile from '../AuthorProfile/AuthorProfile';
 import { pinFolderToIPFS } from '../../helpers/pinata/pinFolderToIPFS';
-import {
-  pinJSONToIPFS,
-} from '../../helpers/pinata/pinJSONToIPFS';
+import { pinJSONToIPFS } from '../../helpers/pinata/pinJSONToIPFS';
 import { ethers } from 'ethers';
 import BrandSwap from '../../contracts/BrandSwap.json';
 import { useRecoilValue } from 'recoil';
 import { walletAddressAtom } from '../../atoms/WalletAddressAtom';
 import axios from 'axios';
-import { WatchForm , JewelryForm, MaterialForm}  from './CategoryForm';
+import { WatchForm, JewelryForm, MaterialForm } from './CategoryForm';
 
 const Create = () => {
   const BrandSwapAddress = process.env.REACT_APP_BRANDSWAP_ADDRESS;
@@ -36,7 +34,7 @@ const Create = () => {
       Note: '',
     },
   });
-  const [category, setCategory] = useState("");
+  const [category, setCategory] = useState('');
 
   const handleChange = (e) => {
     const {name, value} = e.target;
@@ -192,7 +190,7 @@ const Create = () => {
                       <div className="form-group mt-3">
                         <label htmlFor="itemName" className="mb-1">
                           Item name
-                        <span className="text-danger">*</span></label>
+                          <span className="text-danger">*</span></label>
                         <input type="text"
                                id="itemName"
                                className="form-control "
@@ -205,7 +203,8 @@ const Create = () => {
                     <div className="col-12">
                       <div className="form-group">
                         <label htmlFor="description"
-                               className="mb-1">Description<span className="text-danger">*</span></label>
+                               className="mb-1">Description<span
+                            className="text-danger">*</span></label>
                         <textarea id="description"
                                   className="form-control"
                                   name="description"
@@ -214,12 +213,14 @@ const Create = () => {
                                   rows="3"
                                   defaultValue=""
                                   onChange={ handleChange }/>
-                        { errors.description && <span>{ errors.description }</span> }
+                        { errors.description &&
+                            <span>{ errors.description }</span> }
                       </div>
                     </div>
                     <div className="col-12">
                       <div className="form-group">
-                        <label htmlFor="sku" className="mb-1">SKU<span className="text-danger">*</span></label>
+                        <label htmlFor="sku" className="mb-1">SKU<span
+                            className="text-danger">*</span></label>
                         <input type="text"
                                id="sku"
                                className="form-control"
@@ -232,9 +233,10 @@ const Create = () => {
                     </div>
                     <div className="col-12">
                       <div className="form-group">
-                        <label htmlFor="color" className="mb-1">Color<span className="text-danger">*</span></label>
+                        <label htmlFor="color" className="mb-1">Color<span
+                            className="text-danger">*</span></label>
                         <input id="color"
-                            type="text"
+                               type="text"
                                className="form-control"
                                name="color"
                                placeholder="red, blue, green"
@@ -245,7 +247,8 @@ const Create = () => {
                     </div>
                     <div className="col-12">
                       <div className="form-group">
-                        <label htmlFor="Material" className="mb-1">Material<span className="text-danger">*</span></label>
+                        <label htmlFor="Material" className="mb-1">Material<span
+                            className="text-danger">*</span></label>
                         <input id="Material"
                                type="text"
                                className="form-control"
@@ -258,7 +261,8 @@ const Create = () => {
                     </div>
                     <div className="col-12">
                       <div className="form-group">
-                        <label htmlFor="size" className="mb-1">Size<span className="text-danger">*</span></label>
+                        <label htmlFor="size" className="mb-1">Size<span
+                            className="text-danger">*</span></label>
                         <input type="text"
                                className="form-control"
                                name="size"
@@ -269,7 +273,8 @@ const Create = () => {
                     </div>
                     <div className="col-12">
                       <div className="form-group">
-                        <label htmlFor="category" className="mb-1">Category<span className="text-danger">*</span></label>
+                        <label htmlFor="category" className="mb-1">Category<span
+                            className="text-danger">*</span></label>
                         <select id="category"
                                 className="form-select"
                                 name="category"
@@ -296,9 +301,15 @@ const Create = () => {
                         { errors.note && <span>{ errors.note }</span> }
                       </div>
                     </div>
-                    { category === 'Watches' && <WatchForm handleChange={handleChange} errors={errors} /> }
-                    { category === 'Jewelry' && <JewelryForm handleChange={handleChange} errors={errors} /> }
-                    { category === 'Materials' && <MaterialForm handleChange={handleChange} errors={errors} /> }
+                    { category === 'Watches' &&
+                        <WatchForm handleChange={ handleChange }
+                                   errors={ errors }/> }
+                    { category === 'Jewelry' &&
+                        <JewelryForm handleChange={ handleChange }
+                                     errors={ errors }/> }
+                    { category === 'Materials' &&
+                        <MaterialForm handleChange={ handleChange }
+                                      errors={ errors }/> }
 
                     <div className="col-12">
                       <button className="btn w-100 mt-3 mt-sm-4" type="submit">
