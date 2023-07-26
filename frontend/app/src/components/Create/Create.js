@@ -8,8 +8,12 @@ import { useRecoilValue } from 'recoil';
 import { walletAddressAtom } from '../../atoms/WalletAddressAtom';
 import axios from 'axios';
 import { WatchForm, JewelryForm, MaterialForm } from './CategoryForm';
+// import { configureChains, mainnet } from 'wagmi';
+
 
 const Create = () => {
+  // console.log(configureChains);
+  // configureChains([mainnet]);
   const BrandSwapAddress = process.env.REACT_APP_BRANDSWAP_ADDRESS;
   const address = useRecoilValue(walletAddressAtom);
   const [loading, setLoading] = useState(false);
