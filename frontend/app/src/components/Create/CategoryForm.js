@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 
 export const WatchForm = ({ handleChange, errors }) => {
   return (
@@ -26,9 +26,9 @@ export const WatchForm = ({ handleChange, errors }) => {
                     name="gender"
                     onChange={ handleChange }>
               <option value="">Select Gender</option>
-              <option value="men">Men</option>
-              <option value="women">Women</option>
-              <option value="women">Unisex</option>
+              <option value="Men">Men</option>
+              <option value="Women">Women</option>
+              <option value="Unisex">Unisex</option>
             </select>
             { errors.gender && <span>{ errors.gender }</span> }
           </div>
@@ -41,10 +41,38 @@ export const WatchForm = ({ handleChange, errors }) => {
                    type="text"
                    className="form-control"
                    name="features"
-                   placeholder="IPX-8, 1000m throw"
+                   placeholder="1000m throw"
                    onChange={ handleChange }
             />
             { errors.features && <span>{ errors.features }</span> }
+          </div>
+        </div>
+        <div className="col-12">
+          <div className="form-group">
+            <label htmlFor="edition" className="mb-1">Edition<span
+                className="text-danger">*</span></label>
+            <input id="edition"
+                   type="text"
+                   className="form-control"
+                   name="edition"
+                   placeholder="made in 1992"
+                   onChange={ handleChange }
+            />
+            { errors.edition && <span>{ errors.edition }</span> }
+          </div>
+        </div>
+        <div className="col-12">
+          <div className="form-group">
+            <label htmlFor="waterproof" className="mb-1">Waterproof<span
+                className="text-danger">*</span></label>
+            <input id="waterproof"
+                   type="text"
+                   className="form-control"
+                   name="waterproof"
+                   placeholder="IPX-8"
+                   onChange={ handleChange }
+            />
+            { errors.waterproof && <span>{ errors.waterproof }</span> }
           </div>
         </div>
         <div className="col-12">
@@ -93,9 +121,9 @@ export const JewelryForm = ({ handleChange, errors }) => {
             <label htmlFor="gender" className="mb-1">Gender-specific<span className="text-danger">*</span></label>
             <select id="gender" className="form-select" name="gender" onChange={ handleChange }>
               <option value="">Select Gender</option>
-              <option value="men">Men</option>
-              <option value="women">Women</option>
-              <option value="unisex">Unisex</option>
+              <option value="Men">Men</option>
+              <option value="Women">Women</option>
+              <option value="Unisex">Unisex</option>
             </select>
             { errors.gender && <span>{ errors.gender }</span> }
           </div>
