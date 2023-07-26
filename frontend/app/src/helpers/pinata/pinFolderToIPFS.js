@@ -1,4 +1,4 @@
-import { Web3Storage } from 'web3.storage/dist/bundle.esm.min.js';
+import { Web3Storage } from 'web3.storage';
 
 export async function pinFolderToIPFS(selectedFiles) {
   const client = new Web3Storage({ token:process.env.REACT_APP_WEB3_TOKEN});
