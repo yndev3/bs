@@ -13,36 +13,101 @@ const Create = () => {
   const BrandSwapAddress = process.env.REACT_APP_BRANDSWAP_ADDRESS;
   const address = useRecoilValue(walletAddressAtom);
   const [loading, setLoading] = useState(false);
-  const [errors, setErrors] = useState(false);
+  const [errors, setErrors] = useState({});
   const [selectedFile, setSelectedFile] = useState('');
   const [jsonInput, setJsonInput] = useState({
     name: '',
     description: '',
     image: '',
     imageList: [],
-    options: {
-      category: 'Watches',
-      brand: 'Tiffany&Co',
-      weight: '',
-      color: '',
-      material: '',
-      size: '',
-      accessories: '',
-      price: '',
-      SKU: '',
-      state: 'N',
-      Note: '',
-    },
+    category: '',
+    brand: '',
+    color: '',
+    material: '',
+    size: '',
+    accessories: '',
+    SKU: '',
+    note: '',
+    option: {},
+  });
+  const [watchFormInput, setWatchFormInput] = useState({
+    movement: '',
+    gender: '',
+    features: '',
+    edition: '',
+    waterproof: '',
+    serialNumber: '',
+    state: '',
+  });
+  const [jewelryFormInput, setJewelryFormInput] = useState({
+    gender: '',
+    state: '',
+    weight: '',
+  });
+  const [materialFormInput, setMaterialFormInput] = useState({
+    weight: '',
+    serialNumber: '',
   });
   const [category, setCategory] = useState('');
 
   const handleChange = (e) => {
     const {name, value} = e.target;
-    if (name === 'category') {
-      setCategory(value);
+    if (name === 'sku') {
+      if (!skuCheck(value)) {
+        setErrors({...errors, sku: 'SKUはすでに登録されています。'});
+      }
     }
-    setJsonInput({...jsonInput, [name]: value});
+    setJsonInput(prevState => ({...prevState, [name]: value}));
   };
+
+  const skuCheck = async (sku) => {
+    // todo APIを通してユニーク確認
+    return true;
+  }
+
+  const handleCategoryChange = (e) => {
+    const value = e.target.value;
+    setCategory(value);
+    switch (value) {
+      case 'Watch':
+        setJsonInput({...jsonInput, option: watchFormInput});
+        break;
+      case 'Jewelry':
+        setJsonInput({...jsonInput, option: jewelryFormInput});
+        break;
+      case 'Material':
+        setJsonInput({...jsonInput, option: materialFormInput});
+        break;
+      default:
+        console.log('default');
+        break;
+    }
+    updateFormInput(jsonInput, setJsonInput, 'category', value);
+  }
+
+  const handleWatchFormChange = (e) => {
+    const {name, value} = e.target;
+    updateFormInput(watchFormInput, setWatchFormInput, name, value);
+    setJsonInput({...jsonInput,  option:watchFormInput});
+  }
+
+  const handleJewelryForm = (e) => {
+    const {name, value} = e.target;
+    updateFormInput(jewelryFormInput, setJewelryFormInput, name, value);
+    setJsonInput({...jsonInput,  option:jewelryFormInput});
+  }
+
+  const handleMaterialFormChange = (e) => {
+    const {name, value} = e.target;
+    updateFormInput(materialFormInput, setMaterialFormInput, name, value);
+    setJsonInput({...jsonInput,  option:materialFormInput});
+  }
+
+  const updateFormInput = (formInput, setFormInput, name, value) => {
+    if (name in formInput) {
+      setFormInput(prevState => ({...prevState, [name]: value}));
+    }
+  }
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -92,19 +157,7 @@ const Create = () => {
     // }
   };
 
-  const validateForm = () => {
-    let isValid = true;
-    let newErrors = {};
-    for (const key in jsonInput) {
-      if (key !== 'itemsState' && !jsonInput[key].trim()) {
-        newErrors[key] = 'This field is required';
-        isValid = false;
-      }
-    }
 
-    setErrors(newErrors);
-    return isValid;
-  };
 
   const checkNft = async () => {
     const {ethereum} = window;
@@ -278,11 +331,11 @@ const Create = () => {
                         <select id="category"
                                 className="form-select"
                                 name="category"
-                                onChange={ handleChange }>
+                                onChange={ handleCategoryChange }>
                           <option value="">Select Category</option>
-                          <option value="Watches">Watches</option>
+                          <option value="Watch">Watch</option>
                           <option value="Jewelry">Jewelry</option>
-                          <option value="Materials">Materials</option>
+                          <option value="Material">Material</option>
                         </select>
                         { errors.category && <span>{ errors.category }</span> }
                       </div>
@@ -301,14 +354,14 @@ const Create = () => {
                         { errors.note && <span>{ errors.note }</span> }
                       </div>
                     </div>
-                    { category === 'Watches' &&
-                        <WatchForm handleChange={ handleChange }
+                    { category === 'Watch' &&
+                        <WatchForm handleChange={ handleWatchFormChange }
                                    errors={ errors }/> }
                     { category === 'Jewelry' &&
-                        <JewelryForm handleChange={ handleChange }
+                        <JewelryForm handleChange={ handleJewelryForm }
                                      errors={ errors }/> }
-                    { category === 'Materials' &&
-                        <MaterialForm handleChange={ handleChange }
+                    { category === 'Material' &&
+                        <MaterialForm handleChange={ handleMaterialFormChange }
                                       errors={ errors }/> }
 
                     <div className="col-12">
