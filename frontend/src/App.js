@@ -10,8 +10,7 @@ import { MetaMaskConnector } from 'wagmi/connectors/metaMask';
 import { WalletConnectConnector } from 'wagmi/connectors/walletConnect';
 
 export default function App() {
-  const projectId = 'd4ebe7342c7618f615cdf80b034258cc';
-
+  const projectId = process.env.REACT_APP_WALLET_CONNECT_ID;
   const {chains, publicClient} = configureChains(
       [polygonMumbai, polygon],
       [
