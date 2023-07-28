@@ -1,58 +1,19 @@
 import React, { useEffect, useState } from 'react';
 import WalletCard from './WalletCard';
-import { useRecoilState} from 'recoil';
-import { walletAddressAtom } from '../../atoms/WalletAddressAtom';
-
+import { useAccount, useConnect, useDisconnect  } from 'wagmi'
 const mumbaiId = '0x13881';
 
 export default function Wallet() {
-  const [address, setAddress] = useRecoilState(walletAddressAtom);
   const [chainId, setChainId] = useState(false);
-
-  const connectWithMetamask = async () => {
-    const {ethereum} = window;
-    if (ethereum) {
-      try {
-        const accounts = await ethereum.request({
-          method: 'eth_requestAccounts',
-        });
-        setAddress(accounts[0]);
-        // todo chainをグローバルにセット
-        // todo 設定されたchainがpolygonのchainでなければ、alertを出す
-
-      } catch (err) {
-        console.log(err);
-      }
-    }
-  };
-
-  const connectWithWalletConnect = async (e) => {};
-  const disconnectMetamask = async () => setAddress(null);
-
-  const checkChainId = async () => {
-    const {ethereum} = window;
-    if (ethereum) {
-      const chain = await ethereum.request({
-        method: 'eth_chainId',
-      });
-      console.log(`checkChainId: ${ chain }`);
-      // todo localNetworkのchainIdを削除
-      if (chain !== mumbaiId || chain !== "0x7a69") {
-        alert('Mumbaiに接続してください');
-        setChainId(false);
-      } else {
-        setChainId(true);
-      }
-    }
-  };
+  const { connector: activeConnector, isConnected , isDisconnected } = useAccount();
+  const { connect, connectors, error, isLoading, pendingConnector } = useConnect()
+  const { disconnect } = useDisconnect()
 
   useEffect(() => {
-    const {ethereum} = window;
-    if (ethereum) {
-      ethereum.on('accountsChanged', disconnectMetamask);
-      ethereum.on('chainChanged', checkChainId);
+    if (!activeConnector) {
+      return;
     }
-  }, [address, chainId]);
+  }, [isConnected, isDisconnected]);
 
   return (
       <section className="wallet-connect-area">
@@ -66,24 +27,20 @@ export default function Wallet() {
               </div>
             </div>
           </div>
+          {error && <div className={"text-danger"}>{error.message}</div>}
           <div className="row justify-content-center items">
-            <WalletCard title="MetaMask"
-                        img="/img/metamask.png"
-                        content=""
-                        onClick={ address === null
-                            ? connectWithMetamask
-                            : disconnectMetamask }
-                        buttonText={ address === null
-                            ? 'Connect'
-                            : 'Disconnect' }
-            />
-            <WalletCard title="WalletConnect"
-                        img="/img/walletconnect.png"
-                        content=""
-                        onClick={ connectWithWalletConnect }
-                        buttonText="Coming Soon"
-
-            />
+            {connectors.map((connector) => (
+                <WalletCard title={connector.name}
+                            img={ `/img/${connector.id}.svg` }
+                            content=""
+                            onClick={ !isConnected
+                                ? () => connect({connector})
+                                : () => disconnect() }
+                            buttonText={ !isConnected
+                                ? 'Connect'
+                                : 'Disconnect' }
+                />
+            ))}
           </div>
         </div>
       </section>
