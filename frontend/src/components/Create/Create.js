@@ -4,18 +4,17 @@ import { pinFolderToIPFS } from '../../helpers/pinata/pinFolderToIPFS';
 import { pinJSONToIPFS } from '../../helpers/pinata/pinJSONToIPFS';
 import { ethers } from 'ethers';
 import BrandSwap from '../../contracts/BrandSwap.json';
-import { useRecoilValue } from 'recoil';
-import { walletAddressAtom } from '../../atoms/WalletAddressAtom';
 import axios from 'axios';
 import { WatchForm, JewelryForm, MaterialForm } from './CategoryForm';
-// import { configureChains, mainnet } from 'wagmi';
+import { useBalance, useAccount   } from 'wagmi'
 
 
 const Create = () => {
-  // console.log(configureChains);
-  // configureChains([mainnet]);
+  const { address, isConnecting, isDisconnected } = useAccount();
+  console.log(address);
   const BrandSwapAddress = process.env.REACT_APP_BRANDSWAP_ADDRESS;
-  const address = useRecoilValue(walletAddressAtom);
+  const {  data, isError, isLoading} = useBalance ({address:address})
+  console.log(data);
   const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState({});
   const [selectedFile, setSelectedFile] = useState('');

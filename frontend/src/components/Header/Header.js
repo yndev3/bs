@@ -1,10 +1,8 @@
 import React from 'react';
-import { useRecoilValue } from 'recoil';
-import { walletAddressAtom } from '../../atoms/WalletAddressAtom';
 import { NavLink } from 'react-router-dom';
-
+import { useAccount } from 'wagmi'
 const Header = () => {
-    const address = useRecoilValue(walletAddressAtom);
+    const { address , isConnected} = useAccount();
     const shortenAddress = (address, chars = 4) => {
         return `${ address.slice(0, 2) }...${ address.slice(-chars) }`;
     };
@@ -50,7 +48,7 @@ const Header = () => {
                             <NavLink to={ '/wallet-connect' }
                                className="btn ml-lg-auto btn-bordered-white">
                                 <i className="icon-wallet mr-md-2"/>{
-                                address !== null
+                                isConnected
                                     ? shortenAddress(address)
                                     : 'Connect Wallet'
                             }</NavLink>
