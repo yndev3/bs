@@ -2,7 +2,7 @@ const fs = require("fs");
 const hre = require('hardhat');
 
 const tokenURI = 'bafkreih3ybpzqlxcg25peckyyzd6iddoldpbrxl46dng7ggg4tovookwvq';
-const addr = '0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266';
+const addr = '0xD38Eb334caC02650c1Dc01f6f98b78dbdFAC7A67';
 const main = async () => {
   let owner, buyer, attacker, mocker;
   [owner, buyer, attacker, mocker] = await hre.ethers.getSigners();

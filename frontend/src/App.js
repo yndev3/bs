@@ -15,7 +15,7 @@ export default function App() {
       [polygonMumbai, polygon],
       [
         alchemyProvider({apiKey: process.env.REACT_APP_ALCHEMY_KEY}),
-        w3mProvider({projectId}),
+        // w3mProvider({projectId}),
         publicProvider(),
       ],
   );
@@ -26,20 +26,17 @@ export default function App() {
         chains: [polygonMumbai, polygon],
       }),
       // ...w3mConnectors({chains, projectId}),
-      new WalletConnectConnector({
-        projectId: projectId,
-      }),
     ],
     publicClient,
   });
-  const ethereumClient = new EthereumClient(config, chains);
+  // const ethereumClient = new EthereumClient(config, chains);
 
   return (
       <>
         <WagmiConfig config={ config }>
           <MyRouts/>
         </WagmiConfig>
-        <Web3Modal projectId={projectId} ethereumClient={ethereumClient} />
+        {/*<Web3Modal projectId={projectId} ethereumClient={ethereumClient} />*/}
       </>
   );
 }
