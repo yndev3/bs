@@ -1,22 +1,19 @@
 import React, { useState } from 'react';
 import AuthorProfile from '../AuthorProfile/AuthorProfile';
-import { pinFolderToIPFS } from '../../helpers/pinata/pinFolderToIPFS';
-import { pinJSONToIPFS } from '../../helpers/pinata/pinJSONToIPFS';
-import { ethers } from 'ethers';
 import BrandSwap from '../../contracts/BrandSwap.json';
-import axios from 'axios';
 import { WatchForm, JewelryForm, MaterialForm } from './CategoryForm';
-import { useBalance, useAccount   } from 'wagmi'
-
-
+import useMintSubmit  from '../../hooks/useMintSubmit';
+import { useAccount, useContractEvent } from 'wagmi';
 const Create = () => {
-  const { address, isConnecting, isDisconnected } = useAccount();
-  console.log(address);
   const BrandSwapAddress = process.env.REACT_APP_BRANDSWAP_ADDRESS;
-  const {  data, isError, isLoading} = useBalance ({address:address})
-  console.log(data);
-  const [loading, setLoading] = useState(false);
-  const [errors, setErrors] = useState({});
+  useContractEvent({
+    address: BrandSwapAddress,
+    abi: BrandSwap.abi,
+    eventName: 'nftMinted',
+    listener(log) {
+      console.log(log)
+    },
+  })
   const [selectedFile, setSelectedFile] = useState('');
   const [jsonInput, setJsonInput] = useState({
     name: '',
@@ -52,12 +49,15 @@ const Create = () => {
     serialNumber: '',
   });
   const [category, setCategory] = useState('');
+  const {address, isConnected} = useAccount();
+  const { executeMint, loading, errors }  = useMintSubmit(BrandSwapAddress, address);
+
 
   const handleChange = (e) => {
     const {name, value} = e.target;
     if (name === 'sku') {
       if (!skuCheck(value)) {
-        setErrors({...errors, sku: 'SKUはすでに登録されています。'});
+        // setErrors({...errors, sku: 'SKUはすでに登録されています。'});
       }
     }
     setJsonInput(prevState => ({...prevState, [name]: value}));
@@ -112,98 +112,9 @@ const Create = () => {
     }
   }
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    // todo バリデーション
-    // if (validateForm()) {
-    setLoading(true);
-    try {
-      const folderRes = await pinFolderToIPFS(selectedFile);
-      if (folderRes.success) {
-        const newJsonInput = {
-          ...jsonInput,
-          image: `ipfs://${ folderRes.files[0].cid }`,
-        };
-
-        const arr = folderRes.files.map((file) => `ipfs://${ file.cid }`);
-        const addSubImage = {...newJsonInput, imageList: arr};
-        const jsonRes = await pinJSONToIPFS(addSubImage);
-
-        const {ethereum} = window;
-        const provider = new ethers.providers.Web3Provider(ethereum);
-        const signer = provider.getSigner();
-
-        const mintContract = new ethers.Contract(
-            BrandSwapAddress,
-            BrandSwap.abi,
-            await signer,
-        );
-
-        const tx = await mintContract.nftMint(
-            `${ jsonRes.metadata }/metadata.json`);
-        const receipt = await tx.wait();
-
-        const tokenId = receipt.events[0].args.tokenId.toString(); // トークンIDを取得
-
-        // DBに保存
-        console.log({tokenId: tokenId, metadata: jsonRes.metadata});
-
-        const balance = await mintContract.balanceOf(signer.getAddress());
-        console.log(`nftBalance: ${ balance.toNumber() }`);
-      }
-    } catch (err) {
-      console.log(err.message);
-      setErrors({submit: err.message});
-    } finally {
-      setLoading(false);
-    }
-    // }
-  };
-
-
-
-  const checkNft = async () => {
-    const {ethereum} = window;
-    const provider = new ethers.providers.Web3Provider(ethereum);
-    const signer = provider.getSigner();
-    const mintContract = new ethers.Contract(
-        BrandSwapAddress,
-        BrandSwap.abi,
-        await signer,
-    );
-    const balance = await mintContract.balanceOf(signer.getAddress());
-    console.log(`nftBalance: ${ balance }`);
-    const totalSupply = await mintContract.totalSupply();
-    console.log(`totalSupply: ${ totalSupply }`);
-
-    if (balance.toNumber() > 0) {
-      for (let i = 0; i < balance.toNumber(); i++) {
-
-        let tokenId = await mintContract.tokenOfOwnerByIndex(
-            signer.getAddress(), i);
-        let tokenURI = await mintContract.tokenURI(tokenId);
-        tokenURI = tokenURI.replace('ipfs://', 'https://ipfs.io/ipfs/');
-        const meta = await axios.get(tokenURI);
-
-        let name = meta.data.name;
-        let description = meta.data.description;
-        let imageURI = meta.data.image?.replace(
-            'ipfs://',
-            'https://ipfs.io/ipfs/',
-        );
-
-        let item = {
-          tokenId,
-          name,
-          description,
-          tokenURI,
-          imageURI,
-        };
-
-        console.log(item);
-      }
-    }
-  };
+  const handleSubmit = async (e, selectedFile, jsonInput) => {
+    await executeMint(e, selectedFile, jsonInput);
+  }
 
   return (
       <>
@@ -224,7 +135,7 @@ const Create = () => {
                 </div>
                 {/* Item Form */ }
                 <form className="item-form card no-hover"
-                      onSubmit={ handleSubmit }>
+                      onSubmit={(e) => isConnected && handleSubmit(e, selectedFile, jsonInput)}>
                   <div className="row">
                     <div className="col-12">
                       <div className="input-group form-group">
@@ -343,6 +254,15 @@ const Create = () => {
                         { errors.category && <span>{ errors.category }</span> }
                       </div>
                     </div>
+                    { category === 'Watch' &&
+                        <WatchForm handleChange={ handleWatchFormChange }
+                                   errors={ errors }/> }
+                    { category === 'Jewelry' &&
+                        <JewelryForm handleChange={ handleJewelryForm }
+                                     errors={ errors }/> }
+                    { category === 'Material' &&
+                        <MaterialForm handleChange={ handleMaterialFormChange }
+                                      errors={ errors }/> }
                     <div className="col-12">
                       <div className="form-group">
                         <label htmlFor="note" className="mb-1">Note</label>
@@ -357,16 +277,6 @@ const Create = () => {
                         { errors.note && <span>{ errors.note }</span> }
                       </div>
                     </div>
-                    { category === 'Watch' &&
-                        <WatchForm handleChange={ handleWatchFormChange }
-                                   errors={ errors }/> }
-                    { category === 'Jewelry' &&
-                        <JewelryForm handleChange={ handleJewelryForm }
-                                     errors={ errors }/> }
-                    { category === 'Material' &&
-                        <MaterialForm handleChange={ handleMaterialFormChange }
-                                      errors={ errors }/> }
-
                     <div className="col-12">
                       <button className="btn w-100 mt-3 mt-sm-4" type="submit">
                         {
