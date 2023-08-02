@@ -79,15 +79,16 @@ const Create = () => {
   const handleCategoryChange = (e) => {
     const value = e.target.value;
     setCategory(value);
+    let option;
     switch (value) {
       case 'Watch':
-        setJsonInput({...jsonInput, option: watchFormInput});
+        option = watchFormInput;
         break;
       case 'Jewelry':
-        setJsonInput({...jsonInput, option: jewelryFormInput});
+        option = jewelryFormInput;
         break;
       case 'Material':
-        setJsonInput({...jsonInput, option: materialFormInput});
+        option = materialFormInput;
         break;
       default:
         console.log('default');
