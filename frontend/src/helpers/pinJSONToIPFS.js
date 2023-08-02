@@ -11,6 +11,9 @@ export async function pinJSONToIPFS(JSONBody) {
       metadata: rootCidOfMetadata
     }
   } catch (err) {
-    return err;
+    return {
+      success: false,
+      message: err.message,
+    }
   }
 }

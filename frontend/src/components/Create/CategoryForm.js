@@ -1,17 +1,18 @@
 import React from 'react';
-import {JewelryBrand, WatchBrand, MaterialBrand} from "./BrandConst";
+import { JewelryBrand, WatchBrand, MaterialBrand } from './BrandConst';
 
 export const WatchForm = ({handleChange, errors}) => {
   return (
       <>
         <div className="col-12">
           <div className="form-group">
-            <label htmlFor="brand" className="mb-1">Movement<span
+            <label htmlFor="brand" className="mb-1">Brand<span
                 className="text-danger">*</span></label>
             <select id="brand"
                     className="form-select"
                     name="brand"
                     onChange={ handleChange }>
+              <option value="">Select a brand</option>
               { Object.values(WatchBrand).map((brand) => (
                   <option key={ brand } value={ brand }>
                     { brand }
@@ -137,12 +138,13 @@ export const JewelryForm = ({handleChange, errors}) => {
       <>
         <div className="col-12">
           <div className="form-group">
-            <label htmlFor="brand" className="mb-1">Jewelry<span
+            <label htmlFor="brand" className="mb-1">Brand<span
                 className="text-danger">*</span></label>
             <select id="brand"
                     className="form-select"
                     name="brand"
                     onChange={ handleChange }>
+              <option value="">Select a brand</option>
               { Object.values(JewelryBrand).map((brand) => (
                   <option key={ brand } value={ brand }>
                     { brand }
@@ -156,7 +158,9 @@ export const JewelryForm = ({handleChange, errors}) => {
           <div className="form-group">
             <label htmlFor="gender" className="mb-1">Gender-specific<span
                 className="text-danger">*</span></label>
-            <select id="gender" className="form-select" name="gender"
+            <select id="gender"
+                    className="form-select"
+                    name="gender"
                     onChange={ handleChange }>
               <option value="">Select Gender</option>
               <option value="Men">Men</option>
@@ -169,9 +173,13 @@ export const JewelryForm = ({handleChange, errors}) => {
 
         <div className="col-12">
           <div className="form-group">
-            <label htmlFor="state" className="mb-1">State<span
-                className="text-danger">*</span></label>
-            <select id="state" className="form-select" name="state"
+            <label htmlFor="state"
+                   className="mb-1">State
+              <span className="text-danger">*</span>
+            </label>
+            <select id="state"
+                    className="form-select"
+                    name="state"
                     onChange={ handleChange }>
               <option value="">Select State</option>
               <option value="N">N</option>
@@ -205,12 +213,13 @@ export const MaterialForm = ({handleChange, errors}) => {
       <>
         <div className="col-12">
           <div className="form-group">
-            <label htmlFor="brand" className="mb-1">Material<span
+            <label htmlFor="brand" className="mb-1">Brand<span
                 className="text-danger">*</span></label>
             <select id="brand"
                     className="form-select"
                     name="brand"
                     onChange={ handleChange }>
+              <option value="">Select a brand</option>
               { Object.values(MaterialBrand).map((material) => (
                   <option key={ material } value={ material }>
                     { material }
