@@ -40,7 +40,14 @@ const initialMaterialFormInput = {
   weight: '',
   serialNumber: '',
 }
-
+/**
+ * todo - add form validation
+ * todo - loading stateをわかりやすく表示
+ * todo - フォームの入力値をリセットする
+ * todo - エラー処理
+ * todo - APIを通してSKUのユニーク確認
+ * todo - DBに保存
+ * */
 const Create = () => {
   const BrandSwapAddress = process.env.REACT_APP_BRANDSWAP_ADDRESS;
   const {address, isConnected} = useAccount();
@@ -83,7 +90,7 @@ const Create = () => {
   };
 
   const skuCheck = async (sku) => {
-    // todo APIを通してユニーク確認
+    //
     return true;
   };
 
