@@ -65,18 +65,16 @@ const Create = () => {
 
   const handleChange = (e) => {
     const {name, value} = e.target;
-    if (name === 'sku') {
-      if (!skuCheck(value)) {
-        // setErrors({...errors, sku: 'SKUはすでに登録されています。'});
-      }
+    if (name === 'sku' && !skuCheck(value)) {
+      setValidationErrors({...validationErrors, sku: 'SKU already registered.'});
     }
-    setJsonInput(prevState => ({...prevState, [name]: value}));
+    updateFormInput(jsonInput, setJsonInput, name, value);
   };
 
   const skuCheck = async (sku) => {
     // todo APIを通してユニーク確認
     return true;
-  }
+  };
 
   const handleCategoryChange = (e) => {
     const value = e.target.value;
