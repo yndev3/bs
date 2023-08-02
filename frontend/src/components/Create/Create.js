@@ -52,6 +52,16 @@ const Create = () => {
   const {address, isConnected} = useAccount();
   const { executeMint, loading, errors }  = useMintSubmit(BrandSwapAddress, address);
 
+  // 任意のフォームの入力値を更新する
+  const updateFormInput = (formInput, setFormInput, name, value) => {
+    if (name in formInput) {
+      setFormInput(prevState => ({...prevState, [name]: value}));
+    }
+  };
+  const updateJsonInputOption = (option, setJsonInput) => {
+    console.log(option);
+    setJsonInput(prevJsonInput => ({...prevJsonInput, option: option}));
+  };
 
   const handleChange = (e) => {
     const {name, value} = e.target;
