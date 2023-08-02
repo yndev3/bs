@@ -1,120 +1,162 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import AuthorProfile from '../AuthorProfile/AuthorProfile';
 import BrandSwap from '../../contracts/BrandSwap.json';
 import { WatchForm, JewelryForm, MaterialForm } from './CategoryForm';
-import useMintSubmit  from '../../hooks/useMintSubmit';
+import useMintSubmit from '../../hooks/useMintSubmit';
 import { useAccount, useContractEvent } from 'wagmi';
+
+const initialJsonInput = {
+  name: '',
+  description: '',
+  image: '',
+  imageList: [],
+  category: '',
+  color: '',
+  material: '',
+  size: '',
+  accessories: '',
+  sku: '',
+  note: '',
+  option: {},
+}
+const initialWatchFormInput = {
+  brand: '',
+  movement: '',
+  gender: '',
+  features: '',
+  edition: '',
+  waterproof: '',
+  serialNumber: '',
+  state: '',
+}
+const initialJewelryFormInput = {
+  brand: '',
+  gender: '',
+  state: '',
+  weight: '',
+}
+const initialMaterialFormInput = {
+  brand: '',
+  weight: '',
+  serialNumber: '',
+}
+/**
+ * todo - add form validation
+ * todo - loading stateをわかりやすく表示
+ * todo - フォームの入力値をリセットする
+ * todo - エラー処理
+ * todo - APIを通してSKUのユニーク確認
+ * todo - DBに保存
+ * */
 const Create = () => {
   const BrandSwapAddress = process.env.REACT_APP_BRANDSWAP_ADDRESS;
+  const {address, isConnected} = useAccount();
+  const [loading, setLoading] = useState(false);
+  const [selectedFile, setSelectedFile] = useState('');
   useContractEvent({
     address: BrandSwapAddress,
     abi: BrandSwap.abi,
     eventName: 'nftMinted',
     listener(log) {
-      console.log(log)
+      const result = log[0].args;
+      console.log(result.sender, result.tokenId.toNumber(), result.uri);
+      setLoading(false);
+      console.log('Minted');
     },
-  })
-  const [selectedFile, setSelectedFile] = useState('');
-  const [jsonInput, setJsonInput] = useState({
-    name: '',
-    description: '',
-    image: '',
-    imageList: [],
-    category: '',
-    brand: '',
-    color: '',
-    material: '',
-    size: '',
-    accessories: '',
-    SKU: '',
-    note: '',
-    option: {},
   });
-  const [watchFormInput, setWatchFormInput] = useState({
-    movement: '',
-    gender: '',
-    features: '',
-    edition: '',
-    waterproof: '',
-    serialNumber: '',
-    state: '',
-  });
-  const [jewelryFormInput, setJewelryFormInput] = useState({
-    gender: '',
-    state: '',
-    weight: '',
-  });
-  const [materialFormInput, setMaterialFormInput] = useState({
-    weight: '',
-    serialNumber: '',
-  });
+  const {executeMint} = useMintSubmit(BrandSwapAddress, address);
+  const [jsonInput, setJsonInput] = useState(initialJsonInput);
+  const [watchFormInput, setWatchFormInput] = useState(initialWatchFormInput);
+  const [jewelryFormInput, setJewelryFormInput] = useState(initialJewelryFormInput);
+  const [materialFormInput, setMaterialFormInput] = useState(initialMaterialFormInput);
+  const [optionInput, setOptionInput] = useState({});
   const [category, setCategory] = useState('');
-  const {address, isConnected} = useAccount();
-  const { executeMint, loading, errors }  = useMintSubmit(BrandSwapAddress, address);
+  const [validationErrors, setValidationErrors] = useState({});
 
+  // 任意のフォームの入力値を更新する
+  const updateFormInput = (formInput, setFormInput, name, value) => {
+    if (name in formInput) {
+      setFormInput(prevState => ({...prevState, [name]: value}));
+    }
+  };
 
   const handleChange = (e) => {
     const {name, value} = e.target;
-    if (name === 'sku') {
-      if (!skuCheck(value)) {
-        // setErrors({...errors, sku: 'SKUはすでに登録されています。'});
-      }
+    if (name === 'sku' && !skuCheck(value)) {
+      setValidationErrors(
+          {...validationErrors, sku: 'SKU already registered.'});
     }
-    setJsonInput(prevState => ({...prevState, [name]: value}));
+    updateFormInput(jsonInput, setJsonInput, name, value);
   };
 
   const skuCheck = async (sku) => {
-    // todo APIを通してユニーク確認
+    //
     return true;
-  }
+  };
 
   const handleCategoryChange = (e) => {
     const value = e.target.value;
     setCategory(value);
+    let option;
     switch (value) {
       case 'Watch':
-        setJsonInput({...jsonInput, option: watchFormInput});
+        option = watchFormInput;
+        setJewelryFormInput(initialJewelryFormInput);
+        setMaterialFormInput(initialMaterialFormInput);
         break;
       case 'Jewelry':
-        setJsonInput({...jsonInput, option: jewelryFormInput});
+        option = jewelryFormInput;
+        setWatchFormInput(initialWatchFormInput);
+        setMaterialFormInput(initialMaterialFormInput);
         break;
       case 'Material':
-        setJsonInput({...jsonInput, option: materialFormInput});
+        option = materialFormInput;
+        setWatchFormInput(initialWatchFormInput);
+        setJewelryFormInput(initialJewelryFormInput);
         break;
       default:
         console.log('default');
         break;
     }
     updateFormInput(jsonInput, setJsonInput, 'category', value);
-  }
+    setOptionInput(option);
+  };
 
-  const handleWatchFormChange = (e) => {
+  const handleSpecificFormChange = (e, optionFormInput) => {
     const {name, value} = e.target;
-    updateFormInput(watchFormInput, setWatchFormInput, name, value);
-    setJsonInput({...jsonInput,  option:watchFormInput});
-  }
+    setOptionInput(prevState => ({...prevState, [name]: value}));
+  };
 
-  const handleJewelryForm = (e) => {
-    const {name, value} = e.target;
-    updateFormInput(jewelryFormInput, setJewelryFormInput, name, value);
-    setJsonInput({...jsonInput,  option:jewelryFormInput});
-  }
-
-  const handleMaterialFormChange = (e) => {
-    const {name, value} = e.target;
-    updateFormInput(materialFormInput, setMaterialFormInput, name, value);
-    setJsonInput({...jsonInput,  option:materialFormInput});
-  }
-
-  const updateFormInput = (formInput, setFormInput, name, value) => {
-    if (name in formInput) {
-      setFormInput(prevState => ({...prevState, [name]: value}));
-    }
-  }
+  const handleWatchFormChange = (e) => handleSpecificFormChange(e,
+      watchFormInput);
+  const handleJewelryFormChange = (e) => handleSpecificFormChange(e,
+      jewelryFormInput);
+  const handleMaterialFormChange = (e) => handleSpecificFormChange(e,
+      materialFormInput);
 
   const handleSubmit = async (e, selectedFile, jsonInput) => {
-    await executeMint(e, selectedFile, jsonInput);
-  }
+    e.preventDefault();
+    if (!isConnected) {
+      alert('Please connect to wallet.');
+    } else {
+      try {
+        setLoading(true);
+        const mergedJsonInput = {...jsonInput, option: optionInput};
+        await executeMint(e, selectedFile, mergedJsonInput);
+      } catch (error) {
+        alert(error.message);
+      } finally {
+        setJsonInput(initialJsonInput);
+        setWatchFormInput(initialWatchFormInput);
+        setJewelryFormInput(initialJewelryFormInput);
+        setMaterialFormInput(initialMaterialFormInput);
+        setOptionInput({});
+        setCategory('');
+        setSelectedFile('');
+        setValidationErrors({});
+      }
+    }
+  };
 
   return (
       <>
@@ -135,13 +177,15 @@ const Create = () => {
                 </div>
                 {/* Item Form */ }
                 <form className="item-form card no-hover"
-                      onSubmit={(e) => isConnected && handleSubmit(e, selectedFile, jsonInput)}>
+                      onSubmit={ (e) =>
+                          handleSubmit(e, selectedFile, jsonInput) }>
                   <div className="row">
                     <div className="col-12">
                       <div className="input-group form-group">
                         <div className="custom-file">
                           <input type="file" className="custom-file-input"
                                  id="inputGroupFile01"
+                                 name="image"
                                  multiple={ true }
                                  onChange={ (e) => setSelectedFile(
                                      e.target.files) }/>
@@ -151,7 +195,8 @@ const Create = () => {
                           </label>
                         </div>
                       </div>
-                      { errors.image && <p>{ errors.image }</p> }
+                      { validationErrors.image &&
+                          <p>{ validationErrors.image }</p> }
                     </div>
                     <div className="col-12">
                       <div className="form-group mt-3">
@@ -161,10 +206,11 @@ const Create = () => {
                         <input type="text"
                                id="itemName"
                                className="form-control "
-                               name="itemName"
+                               name="name"
                                placeholder="Somthing item name"
                                onChange={ handleChange }/>
-                        { errors.itemName && <span>{ errors.itemName }</span> }
+                        { validationErrors.name &&
+                            <span>{ validationErrors.name }</span> }
                       </div>
                     </div>
                     <div className="col-12">
@@ -180,8 +226,8 @@ const Create = () => {
                                   rows="3"
                                   defaultValue=""
                                   onChange={ handleChange }/>
-                        { errors.description &&
-                            <span>{ errors.description }</span> }
+                        { validationErrors.description &&
+                            <span>{ validationErrors.description }</span> }
                       </div>
                     </div>
                     <div className="col-12">
@@ -192,10 +238,11 @@ const Create = () => {
                                id="sku"
                                className="form-control"
                                name="sku"
-                               placeholder="SKU"
+                               placeholder="xxxx-xxxx-xxxx"
                                onChange={ handleChange }
                         />
-                        { errors.sku && <span>{ errors.sku }</span> }
+                        { validationErrors.sku &&
+                            <span>{ validationErrors.sku }</span> }
                       </div>
                     </div>
                     <div className="col-12">
@@ -209,7 +256,8 @@ const Create = () => {
                                placeholder="red, blue, green"
                                onChange={ handleChange }
                         />
-                        { errors.color && <span>{ errors.color }</span> }
+                        { validationErrors.color &&
+                            <span>{ validationErrors.color }</span> }
                       </div>
                     </div>
                     <div className="col-12">
@@ -223,7 +271,8 @@ const Create = () => {
                                placeholder="silver, gold, diamond"
                                onChange={ handleChange }
                         />
-                        { errors.material && <span>{ errors.material }</span> }
+                        { validationErrors.material &&
+                            <span>{ validationErrors.material }</span> }
                       </div>
                     </div>
                     <div className="col-12">
@@ -235,7 +284,23 @@ const Create = () => {
                                name="size"
                                placeholder="Item Size"
                                onChange={ handleChange }/>
-                        { errors.size && <span>{ errors.size }</span> }
+                        { validationErrors.size &&
+                            <span>{ validationErrors.size }</span> }
+                      </div>
+                    </div>
+                    <div className="col-12">
+                      <div className="form-group">
+                        <label htmlFor="accessories" className="mb-1">Accessories
+                          <span className="text-danger">*</span>
+                        </label>
+                        <input id="accessories"
+                               type="text"
+                               className="form-control"
+                               name="accessories"
+                               placeholder="Item Accessories"
+                               onChange={ handleChange }/>
+                        { validationErrors.accessories &&
+                            <span>{ validationErrors.accessories }</span> }
                       </div>
                     </div>
                     <div className="col-12">
@@ -251,18 +316,19 @@ const Create = () => {
                           <option value="Jewelry">Jewelry</option>
                           <option value="Material">Material</option>
                         </select>
-                        { errors.category && <span>{ errors.category }</span> }
+                        { validationErrors.category &&
+                            <span>{ validationErrors.category }</span> }
                       </div>
                     </div>
                     { category === 'Watch' &&
                         <WatchForm handleChange={ handleWatchFormChange }
-                                   errors={ errors }/> }
+                                   errors={ validationErrors }/> }
                     { category === 'Jewelry' &&
-                        <JewelryForm handleChange={ handleJewelryForm }
-                                     errors={ errors }/> }
+                        <JewelryForm handleChange={ handleJewelryFormChange }
+                                     errors={ validationErrors }/> }
                     { category === 'Material' &&
                         <MaterialForm handleChange={ handleMaterialFormChange }
-                                      errors={ errors }/> }
+                                      errors={ validationErrors }/> }
                     <div className="col-12">
                       <div className="form-group">
                         <label htmlFor="note" className="mb-1">Note</label>
@@ -274,7 +340,8 @@ const Create = () => {
                                   rows="3"
                                   defaultValue=""
                                   onChange={ handleChange }/>
-                        { errors.note && <span>{ errors.note }</span> }
+                        { validationErrors.note &&
+                            <span>{ validationErrors.note }</span> }
                       </div>
                     </div>
                     <div className="col-12">
