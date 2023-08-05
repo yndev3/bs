@@ -17,7 +17,7 @@ return new class extends Migration
             $table->string('description');
             $table->string('image');
             $table->integer('price')->unsigned();
-            $table->integer('sku')->unique();
+            $table->string('sku')->unique();
             $table->enum('categories', ['Watches', 'Jewelries', 'Materials']);
             $table->string('brand');
             $table->string('color');
