@@ -53,7 +53,6 @@ class Product extends Model
             'price' => 10,
         ]);
 
-
         $option = match ($product->category) {
             'Watch' => new WatchOption(),
             'Jewelry' => new JewelryOption(),
@@ -61,10 +60,9 @@ class Product extends Model
             default => throw new \Exception('Invalid category'),
         };
 
-       $option->optionSave($product->id, $metaData->option);
+        $option->optionSave($product->id, $metaData->option);
 
         return $product;
-
     }
 
     protected function option(): Attribute

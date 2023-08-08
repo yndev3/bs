@@ -9,6 +9,7 @@ use App\Models\WatchOption;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Log;
 
 readonly class ItemRegistrationController
 {
@@ -44,7 +45,7 @@ readonly class ItemRegistrationController
 
         return response()->json([
             'message' => 'success',
-            'data' => $metaData->option
+            'data' => $metaUrl
         ]);
     }
 

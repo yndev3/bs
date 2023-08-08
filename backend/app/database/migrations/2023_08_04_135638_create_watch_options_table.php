@@ -15,12 +15,20 @@ return new class extends Migration
             $table->id();
             $table->foreignId('product_id')->constrained('products')->cascadeOnDelete();
             $table->string('movement');
-            $table->string('gender');
+            $table->enum('gender', ['Men', 'Women', 'Unisex']);
             $table->string('features');
             $table->string('edition');
             $table->string('water_proof');
             $table->string('serial_number');
-            $table->string('state');
+            $table->enum('state', [
+                'N',
+                'S',
+                'A',
+                'AB',
+                'B',
+                'BC',
+                'C'
+            ]);
             $table->timestamps();
         });
     }

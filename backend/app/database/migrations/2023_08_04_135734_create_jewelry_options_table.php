@@ -24,7 +24,7 @@ return new class extends Migration
                 'BC',
                 'C'
             ]);
-            $table->string('weight');
+            $table->string('weight')->nullable();
             $table->timestamps();
         });
     }

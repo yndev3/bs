@@ -13,7 +13,9 @@ return new class extends Migration
     {
         Schema::create('products', function (Blueprint $table) {
             $table->id();
-            $table->bigInteger('token_id')->unsigned();
+            $table->bigInteger('token_id')
+                ->index()
+                ->unsigned();
             $table->string('name');
             $table->string('description');
             $table->string('image');
@@ -26,7 +28,7 @@ return new class extends Migration
             $table->string('size')->nullable();
             $table->string('accessories')->nullable();
             $table->boolean('is_sale')->default(false);
-            $table->text('note');
+            $table->text('note')->nullable();
             $table->timestamps();
         });
     }

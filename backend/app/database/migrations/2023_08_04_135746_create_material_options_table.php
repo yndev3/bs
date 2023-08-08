@@ -14,8 +14,8 @@ return new class extends Migration
         Schema::create('material_options', function (Blueprint $table) {
             $table->id();
             $table->foreignId('product_id')->constrained('products')->cascadeOnDelete();
-            $table->string('weight');
-            $table->string('serial_number');
+            $table->string('weight')->nullable();
+            $table->string('serial_number')->nullable();
             $table->timestamps();
         });
     }
