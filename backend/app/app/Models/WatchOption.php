@@ -20,4 +20,18 @@ class WatchOption extends Model
     {
         return $this->belongsTo(Product::class);
     }
+
+    public function optionSave($productId, $options)
+    {
+        return $this->create([
+            'product_id' => $productId,
+            'movement' => $options->movement,
+            'gender' => $options->gender,
+            'features' => $options->features,
+            'edition' => $options->edition,
+            'water_proof' => $options->waterproof,
+            'serial_number' => $options->serialNumber,
+            'state' => $options->state,
+        ]);
+    }
 }

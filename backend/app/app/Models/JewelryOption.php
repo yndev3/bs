@@ -20,4 +20,14 @@ class JewelryOption extends Model
     {
         return $this->belongsTo(Product::class);
     }
+
+    public function optionSave($productId, $options)
+    {
+        return $this->create([
+            'product_id' => $productId,
+            'gender' => $options->gender,
+            'weight' => $options->weight,
+            'state' => $options->state,
+        ]);
+    }
 }

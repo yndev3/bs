@@ -13,17 +13,18 @@ return new class extends Migration
     {
         Schema::create('products', function (Blueprint $table) {
             $table->id();
+            $table->bigInteger('token_id')->unsigned();
             $table->string('name');
             $table->string('description');
             $table->string('image');
             $table->integer('price')->unsigned();
             $table->string('sku')->unique();
-            $table->enum('categories', ['Watches', 'Jewelries', 'Materials']);
-            $table->string('brand');
-            $table->string('color');
-            $table->string('material');
-            $table->string('size');
-            $table->string('accessories');
+            $table->enum('category', ['Watch', 'Jewelry', 'Material']);
+            $table->string('brand')->index();
+            $table->string('color')->nullable();
+            $table->string('material')->nullable();
+            $table->string('size')->nullable();
+            $table->string('accessories')->nullable();
             $table->boolean('is_sale')->default(false);
             $table->text('note');
             $table->timestamps();

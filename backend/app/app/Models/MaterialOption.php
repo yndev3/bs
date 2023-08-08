@@ -20,4 +20,13 @@ class MaterialOption extends Model
     {
         return $this->belongsTo(Product::class);
     }
+
+    public function optionSave($productId, $options)
+    {
+        return $this->create([
+            'product_id' => $productId,
+            'weight' => $options->weight,
+            'serial_number' => $options->serialNumber,
+        ]);
+    }
 }

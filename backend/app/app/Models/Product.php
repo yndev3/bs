@@ -34,15 +34,49 @@ class Product extends Model
         return $this->hasMany(JewelryOption::class);
     }
 
+    public function productCreate($tokenId, $metaData)
+    {
+        $product = $this->create([
+            'token_id' => $tokenId,
+            'name' => $metaData->name,
+            'description' => $metaData->description,
+            'image' => $metaData->image,
+            'category' => $metaData->category,
+            'sku' => $metaData->sku,
+            'brand' => $metaData->option->brand,
+            'color' => $metaData->color,
+            'material' => $metaData->material,
+            'size' => $metaData->size,
+            'accessories' => $metaData->accessories,
+            'is_sale' => true,
+            'note' => $metaData->note,
+            'price' => 10,
+        ]);
+
+
+        $option = match ($product->category) {
+            'Watch' => new WatchOption(),
+            'Jewelry' => new JewelryOption(),
+            'Material' => new MaterialOption(),
+            default => throw new \Exception('Invalid category'),
+        };
+
+       $option->optionSave($product->id, $metaData->option);
+
+        return $product;
+
+    }
+
     protected function option(): Attribute
     {
         return Attribute::make(
             get: function () {
-                matches($this->categories, [
-                    'Watches' => $this->watchOptions,
-                    'Materials' => $this->materialOptions,
-                    'Jewelries' => $this->jewelryOptions,
-                ]);
+                match ($this->category) {
+                    'Watch' => $this->watchOptions,
+                    'Jewelry' => $this->jewelryOptions,
+                    'Material' => $this->materialOptions,
+                    default => throw new \Exception('Invalid category'),
+                };
             }
         );
     }
