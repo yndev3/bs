@@ -1,9 +1,10 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import AuthorProfile from '../AuthorProfile/AuthorProfile';
 import BrandSwap from '../../contracts/BrandSwap.json';
 import { WatchForm, JewelryForm, MaterialForm } from './CategoryForm';
 import useMintSubmit from '../../hooks/useMintSubmit';
 import { useAccount, useContractEvent } from 'wagmi';
+import axios  from 'axios';
 
 const initialJsonInput = {
   name: '',
@@ -40,14 +41,7 @@ const initialMaterialFormInput = {
   weight: '',
   serialNumber: '',
 }
-/**
- * todo - add form validation
- * todo - loading stateをわかりやすく表示
- * todo - フォームの入力値をリセットする
- * todo - エラー処理
- * todo - APIを通してSKUのユニーク確認
- * todo - DBに保存
- * */
+
 const Create = () => {
   const BrandSwapAddress = process.env.REACT_APP_BRANDSWAP_ADDRESS;
   const {address, isConnected} = useAccount();
@@ -58,10 +52,15 @@ const Create = () => {
     abi: BrandSwap.abi,
     eventName: 'nftMinted',
     listener(log) {
-      const result = log[0].args;
-      console.log(result.sender, result.tokenId.toNumber(), result.uri);
+      const {uri, tokenId, sender} = log[0].args;
+      axios.post('http://localhost/api/creat-item', {uri: uri, tokenId: tokenId.toString()})
+      .then(function (response) {
+        console.log(response);
+      })
+      .catch(function (error) {
+        console.error('Error sending data:', error); // エラーハンドリング
+      });
       setLoading(false);
-      console.log('Minted');
     },
   });
   const {executeMint} = useMintSubmit(BrandSwapAddress, address);
