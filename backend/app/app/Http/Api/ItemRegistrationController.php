@@ -2,10 +2,7 @@
 
 namespace App\Http\Api;
 
-use App\Models\JewelryOption;
-use App\Models\MaterialOption;
 use App\Models\Product;
-use App\Models\WatchOption;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Http;
