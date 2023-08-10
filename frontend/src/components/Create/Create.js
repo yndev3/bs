@@ -5,6 +5,7 @@ import { WatchForm, JewelryForm, MaterialForm } from './CategoryForm';
 import useMintSubmit from '../../hooks/useMintSubmit';
 import { useAccount, useContractEvent } from 'wagmi';
 import axios  from 'axios';
+import _ from 'lodash';
 
 const initialJsonInput = {
   name: '',
@@ -81,16 +82,23 @@ const Create = () => {
 
   const handleChange = (e) => {
     const {name, value} = e.target;
-    if (name === 'sku' && !skuCheck(value)) {
-      setValidationErrors(
-          {...validationErrors, sku: 'SKU already registered.'});
+    if (name === 'sku') {
+      debounceSkuCheck(value);
     }
     updateFormInput(jsonInput, setJsonInput, name, value);
   };
 
+  const debounceSkuCheck = _.debounce(async (sku) => {
+    if (await skuCheck(sku)) {
+      setValidationErrors(
+          {...validationErrors, sku: 'SKU already registered.'});
+    }
+  }, 500); // 1sec の遅延
+
   const skuCheck = async (sku) => {
-    //
-    return true;
+    const response = await axios.post('http://localhost/api/exists-sku', {sku: sku});
+    console.log(response.data.exists);
+    return response.data.exists;
   };
 
   const handleCategoryChange = (e) => {

@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Api\ItemRegistrationController;
+use App\Http\Api\UniqueCheckController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -22,3 +23,4 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 
 
 Route::post('/creat-item', ItemRegistrationController::class);
+Route::post('/exists-sku', UniqueCheckController::class);
