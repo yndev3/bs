@@ -21,4 +21,4 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 
 
 
-Route::post('/v1', ItemRegistrationController::class);
+Route::post('/creat-item', ItemRegistrationController::class);

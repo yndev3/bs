@@ -45,14 +45,16 @@ readonly class ItemRegistrationController
 
         return response()->json([
             'message' => 'success',
-            'data' => $metaUrl
+            'data' => $product
         ]);
     }
 
     private function convertIpfsLink($ipfsLink): string
     {
         $baseUrl = "https://w3s.link/ipfs/";
-        return preg_replace('/^ipfs:\/\//', $baseUrl, $ipfsLink);
+        return str_starts_with($ipfsLink, "ipfs://")
+            ? preg_replace('/^ipfs:\/\//', $baseUrl, $ipfsLink)
+            : $baseUrl.$ipfsLink;
     }
 
 }
