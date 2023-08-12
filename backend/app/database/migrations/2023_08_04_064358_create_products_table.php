@@ -19,6 +19,7 @@ return new class extends Migration
             $table->string('name');
             $table->string('description');
             $table->string('image');
+            $table->json('image_list');
             $table->integer('price')->unsigned();
             $table->string('sku')->unique();
             $table->enum('category', ['Watch', 'Jewelry', 'Material']);
