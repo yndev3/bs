@@ -41,6 +41,7 @@ class Product extends Model
             'name' => $metaData->name,
             'description' => $metaData->description,
             'image' => $metaData->image,
+            'image_list' => $metaData->imageList,
             'category' => $metaData->category,
             'sku' => $metaData->sku,
             'brand' => $metaData->option->brand,

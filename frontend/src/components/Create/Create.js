@@ -93,7 +93,7 @@ const Create = () => {
       setValidationErrors(
           {...validationErrors, sku: 'SKU already registered.'});
     }
-  }, 500); // 1sec の遅延
+  }, 1000); // 1sec の遅延
 
   const skuCheck = async (sku) => {
     const response = await axios.post('http://localhost/api/exists-sku', {sku: sku});

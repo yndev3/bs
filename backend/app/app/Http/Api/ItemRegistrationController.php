@@ -28,7 +28,7 @@ readonly class ItemRegistrationController
             $metaUrl = $this->convertIpfsLink($request->uri);
             $response = Http::get($metaUrl);
             $metaData = $response->object();
-
+            $metaData->imageList = json_encode($metaData->imageList);
             $product = $this->product->productCreate($tokenId , $metaData);
 
             DB::commit();
