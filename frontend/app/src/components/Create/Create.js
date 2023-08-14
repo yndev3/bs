@@ -204,38 +204,50 @@ const Create = () => {
 
   return (
       <>
-        <section className="author-area">
+        <section className="author-area admin-form">
           <div className="container">
-            <div className="row justify-content-between">
-              <div className="col-12 col-md-4">
-                {/* Author Profile */ }
-                <AuthorProfile/>
+          <div className="intro mt-5 mt-lg-0 mb-4 mb-lg-5">
+            <div className="col-12 col-md-8">
+              <div className="intro-content">
+                <span>Get Started</span>
+                <h3 className="mt-3 mb-0">Create Item</h3>
               </div>
-              <div className="col-12 col-md-7">
-                {/* Intro */ }
-                <div className="intro mt-5 mt-lg-0 mb-4 mb-lg-5">
-                  <div className="intro-content">
-                    <span>Get Started</span>
-                    <h3 className="mt-3 mb-0">Create Item</h3>
-                  </div>
-                </div>
+            </div>
+            </div>
+            <div className="row justify-content-between">
+              <div className="col-12 col-md-8">
                 {/* Item Form */ }
                 <form className="item-form card no-hover"
                       onSubmit={ handleSubmit }>
                   <div className="row">
                     <div className="col-12">
                       <div className="input-group form-group">
-                        <div className="custom-file">
-                          <input type="file" className="custom-file-input"
-                                 id="inputGroupFile01"
-                                 multiple={ true }
-                                 onChange={ (e) => setSelectedFile(
-                                     e.target.files) }/>
+                        <div className="custom-files">
+                          <input
+                            type="file"
+                            id="inputGroupFile01"
+                            multiple={true}
+                            onChange={(e) => {
+                              setSelectedFile(e.target.files);
+                              const selectedFiles = e.target.files;
+                              const previewContainer = document.getElementById("image-preview");
+                              previewContainer.innerHTML = ""; 
+
+                              for (const file of selectedFiles) {
+                                const img = document.createElement("img");
+                                img.src = URL.createObjectURL(file);
+                                img.className = "preview-image";
+                                previewContainer.appendChild(img);
+                              }
+                            }}
+                          />
                           <label className="custom-file-label"
                                  htmlFor="inputGroupFile01">
-                            Choose file
+                            Choose file<span
+                            className="text-danger">*</span>
                           </label>
                         </div>
+
                       </div>
                       { errors.image && <p>{ errors.image }</p> }
                     </div>
@@ -376,6 +388,26 @@ const Create = () => {
                     </div>
                   </div>
                 </form>
+              </div>
+              {/* Item Image */ }
+              <div className="col-12 col-md-4">
+                <div className="card no-hover text-center">
+                <div id="image-preview">
+                  {/* todo 選択された画像に対するプレビューを表示 */}
+                  {selectedFile && Array.from(selectedFile).map((file, index) => (
+                    <div key={index} className={`position-relative ${index > 0 ? 'mt-4' : ''}`}>
+                      <span className="image-index-badge">{index + 1}</span>
+                      <img
+                        className={`preview-image ${index > 0 ? 'mt-1' : ''}`}
+                        src={URL.createObjectURL(file)}
+                        alt={`Preview ${index}`}
+                        width="600"
+                        height="600"
+                      />
+                    </div>
+                  ))}
+                </div>
+                </div>
               </div>
             </div>
           </div>

@@ -2259,6 +2259,14 @@ padding: 100px 0 140px !important;
   z-index: 1;
 }
 
+.admin-form input,textarea,select {
+  color: rgb(255, 255, 255) !important;
+}
+
+.admin-form ::placeholder {
+  color: rgb(53, 53, 56) !important;
+}
+
 .author-area .card .card-body .input-group .form-control {
   border-radius: 100px;
   background-color: transparent;
