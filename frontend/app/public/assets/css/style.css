@@ -580,6 +580,11 @@ section.no-hero {
   padding: 150px 0 130px;
 }
 
+section.admin-crump {
+  padding: 65px 0;
+}
+
+
 section#slider:not(.bg-inherit) {
   background-color: var(--hero-bg-color);
 }
@@ -1194,6 +1199,10 @@ aside {
 
 .bg-grey input, .bg-grey textarea {
   background-color: var(--white-color);
+}
+
+.breadcrumb-admin-area {
+  background: blue ;
 }
 
 .breadcrumb-area {

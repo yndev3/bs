@@ -4,7 +4,6 @@ import { useRecoilValue } from 'recoil';
 import { walletAddressAtom } from '../../atoms/WalletAddressAtom';
 import { NavLink } from 'react-router-dom';
 
-
 const Header = () => {
     const address = useRecoilValue(walletAddressAtom);
     const shortenAddress = (address, chars = 4) => {
@@ -18,7 +17,7 @@ const Header = () => {
                 <div className="container header">
                     {/* Navbar Brand*/}
                     <a className="navbar-brand" href="/">
-                        <img className="navbar-brand-sticky" src="/img/logo.png" alt="sticky brand-logo" />
+                        <img className="navbar-brand-sticky" src="img/logo.png" alt="sticky brand-logo" />
                     </a>
                     <div className="ml-auto" />
                     {/* Navbar */}
@@ -29,15 +28,15 @@ const Header = () => {
                         <li className="nav-item dropdown">
                             <a className="nav-link" href="#">Explore<i className="fas fa-angle-down ml-1" /></a>
                             <ul className="dropdown-menu">
-                                <li className="nav-item"><NavLink to={'/explore-watches'} className="nav-link">Watches</NavLink></li>
-                                <li className="nav-item"><NavLink to={'/explore-jewelrys'} className="nav-link">Jewelrys</NavLink></li>
-                                <li className="nav-item"><NavLink to={'/explore-materials'} className="nav-link">Materials</NavLink></li>
+                                <li className="nav-item"><NavLink to={'/create'} className="nav-link">Create</NavLink></li>
+                                <li className="nav-item"><NavLink to={'/create'} className="nav-link">Create</NavLink></li>
+                                <li className="nav-item"><NavLink to={'/create'} className="nav-link">Create</NavLink></li>
                             </ul>
                         </li>
                         <li className="nav-item dropdown">
                             <a className="nav-link" href="#">ADMIN<i className="fas fa-angle-down ml-1" /></a>
                             <ul className="dropdown-menu">
-                                <li className="nav-item"><NavLink to={'/admin/create'} className="nav-link">Create</NavLink></li>
+                                <li className="nav-item"><NavLink to={'/create'} className="nav-link">Create</NavLink></li>
                             </ul>
                         </li>
                     </ul>
