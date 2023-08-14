@@ -25,8 +25,19 @@ const Header = () => {
                         <li className="nav-item dropdown">
                             <NavLink to={'/'} className="nav-link">Home</NavLink>
                         </li>
-                        <li className="nav-item">
-                            <NavLink to={'/create'} className="nav-link">Create</NavLink>
+                        <li className="nav-item dropdown">
+                            <a className="nav-link" href="#">Explore<i className="fas fa-angle-down ml-1" /></a>
+                            <ul className="dropdown-menu">
+                                <li className="nav-item"><NavLink to={'/create'} className="nav-link">Create</NavLink></li>
+                                <li className="nav-item"><NavLink to={'/create'} className="nav-link">Create</NavLink></li>
+                                <li className="nav-item"><NavLink to={'/create'} className="nav-link">Create</NavLink></li>
+                            </ul>
+                        </li>
+                        <li className="nav-item dropdown">
+                            <a className="nav-link" href="#">ADMIN<i className="fas fa-angle-down ml-1" /></a>
+                            <ul className="dropdown-menu">
+                                <li className="nav-item"><NavLink to={'/create'} className="nav-link">Create</NavLink></li>
+                            </ul>
                         </li>
                     </ul>
                     {/* Navbar Icons */}

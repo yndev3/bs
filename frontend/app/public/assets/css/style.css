@@ -2050,7 +2050,12 @@ padding: 100px 0 140px !important;
   -moz-background-clip: text;
   background-clip: text;
 }
-
+.explore-area .sort-card {
+  padding: 1.5rem;
+  border: none;
+  border-radius: 8px;
+  background-color: #191919;
+}
 .explore-area .card .card-body a h5 {
   -webkit-transition: 0.3s;
   transition: 0.3s;

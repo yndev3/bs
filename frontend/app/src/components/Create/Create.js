@@ -140,9 +140,9 @@ const Create = () => {
             `${ jsonRes.metadata }/metadata.json`);
         const receipt = await tx.wait();
 
-        const tokenId = receipt.events[0].args.tokenId.toString(); // トークンIDを取得
+        const tokenId = receipt.events[0].args.tokenId.toString(); // todo トークンIDを取得
 
-        // DBに保存
+        // todo DBに保存
         console.log({tokenId: tokenId, metadata: jsonRes.metadata});
 
         const balance = await mintContract.balanceOf(signer.getAddress());
