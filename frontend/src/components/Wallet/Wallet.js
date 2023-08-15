@@ -37,8 +37,7 @@ export default function Wallet() {
     );
     const signature = await signMessageAsync({message});
     console.log('Signature', signature);
-    // TODO: Send signature to backend
-    const res = await axios.post('/api/v1/auth', {
+    const res = await axios.post('/api/auth', {
       signature: signature,
       message: message,
       address:  connect.account,
