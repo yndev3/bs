@@ -1,30 +1,23 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import WalletCard from './WalletCard';
 import { useAccount, useConnect, useDisconnect, useSignMessage } from 'wagmi'
 import { toMessage } from '../SignIn/toMessage';
+import axios  from 'axios';
 
-const mumbaiId = '0x13881';
 const domain = window.location.host;
 const origin = window.location.origin;
 
 export default function Wallet() {
-  const [chainId, setChainId] = useState('');
-  const { address, connector: activeConnector, isConnected , isDisconnected } = useAccount();
   const { connectAsync, connectors, error } = useConnect()
+  const {isConnected , isDisconnected } = useAccount();
   const { disconnect } = useDisconnect()
   const { signMessageAsync } = useSignMessage({
     onError(error) {
       console.log('Error', error)
     },
   })
-  const connectWallet = async (connector) => {
-    //Connect to wallet
-    const connect = await connectAsync({connector});
-    setChainId(connect.chain.id);
-    return connect.account;
-  };
 
-  const createSiweMessage  =  (address, statement) => {
+  const createSiweMessage  =  (address, chainId, statement) => {
     return toMessage({
       domain,
       address,
@@ -35,42 +28,27 @@ export default function Wallet() {
     });
   }
 
-  const signInWithEthereum = async (address) => {
+  const handleConnect = async (connector) => {
+    const connect = await connectAsync({connector});
     const message = createSiweMessage(
-        address,
+        connect.account,
+        connect.chain.id,
         'Sign in with Ethereum to the app.'
     );
-    console.log(await signMessageAsync({message}));
-  }
-
-
-  const handleConnect = async (connector) => {
-    const address = await connectWallet(connector);
-    console.log('Address', address);
-    const signature = await signInWithEthereum(address);
+    const signature = await signMessageAsync({message});
     console.log('Signature', signature);
+    // TODO: Send signature to backend
+    const res = await axios.post('/api/v1/auth', {
+      signature: signature,
+      message: message,
+      address:  connect.account,
+    });
+    console.log(await res.text());
   };
 
-  // const handleConnect = async (connector) => {
-  //   const address = await connectWallet(connector);
-  //   const message = createSiweMessage(
-  //       address,
-  //       'Sign in with Ethereum to the app.'
-  //   );
-  //   const signature = await signMessageAsync({message});
-  //   console.log('Signature', signature);
-  //   // TODO: Send signature to backend
-  //   // const res = await axios.post('/api/v1/auth', {
-  //   //   signature: signature,
-  //   //   message: address,
-  //   //   address: address,
-  //   // });
-  //   // console.log(await res.text());
-  // };
-
   useEffect(() => {
-    if (!activeConnector) {
-      return;
+    if (isConnected) {
+      console.log('Connected');
     }
   }, [isConnected, isDisconnected]);
 
