@@ -1,17 +1,53 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import WalletCard from './WalletCard';
-import { useAccount, useConnect, useDisconnect  } from 'wagmi'
-const mumbaiId = '0x13881';
+import { useAccount, useConnect, useDisconnect, useSignMessage } from 'wagmi'
+import { toMessage } from '../SignIn/toMessage';
+import axios  from 'axios';
+
+const domain = window.location.host;
+const origin = window.location.origin;
 
 export default function Wallet() {
-  const [chainId, setChainId] = useState(false);
-  const { connector: activeConnector, isConnected , isDisconnected } = useAccount();
-  const { connect, connectors, error, isLoading, pendingConnector } = useConnect()
+  const { connectAsync, connectors, error } = useConnect()
+  const {isConnected , isDisconnected } = useAccount();
   const { disconnect } = useDisconnect()
+  const { signMessageAsync } = useSignMessage({
+    onError(error) {
+      console.log('Error', error)
+    },
+  })
+
+  const createSiweMessage  =  (address, chainId, statement) => {
+    return toMessage({
+      domain,
+      address,
+      statement,
+      uri: origin,
+      version: '1',
+      chainId: chainId
+    });
+  }
+
+  const handleConnect = async (connector) => {
+    const connect = await connectAsync({connector});
+    const message = createSiweMessage(
+        connect.account,
+        connect.chain.id,
+        'Sign in with Ethereum to the app.'
+    );
+    const signature = await signMessageAsync({message});
+    console.log('Signature', signature);
+    const res = await axios.post('/api/auth', {
+      signature: signature,
+      message: message,
+      address:  connect.account,
+    });
+    console.log(await res.text());
+  };
 
   useEffect(() => {
-    if (!activeConnector) {
-      return;
+    if (isConnected) {
+      console.log('Connected');
     }
   }, [isConnected, isDisconnected]);
 
@@ -34,7 +70,7 @@ export default function Wallet() {
                             img={ `/img/${connector.id}.svg` }
                             content=""
                             onClick={ !isConnected
-                                ? () => connect({connector})
+                                ? () => handleConnect(connector)
                                 : () => disconnect() }
                             buttonText={ !isConnected
                                 ? 'Connect'
