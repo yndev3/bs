@@ -12,6 +12,8 @@ import HelpCenter from '../themes/help-center';
 import WalletConnect from '../themes/wallet-connect';
 import Create from '../themes/create';
 import Contact from '../themes/contact';
+import AdminItemDetails from '../themes/admin-item-details';
+import AdminItemList from '../themes/admin-item-list';
 
 const MyRouts = () => {
   return (
@@ -29,6 +31,8 @@ const MyRouts = () => {
             <Route exact path="/contact" component={ Contact }/>
 
             <Route exact path="/admin/create" component={ Create }/>
+            <Route exact path="/admin/itemDetails" component={ AdminItemDetails }/>
+            <Route exact path="/admin/itemlist" component={ AdminItemList }/>
           </Switch>
         </Router>
       </div>

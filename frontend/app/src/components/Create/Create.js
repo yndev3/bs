@@ -8,6 +8,7 @@ import { useRecoilValue } from 'recoil';
 import { walletAddressAtom } from '../../atoms/WalletAddressAtom';
 import axios from 'axios';
 import { WatchForm, JewelryForm, MaterialForm } from './CategoryForm';
+import { Splide, SplideSlide } from '@splidejs/react-splide';
 
 const Create = () => {
   const BrandSwapAddress = process.env.REACT_APP_BRANDSWAP_ADDRESS;
@@ -229,16 +230,6 @@ const Create = () => {
                             multiple={true}
                             onChange={(e) => {
                               setSelectedFile(e.target.files);
-                              const selectedFiles = e.target.files;
-                              const previewContainer = document.getElementById("image-preview");
-                              previewContainer.innerHTML = ""; 
-
-                              for (const file of selectedFiles) {
-                                const img = document.createElement("img");
-                                img.src = URL.createObjectURL(file);
-                                img.className = "preview-image";
-                                previewContainer.appendChild(img);
-                              }
                             }}
                           />
                           <label className="custom-file-label"
@@ -391,22 +382,23 @@ const Create = () => {
               </div>
               {/* Item Image */ }
               <div className="col-12 col-md-4">
-                <div className="card no-hover text-center">
-                <div id="image-preview">
-                  {/* todo 選択された画像に対するプレビューを表示 */}
-                  {selectedFile && Array.from(selectedFile).map((file, index) => (
-                    <div key={index} className={`position-relative ${index > 0 ? 'mt-4' : ''}`}>
-                      <span className="image-index-badge">{index + 1}</span>
-                      <img
-                        className={`preview-image ${index > 0 ? 'mt-1' : ''}`}
-                        src={URL.createObjectURL(file)}
-                        alt={`Preview ${index}`}
-                        width="600"
-                        height="600"
-                      />
-                    </div>
-                  ))}
-                </div>
+                <div className="card no-hover">
+                  <div className="form-group">
+                    <label htmlFor="size" className="mb-1">Preview<span className="text-danger"> *</span></label>
+                  </div>
+                  <div id="image-preview" className="text-center">
+                  {
+                  selectedFile && selectedFile.length > 0 ? (
+                      <Splide aria-label="itemImg">
+                        { Array.from(selectedFile).map((image, key) => (
+                            <SplideSlide key={ key }>
+                              <img src={ URL.createObjectURL(image) } alt={ `item_${ key }_image` }/>
+                            </SplideSlide>
+                        ))}
+                      </Splide>
+                    ) : <img src="../img/item_images.jpg" />
+                    }
+                  </div>
                 </div>
               </div>
             </div>
