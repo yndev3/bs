@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import AuthorProfile from '../AuthorProfile/AuthorProfile';
-import { pinFolderToIPFS } from '../../helpers/pinata/pinFolderToIPFS';
-import { pinJSONToIPFS } from '../../helpers/pinata/pinJSONToIPFS';
+// todo import { pinFolderToIPFS } from '../../helpers/pinata/pinFolderToIPFS';
+// todo import { pinJSONToIPFS } from '../../helpers/pinata/pinJSONToIPFS';
 import { ethers } from 'ethers';
 import BrandSwap from '../../contracts/BrandSwap.json';
 import { useRecoilValue } from 'recoil';
@@ -111,50 +111,51 @@ const Create = () => {
   }
 
   const handleSubmit = async (e) => {
-    e.preventDefault();
-    // todo バリデーション
-    // if (validateForm()) {
-    setLoading(true);
-    try {
-      const folderRes = await pinFolderToIPFS(selectedFile);
-      if (folderRes.success) {
-        const newJsonInput = {
-          ...jsonInput,
-          image: `ipfs://${ folderRes.files[0].cid }`,
-        };
 
-        const arr = folderRes.files.map((file) => `ipfs://${ file.cid }`);
-        const addSubImage = {...newJsonInput, imageList: arr};
-        const jsonRes = await pinJSONToIPFS(addSubImage);
+    // e.preventDefault();
+    // // todo バリデーション
+    // // if (validateForm()) {
+    // setLoading(true);
+    // try {
+    //   const folderRes = await pinFolderToIPFS(selectedFile);
+    //   if (folderRes.success) {
+    //     const newJsonInput = {
+    //       ...jsonInput,
+    //       image: `ipfs://${ folderRes.files[0].cid }`,
+    //     };
 
-        const {ethereum} = window;
-        const provider = new ethers.providers.Web3Provider(ethereum);
-        const signer = provider.getSigner();
+    //     const arr = folderRes.files.map((file) => `ipfs://${ file.cid }`);
+    //     const addSubImage = {...newJsonInput, imageList: arr};
+    //     const jsonRes = await pinJSONToIPFS(addSubImage);
 
-        const mintContract = new ethers.Contract(
-            BrandSwapAddress,
-            BrandSwap.abi,
-            await signer,
-        );
+    //     const {ethereum} = window;
+    //     const provider = new ethers.providers.Web3Provider(ethereum);
+    //     const signer = provider.getSigner();
 
-        const tx = await mintContract.nftMint(
-            `${ jsonRes.metadata }/metadata.json`);
-        const receipt = await tx.wait();
+    //     const mintContract = new ethers.Contract(
+    //         BrandSwapAddress,
+    //         BrandSwap.abi,
+    //         await signer,
+    //     );
 
-        const tokenId = receipt.events[0].args.tokenId.toString(); // todo トークンIDを取得
+    //     const tx = await mintContract.nftMint(
+    //         `${ jsonRes.metadata }/metadata.json`);
+    //     const receipt = await tx.wait();
 
-        // todo DBに保存
-        console.log({tokenId: tokenId, metadata: jsonRes.metadata});
+    //     const tokenId = receipt.events[0].args.tokenId.toString(); // todo トークンIDを取得
 
-        const balance = await mintContract.balanceOf(signer.getAddress());
-        console.log(`nftBalance: ${ balance.toNumber() }`);
-      }
-    } catch (err) {
-      console.log(err.message);
-      setErrors({submit: err.message});
-    } finally {
-      setLoading(false);
-    }
+    //     // todo DBに保存
+    //     console.log({tokenId: tokenId, metadata: jsonRes.metadata});
+
+    //     const balance = await mintContract.balanceOf(signer.getAddress());
+    //     console.log(`nftBalance: ${ balance.toNumber() }`);
+    //   }
+    // } catch (err) {
+    //   console.log(err.message);
+    //   setErrors({submit: err.message});
+    // } finally {
+    //   setLoading(false);
+    // }
     // }
   };
 
