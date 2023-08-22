@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Api\AuthController;
 use App\Http\Api\ItemRegistrationController;
 use App\Http\Api\UniqueCheckController;
 use Illuminate\Http\Request;
@@ -24,3 +25,4 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 
 Route::post('/creat-item', ItemRegistrationController::class);
 Route::post('/exists-sku', UniqueCheckController::class);
+Route::post('/auth', AuthController::class);
