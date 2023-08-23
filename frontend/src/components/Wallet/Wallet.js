@@ -37,13 +37,31 @@ export default function Wallet() {
     );
     const signature = await signMessageAsync({message});
     console.log('Signature', signature);
-    const res = await axios.post('/api/auth', {
-      signature: signature,
-      message: message,
-      address:  connect.account,
-    });
-    console.log(await res.text());
+    axios.defaults.withCredentials = true;
+    // axios.defaults.baseURL  = 'http://localhost';
+    const csrf = await axios.get(`http://localhost/sanctum/csrf-cookie`);
+    try {
+      const res = await axios.post('http://localhost/api/register', {
+        signature: signature,
+        message: message,
+        address:  connect.account,
+      },{
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        withCredentials: true
+      }
+   );
+      console.log(await res.data);
+    } catch (error) {
+      console.log(error);
+    }
   };
+
+  const click = async () => {
+    const res =  await axios.get('http://localhost/api/user');
+    console.log(await res.data);
+  }
 
   useEffect(() => {
     if (isConnected) {
@@ -53,6 +71,7 @@ export default function Wallet() {
 
   return (
       <section className="wallet-connect-area">
+        <button onClick={click}>test</button>
         <div className="container">
           <div className="row justify-content-center">
             <div className="col-12 col-md-8 col-lg-7">
