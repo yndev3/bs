@@ -2,21 +2,19 @@ import React, { useEffect } from 'react';
 import WalletCard from './WalletCard';
 import { useAccount, useConnect, useDisconnect, useSignMessage } from 'wagmi';
 import { toMessage } from '../SignIn/toMessage';
+import { useWeb3Modal } from '@web3modal/react'
+import { fetchFromApi } from '../../utils/fetchFromApi';
 import axios from 'axios';
 
 const domain = window.location.host;
 const origin = window.location.origin;
 axios.defaults.withCredentials = true;
-const BASE_URL = 'http://localhost';
 export default function Wallet() {
   const {connectAsync, connectors, error} = useConnect();
   const {isConnected, isDisconnected} = useAccount();
   const {disconnect} = useDisconnect();
-  const {signMessageAsync} = useSignMessage({
-    onError(error) {
-      console.log('Error', error);
-    },
-  });
+  const {signMessageAsync} = useSignMessage();
+  const { open, close } = useWeb3Modal();
 
   const createSiweMessage = (address, chainId, statement, nonce, issuedAt) => {
     return toMessage({
@@ -31,32 +29,10 @@ export default function Wallet() {
     });
   };
 
-  const fetchFromApi = async (
-      endpoint, method = 'GET', data = null, headers = {}) => {
-    const config = {
-      method,
-      url: `${ BASE_URL }${ endpoint }`,
-      headers: {
-        'Content-Type': 'application/json',
-        ...headers,
-      },
-      withCredentials: true,
-      data,
-    };
 
-    try {
-      const response = await axios(config);
-      return response.data;
-    } catch (error) {
-      if (error.response && error.response.status === 401) {
-        disconnect();
-      }
-      console.error('API Error:', error);
-      throw error;
-    }
-  };
 
   const handleConnect = async (connector) => {
+    try {
     const connect = await connectAsync({connector});
     const {statement, nonce, issuedAt} = await fetchFromApi('/api/statement');
 
@@ -70,6 +46,7 @@ export default function Wallet() {
 
     const signature = await signMessageAsync({message});
 
+    // to set the CSRF cookie for Laravel Sanctum
     await fetchFromApi('/sanctum/csrf-cookie');
 
     const payload = {
@@ -80,43 +57,27 @@ export default function Wallet() {
       issuedAt,
     };
 
-    const responseData = await fetchFromApi('/api/login', 'POST', payload);
-    console.log(responseData);
-  };
-
-  const handleDisconnect = async () => {
-    await fetchFromApi('/sanctum/csrf-cookie');
-    await fetchFromApi('/api/logout', 'POST');
-    deleteAllCookies();
-    disconnect();
-  };
-
-  function deleteAllCookies() {
-    const cookies = document.cookie.split(';');
-    for (let i = 0; i < cookies.length; i++) {
-      const cookie = cookies[i];
-      const eqPos = cookie.indexOf('=');
-      const name = eqPos > -1 ? cookie.substr(0, eqPos) : cookie;
-      document.cookie = name + '=;max-age=0';
+      const responseData = await fetchFromApi('/api/login', 'POST', payload);
+      console.log(responseData);
+    } catch (error) {
+      console.error('Error during connection:', error);
+      disconnect();
     }
-  }
+  };
 
   const click = async () => {
     try {
       const res = await fetchFromApi('/api/user');
-      console.log(await res.data);
+      console.log(res);
     } catch (e) {
       console.log(e);
+      disconnect();
     }
-
   };
 
   useEffect(() => {
     if (isConnected) {
       console.log('Connected');
-    }
-    if (isDisconnected) {
-      console.log('Disconnected');
     }
   }, [isConnected, isDisconnected]);
 
@@ -140,8 +101,10 @@ export default function Wallet() {
                             img={ `/img/${ connector.id }.svg` }
                             content=""
                             onClick={ !isConnected
-                                ? () => handleConnect(connector)
-                                : () => handleDisconnect() }
+                                ?  connector.id !== 'walletConnect'
+                                    ? () => handleConnect(connector)
+                                    : () => open()
+                                : () => disconnect() }
                             buttonText={ !isConnected
                                 ? 'Connect'
                                 : 'Disconnect' }
