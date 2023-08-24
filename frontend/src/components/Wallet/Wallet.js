@@ -1,48 +1,78 @@
 import React, { useEffect } from 'react';
 import WalletCard from './WalletCard';
-import { useAccount, useConnect, useDisconnect, useSignMessage } from 'wagmi'
+import { useAccount, useConnect, useDisconnect, useSignMessage } from 'wagmi';
 import { toMessage } from '../SignIn/toMessage';
-import axios  from 'axios';
+import { useWeb3Modal } from '@web3modal/react'
+import { fetchFromApi } from '../../utils/fetchFromApi';
+import axios from 'axios';
 
 const domain = window.location.host;
 const origin = window.location.origin;
-
+axios.defaults.withCredentials = true;
 export default function Wallet() {
-  const { connectAsync, connectors, error } = useConnect()
-  const {isConnected , isDisconnected } = useAccount();
-  const { disconnect } = useDisconnect()
-  const { signMessageAsync } = useSignMessage({
-    onError(error) {
-      console.log('Error', error)
-    },
-  })
+  const {connectAsync, connectors, error} = useConnect();
+  const {isConnected, isDisconnected} = useAccount();
+  const {disconnect} = useDisconnect();
+  const {signMessageAsync} = useSignMessage();
+  const { open, close } = useWeb3Modal();
 
-  const createSiweMessage  =  (address, chainId, statement) => {
+  const createSiweMessage = (address, chainId, statement, nonce, issuedAt) => {
     return toMessage({
       domain,
       address,
       statement,
       uri: origin,
       version: '1',
-      chainId: chainId
+      chainId: chainId,
+      nonce,
+      issuedAt,
     });
-  }
+  };
+
+
 
   const handleConnect = async (connector) => {
+    try {
     const connect = await connectAsync({connector});
+    const {statement, nonce, issuedAt} = await fetchFromApi('/api/statement');
+
     const message = createSiweMessage(
         connect.account,
         connect.chain.id,
-        'Sign in with Ethereum to the app.'
+        statement,
+        nonce,
+        issuedAt,
     );
+
     const signature = await signMessageAsync({message});
-    console.log('Signature', signature);
-    const res = await axios.post('/api/auth', {
-      signature: signature,
-      message: message,
-      address:  connect.account,
-    });
-    console.log(await res.text());
+
+    // to set the CSRF cookie for Laravel Sanctum
+    await fetchFromApi('/sanctum/csrf-cookie');
+
+    const payload = {
+      signature,
+      message,
+      address: connect.account,
+      nonce,
+      issuedAt,
+    };
+
+      const responseData = await fetchFromApi('/api/login', 'POST', payload);
+      console.log(responseData);
+    } catch (error) {
+      console.error('Error during connection:', error);
+      disconnect();
+    }
+  };
+
+  const click = async () => {
+    try {
+      const res = await fetchFromApi('/api/user');
+      console.log(res);
+    } catch (e) {
+      console.log(e);
+      disconnect();
+    }
   };
 
   useEffect(() => {
@@ -53,6 +83,7 @@ export default function Wallet() {
 
   return (
       <section className="wallet-connect-area">
+        <button onClick={ click }>test</button>
         <div className="container">
           <div className="row justify-content-center">
             <div className="col-12 col-md-8 col-lg-7">
@@ -63,20 +94,22 @@ export default function Wallet() {
               </div>
             </div>
           </div>
-          {error && <div className={"text-danger"}>{error.message}</div>}
+          { error && <div className={ 'text-danger' }>{ error.message }</div> }
           <div className="row justify-content-center items">
-            {connectors.map((connector) => (
-                <WalletCard title={connector.name}
-                            img={ `/img/${connector.id}.svg` }
+            { connectors.map((connector) => (
+                <WalletCard title={ connector.name }
+                            img={ `/img/${ connector.id }.svg` }
                             content=""
                             onClick={ !isConnected
-                                ? () => handleConnect(connector)
+                                ?  connector.id !== 'walletConnect'
+                                    ? () => handleConnect(connector)
+                                    : () => open()
                                 : () => disconnect() }
                             buttonText={ !isConnected
                                 ? 'Connect'
                                 : 'Disconnect' }
                 />
-            ))}
+            )) }
           </div>
         </div>
       </section>
