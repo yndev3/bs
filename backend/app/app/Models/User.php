@@ -42,4 +42,9 @@ class User extends Authenticatable
     {
         return $request->only('address');
     }
+
+    public function products(): \Illuminate\Database\Eloquent\Relations\BelongsToMany
+    {
+        return $this->belongsToMany(Product::class);
+    }
 }

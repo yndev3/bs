@@ -34,6 +34,11 @@ class Product extends Model
         return $this->hasMany(JewelryOption::class);
     }
 
+    public function users(): \Illuminate\Database\Eloquent\Relations\BelongsToMany
+    {
+        return $this->belongsToMany(User::class);
+    }
+
     public function productCreate($tokenId, $metaData)
     {
         $product = $this->create([
