@@ -29,6 +29,7 @@ return new class extends Migration
             $table->string('size')->nullable();
             $table->string('accessories')->nullable();
             $table->boolean('is_sale')->default(false);
+            $table->boolean('is_burn')->default(false);
             $table->text('note')->nullable();
             $table->timestamps();
         });
