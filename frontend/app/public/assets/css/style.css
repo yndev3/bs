@@ -1352,6 +1352,10 @@ header .navbar-expand .navbar-nav .dropdown-menu .nav-link:not(.btn):not(.title)
   color: var(--primary-color);
 }
 
+header .navbar-expand .navbar-nav .dropdown-menu li a {
+  text-decoration: none;
+}
+
 header .navbar-expand .navbar-nav i.icon-arrow-down {
   position: relative;
   top: 1.5px;
@@ -2065,9 +2069,23 @@ padding: 100px 0 140px !important;
   border-radius: 8px;
   background-color: #191919;
 }
+
+.explore-area .card {
+  min-height: 508px;
+}
+
+.explore-area .min-h {
+  min-height: 581px;
+}
+
 .explore-area .card .card-body a h5 {
   -webkit-transition: 0.3s;
   transition: 0.3s;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  white-space: normal !important;
+  font-size: 0.9rem;
 }
 
 .explore-area .card .card-body a:hover h5 {

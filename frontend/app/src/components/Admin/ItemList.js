@@ -78,14 +78,14 @@ export default function StickyHeadTable() {
     setSearchValue(event.target.value);
   };
 
-  // フィルタリングされた行を取得
+  // todo フィルタリングされた行を取得
   const filteredRows = rows.filter((row) =>
     row.name.toLowerCase().includes(searchValue.toLowerCase())
   );
 
   const darkTheme = createTheme({
     palette: {
-      type: 'dark', // ダークモードを有効にする
+      type: 'dark', // todo ダークモードを有効にする
     },
   });
 

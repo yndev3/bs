@@ -3,6 +3,7 @@ import WalletAddress from './WalletAddress';
 import { useRecoilValue } from 'recoil';
 import { walletAddressAtom } from '../../atoms/WalletAddressAtom';
 import { NavLink } from 'react-router-dom';
+import Profile from './Profile';
 
 
 const Header = () => {
@@ -51,6 +52,8 @@ const Header = () => {
                             </a>
                         </li>
                     </ul>
+                    {/* User Info */}
+                    <Profile />
                     {/* Navbar Toggler */}
                     <ul className="navbar-nav toggle">
                         <li className="nav-item">
