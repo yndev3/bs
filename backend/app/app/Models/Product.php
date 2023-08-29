@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -18,6 +19,18 @@ class Product extends Model
      */
     protected $guarded = [];
 
+
+    protected static function boot()
+    {
+        parent::boot();
+        static::addGlobalScope('is_sale', function ($query) {
+            $query->where('is_sale', true);
+        });
+        static::addGlobalScope('is_burn', function ($query) {
+            $query->where('is_burn', false);
+        });
+
+    }
 
     public function watchOptions(): \Illuminate\Database\Eloquent\Relations\HasMany
     {
@@ -83,5 +96,21 @@ class Product extends Model
                 };
             }
         );
+    }
+
+    public function scopeCategory(Builder $query, $category = null)
+    {
+        if (!is_null($category)) {
+            return $query->where('category', $category);
+        }
+        return $query;
+    }
+
+    public function scopeBrand(Builder $query, $brand = null)
+    {
+        if (!is_null($brand)) {
+            return $query->where('brand', $brand);
+        }
+        return $query;
     }
 }
