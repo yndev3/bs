@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 import WalletCard from './WalletCard';
 import { useAccount, useConnect, useDisconnect, useSignMessage } from 'wagmi';
 import { toMessage } from '../SignIn/toMessage';
-import { useWeb3Modal } from '@web3modal/react'
+import { useWeb3Modal } from '@web3modal/react';
 import { fetchFromApi } from '../../utils/fetchFromApi';
 import axios from 'axios';
 
@@ -14,7 +14,7 @@ export default function Wallet() {
   const {isConnected, isDisconnected} = useAccount();
   const {disconnect} = useDisconnect();
   const {signMessageAsync} = useSignMessage();
-  const { open, close } = useWeb3Modal();
+  const {open, close} = useWeb3Modal();
 
   const createSiweMessage = (address, chainId, statement, nonce, issuedAt) => {
     return toMessage({
@@ -29,35 +29,38 @@ export default function Wallet() {
     });
   };
 
-
-
   const handleConnect = async (connector) => {
     try {
-    const connect = await connectAsync({connector});
-    const {statement, nonce, issuedAt} = await fetchFromApi('/api/statement');
+      const connect = await connectAsync({connector});
+      const {statement, nonce, issuedAt} = await fetchFromApi(
+          {endpoint: '/api/statement'});
 
-    const message = createSiweMessage(
-        connect.account,
-        connect.chain.id,
-        statement,
+      const message = createSiweMessage(
+          connect.account,
+          connect.chain.id,
+          statement,
+          nonce,
+          issuedAt,
+      );
+
+      const signature = await signMessageAsync({message});
+
+      // to set the CSRF cookie for Laravel Sanctum
+      await fetchFromApi({endpoint: '/sanctum/csrf-cookie'});
+
+      const payload = {
+        signature,
+        message,
+        address: connect.account,
         nonce,
         issuedAt,
-    );
+      };
 
-    const signature = await signMessageAsync({message});
-
-    // to set the CSRF cookie for Laravel Sanctum
-    await fetchFromApi('/sanctum/csrf-cookie');
-
-    const payload = {
-      signature,
-      message,
-      address: connect.account,
-      nonce,
-      issuedAt,
-    };
-
-      const responseData = await fetchFromApi('/api/login', 'POST', payload);
+      const responseData = await fetchFromApi({
+        endpoint: '/api/login',
+        method: 'POST',
+        data: payload,
+      });
       console.log(responseData);
     } catch (error) {
       console.error('Error during connection:', error);
@@ -101,7 +104,7 @@ export default function Wallet() {
                             img={ `/img/${ connector.id }.svg` }
                             content=""
                             onClick={ !isConnected
-                                ?  connector.id !== 'walletConnect'
+                                ? connector.id !== 'walletConnect'
                                     ? () => handleConnect(connector)
                                     : () => open()
                                 : () => disconnect() }

@@ -8,7 +8,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 
-readonly class ItemRegistrationController
+final class ItemRegistrationController
 {
 
     public function __construct(private Product $product)
