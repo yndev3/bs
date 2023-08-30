@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { fetchFromApi } from '../../utils/fetchFromApi';
 import Card from '../Item/Card';
-import axios from 'axios';
 
 const ExploreWatches = (props) => {
   const [products, setProducts] = useState([]);
