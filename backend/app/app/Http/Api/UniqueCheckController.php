@@ -5,7 +5,7 @@ namespace App\Http\Api;
 use App\Models\Product;
 use Illuminate\Http\Request;
 
-readonly class UniqueCheckController
+final class UniqueCheckController
 {
 
     public function __construct(private Product $product)
