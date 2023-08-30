@@ -13,7 +13,7 @@ class ItemDetails extends Component {
         return (
             <div className="main">
                 <Header />
-                <Breadcrumb title="Item Details" subpage="商品名"/>
+                <Breadcrumb title="Item Details" subpage="ItemName"/>
                 <ItemDetail />
                 <Footer />
                 <ModalSearch />

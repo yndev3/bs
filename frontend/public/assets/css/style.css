@@ -580,6 +580,11 @@ section.no-hero {
   padding: 150px 0 130px;
 }
 
+section.admin-crump {
+  padding: 65px 0;
+}
+
+
 section#slider:not(.bg-inherit) {
   background-color: var(--hero-bg-color);
 }
@@ -1196,6 +1201,10 @@ aside {
   background-color: var(--white-color);
 }
 
+.breadcrumb-admin-area {
+  background: blue ;
+}
+
 .breadcrumb-area {
   background: rgba(0, 0, 0, 0) url("/img/inner_bg.jpg") no-repeat scroll bottom center/cover;
 }
@@ -1341,6 +1350,10 @@ header .navbar-expand .navbar-nav .dropdown-menu .nav-link:not(.btn) {
 
 header .navbar-expand .navbar-nav .dropdown-menu .nav-link:not(.btn):not(.title):hover {
   color: var(--primary-color);
+}
+
+header .navbar-expand .navbar-nav .dropdown-menu li a {
+  text-decoration: none;
 }
 
 header .navbar-expand .navbar-nav i.icon-arrow-down {
@@ -2050,10 +2063,29 @@ padding: 100px 0 140px !important;
   -moz-background-clip: text;
   background-clip: text;
 }
+.explore-area .sort-card {
+  padding: 1.5rem;
+  border: none;
+  border-radius: 8px;
+  background-color: #191919;
+}
+
+.explore-area .card {
+  min-height: 508px;
+}
+
+.explore-area .min-h {
+  min-height: 581px;
+}
 
 .explore-area .card .card-body a h5 {
   -webkit-transition: 0.3s;
   transition: 0.3s;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  white-space: normal !important;
+  font-size: 0.9rem;
 }
 
 .explore-area .card .card-body a:hover h5 {
@@ -2243,6 +2275,14 @@ padding: 100px 0 140px !important;
 .author-area .card .card-body .input-group {
   position: relative;
   z-index: 1;
+}
+
+.admin-form input,textarea,select {
+  color: rgb(255, 255, 255) !important;
+}
+
+.admin-form ::placeholder {
+  color: rgb(53, 53, 56) !important;
 }
 
 .author-area .card .card-body .input-group .form-control {
