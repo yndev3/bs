@@ -6,6 +6,7 @@ import useMintSubmit from '../../hooks/useMintSubmit';
 import { useAccount, useContractEvent } from 'wagmi';
 import axios  from 'axios';
 import _ from 'lodash';
+import { Splide, SplideSlide } from '@splidejs/react-splide';
 
 const initialJsonInput = {
   name: '',
@@ -167,21 +168,18 @@ const Create = () => {
 
   return (
       <>
-        <section className="author-area">
+        <section className="author-area admin-form">
           <div className="container">
-            <div className="row justify-content-between">
-              <div className="col-12 col-md-4">
-                {/* Author Profile */ }
-                <AuthorProfile/>
+          <div className="intro mt-5 mt-lg-0 mb-4 mb-lg-5">
+            <div className="col-12 col-md-8">
+              <div className="intro-content">
+                <span>Get Started</span>
+                <h3 className="mt-3 mb-0">Create Item</h3>
               </div>
-              <div className="col-12 col-md-7">
-                {/* Intro */ }
-                <div className="intro mt-5 mt-lg-0 mb-4 mb-lg-5">
-                  <div className="intro-content">
-                    <span>Get Started</span>
-                    <h3 className="mt-3 mb-0">Create Item</h3>
-                  </div>
-                </div>
+            </div>
+            </div>
+            <div className="row justify-content-between">
+              <div className="col-12 col-md-8">
                 {/* Item Form */ }
                 <form className="item-form card no-hover"
                       onSubmit={ (e) =>
@@ -189,18 +187,22 @@ const Create = () => {
                   <div className="row">
                     <div className="col-12">
                       <div className="input-group form-group">
-                        <div className="custom-file">
-                          <input type="file" className="custom-file-input"
-                                 id="inputGroupFile01"
-                                 name="image"
-                                 multiple={ true }
-                                 onChange={ (e) => setSelectedFile(
-                                     e.target.files) }/>
+                        <div className="custom-files">
+                          <input
+                            type="file"
+                            id="inputGroupFile01"
+                            multiple={true}
+                            onChange={(e) => {
+                              setSelectedFile(e.target.files);
+                            }}
+                          />
                           <label className="custom-file-label"
                                  htmlFor="inputGroupFile01">
-                            Choose file
+                            Choose file<span
+                            className="text-danger">*</span>
                           </label>
                         </div>
+
                       </div>
                       { validationErrors.image &&
                           <p>{ validationErrors.image }</p> }
@@ -363,6 +365,27 @@ const Create = () => {
                     </div>
                   </div>
                 </form>
+              </div>
+              {/* Item Image */ }
+              <div className="col-12 col-md-4">
+                <div className="card no-hover">
+                  <div className="form-group">
+                    <label htmlFor="size" className="mb-1">Preview<span className="text-danger"> *</span></label>
+                  </div>
+                  <div id="image-preview" className="text-center">
+                  {
+                  selectedFile && selectedFile.length > 0 ? (
+                      <Splide aria-label="itemImg">
+                        { Array.from(selectedFile).map((image, key) => (
+                            <SplideSlide key={ key }>
+                              <img src={ URL.createObjectURL(image) } alt={ `item_${ key }_image` }/>
+                            </SplideSlide>
+                        ))}
+                      </Splide>
+                    ) : <img src="../img/item_images.jpg" />
+                    }
+                  </div>
+                </div>
               </div>
             </div>
           </div>

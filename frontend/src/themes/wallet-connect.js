@@ -8,8 +8,8 @@ import ModalSearch from '../components/Modal/ModalSearch';
 import ModalMenu from '../components/Modal/ModalMenu';
 import Scrollup from '../components/Scrollup/Scrollup';
 
-class WalletConnect extends Component {
-    render() {
+
+export default function WalletConnect() {
         return (
             <div className="main">
                 <Header />
@@ -21,7 +21,5 @@ class WalletConnect extends Component {
                 <Scrollup />
             </div>
         );
-    }
 }
 
-export default WalletConnect;
