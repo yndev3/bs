@@ -45,7 +45,7 @@ const initialMaterialFormInput = {
 }
 
 const Create = () => {
-  const BrandSwapAddress = process.env.REACT_APP_BRANDSWAP_ADDRESS;
+  const BrandSwapAddress = import.meta.env.VITE_BRANDSWAP_ADDRESS;
   const {address, isConnected} = useAccount();
   const [loading, setLoading] = useState(false);
   const [selectedFile, setSelectedFile] = useState('');
