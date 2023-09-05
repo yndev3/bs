@@ -16,6 +16,8 @@ class DatabaseSeeder extends Seeder
             ProductSeeder::class,
             UserSeeder::class,
             UserProductSeeder::class,
+            CountrySeeder::class,
+            StoreSeeder::class,
         ]);
     }
 }
