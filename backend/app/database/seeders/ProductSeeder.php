@@ -35,8 +35,8 @@ class ProductSeeder extends Seeder
                 'material' => $faker->randomElement(['Metal', 'Leather', 'Plastic']),
                 'size' => $faker->randomElement(['Small', 'Medium', 'Large']),
                 'accessories' => $faker->word,
-                'is_sale' => $faker->boolean,
-                'is_burn' => $faker->boolean,
+                'is_sale' => true,
+                'is_burn' => false,
                 'note' => $faker->text(50)
             ]);
 

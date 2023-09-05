@@ -49,7 +49,7 @@ class Product extends Model
 
     public function users(): \Illuminate\Database\Eloquent\Relations\BelongsToMany
     {
-        return $this->belongsToMany(User::class);
+        return $this->belongsToMany(User::class, 'user_product');
     }
 
     public function productCreate($tokenId, $metaData)
