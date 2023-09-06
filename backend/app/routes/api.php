@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Api\AuthController;
+use App\Http\Api\ItemController;
 use App\Http\Api\ItemRegistrationController;
 use App\Http\Api\StoreController;
 use App\Http\Api\UniqueCheckController;
@@ -30,6 +31,7 @@ Route::post('/creat-item', ItemRegistrationController::class);
 // All
 Route::get('/item-page', [ItemListController::class, 'withPagination']);
 Route::get('/item-limit', [ItemListController::class, 'withLimit']);
+Route::get('/item', [ItemController::class, 'getProductByTokenId']);
 // fetchRegisteredStores
 Route::get('/stores', StoreController::class);
 
