@@ -7,6 +7,13 @@ export const fetchFromApi = async ({
   headers = {},
   params = null,
 }) => {
+
+  if (method === 'POST') {
+    await fetchFromApi({
+      endpoint: '/sanctum/csrf-cookie'
+    });
+  }
+
   const config = {
     method,
     url: `${ process.env.REACT_APP_BASE_URL }${ endpoint }`,
