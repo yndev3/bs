@@ -457,7 +457,7 @@ input, textarea, select {
 
 input {
     border-color: var(--primary-p-color);
-    color: var(--primary-p-color);
+    color: var(--white-color);
     &:focus {
         border-color: var(--primary-t-color);
         color: var(--primary-t-color);
@@ -489,7 +489,7 @@ textarea {
     height: 100px;
     resize: none;
     border-color: var(--primary-p-color);
-    color: var(--primary-t-color);
+    color: var(--white-color);
     &:focus {
         border-color: var(--primary-t-color);
         color: var(--primary-t-color);

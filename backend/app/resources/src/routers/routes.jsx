@@ -16,6 +16,7 @@ import AdminItemDetails from '../themes/admin-item-details';
 import AdminItemList from '../themes/admin-item-list';
 import Account from '../themes/account';
 
+
 const MyRouts = () => {
   return (
       <>
@@ -36,6 +37,7 @@ const MyRouts = () => {
             <Route exact path="/admin/itemlist" component={ AdminItemList }/>
 
             <Route exact path="/account" component={ Account }/>
+
           </Switch>
         </Router>
       </>

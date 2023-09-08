@@ -7,6 +7,7 @@ import Footer from '../components/Footer/Footer';
 import ModalSearch from '../components/Modal/ModalSearch';
 import ModalMenu from '../components/Modal/ModalMenu';
 import Scrollup from '../components/Scrollup/Scrollup';
+import ModalReserves from '../components/Modal/ModalReserves';
 
 const initData = {
     heading: "My Item Collection",
@@ -55,6 +56,7 @@ class ExploreOne extends Component {
                 <Footer />
                 <ModalSearch />
                 <ModalMenu />
+                <ModalReserves />
                 <Scrollup />
             </div>
         );
