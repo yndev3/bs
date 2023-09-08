@@ -31,13 +31,16 @@ const Card = (props) => {
                   <span>Brand by</span>
                   <h6 className="mb-0">{ item.brand }</h6>
                 </div>
-                <div className="card-bottom text-right">
-                  <span className="">{ item.price } USDT</span>
+                <div className="card-bottom d-flex justify-content-between">
+                    <span>{item.price} USDT</span>
+                    <span>1 of 1</span>
                 </div>
                 <div className="col-12 text-center mt-2">
+
                   <a className="btn btn-bordered-white btn-smaller mt-3"
                      href={ `/item-details/${ item.id }` }>
-                    <i className="icon-handbag mr-2"/>Show
+                      <i class="fa fa-arrow-circle-right mr-2" aria-hidden="true"></i>
+                     ItemDetail
                   </a>
                 </div>
               </div>

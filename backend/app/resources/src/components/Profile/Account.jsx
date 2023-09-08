@@ -54,7 +54,7 @@ class Account extends Component {
                                                 </div>
 
                                                 <div className="col-12 text-center mt-2">
-                                                    <a className="btn btn-bordered-white btn-smaller mt-3" href="/login"><i className="icon-handbag mr-2" />Reserve Now</a>
+                                                    <a className="btn btn-bordered-white btn-smaller mt-3" href="#" data-toggle="modal" data-target="#reserves"><i className="icon-handbag mr-2" />Reserve Now</a>
                                                 </div>
                                             </div>
                                         </div>
