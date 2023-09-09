@@ -47,7 +47,7 @@ function AccountApp() {
         <div className="main">
             <Header />
             <Breadcrumb title="My Account" subpage="My Account" page="My Account" />
-            <Account initData={initData} />
+            <Account initData={initData} data={data} />
             <Footer />
             <ModalSearch />
             <ModalMenu />

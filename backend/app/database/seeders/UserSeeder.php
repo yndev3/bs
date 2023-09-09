@@ -20,6 +20,7 @@ class UserSeeder extends Seeder
         $preset_addresses = [
             '0xD38Eb334caC02650c1Dc01f6f98b78dbdFAC7A67',
             // 他のプリセットアドレス
+            '0xF5255246E7BDEBA1CfAE3710Fd0d0a0e6f6FE3AC',
         ];
 
         // プリセットのアドレスを挿入

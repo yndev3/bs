@@ -1,7 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useLocation } from 'react-router-dom';
 import { fetchFromApi } from '../../utils/fetchFromApi';
-import { useAccount, useConnect, useDisconnect, useSignMessage } from 'wagmi';
 
 const initData = {
     menuName: "Reserves Now",
@@ -13,23 +11,7 @@ const initData = {
     btnText: "Confirm"
 };
 
-const shopOptions = [
-    {
-        value: "",
-        label: "--Please choose an option--",
-    },
-    {
-        value: "Dubai--XXX ShopName XXX",
-        label: "Dubai--XXX ShopName XXX",
-    },
-    {
-        value: "国--ショップ名",
-        label: "国--ショップ名",
-    }, 
-];
-
 const ModalReserve = ({ selectedItem }) => {
-    const { disconnect } = useDisconnect();
     const [data, setData] = useState(initData);
     const [isFormSubmitted, setIsFormSubmitted] = useState(false);
     const [isCompleted, setIsCompleted] = useState(false);
@@ -56,9 +38,15 @@ const ModalReserve = ({ selectedItem }) => {
     const handleTelegramChange = (e) => {
         setTelegram(e.target.value);
     }
+    const [selectedOptionName, setSelectedOptionName] = useState("");
     const handleSelectChange = (e) => {
         setSelectedOption(e.target.value);
-    }
+        const selectedStore = storeOptions.find(store => store.id.toString() === e.target.value);
+        if (selectedStore) {
+            setSelectedOptionName(`${selectedStore.country.name}--${selectedStore.name}`);
+        }
+    };
+    
     const handleFormSubmit = async (e) => {
         e.preventDefault();
         setIsFormSubmitted(true);
@@ -66,6 +54,20 @@ const ModalReserve = ({ selectedItem }) => {
     const handleBackButtonClick = () => {
         setIsFormSubmitted(false);
     }
+    
+    const [storeOptions, setStoreOptions] = useState([]);
+
+    useEffect(() => {
+        fetchFromApi({
+          endpoint: '/api/stores'
+        })
+        .then((data) => {
+          setStoreOptions(data);
+        })
+        .catch(error => {
+          console.error('Error fetching data:', error);
+        });
+    }, []);
 
     const handleCompleteButtonClick = async () => {
         try {
@@ -110,7 +112,7 @@ const ModalReserve = ({ selectedItem }) => {
                                     <p><span className='white'>Name:</span> {name}</p>
                                     <p><span className='white'>Email:</span> {email}</p>
                                     <p><span className='white'>Telegram:</span> {telegram}</p>
-                                    <p><span className='white'>Exchange Store:</span> {selectedOption}</p>
+                                    <p><span className='white'>Exchange Store:</span> {selectedOptionName}</p>
                                     <button className="btn btn-bordered-white mt-3" onClick={handleBackButtonClick}>Back</button>
                                     <button className="btn btn-bordered-white mt-3" onClick={handleCompleteButtonClick}>Submit</button>
                                 </div>
@@ -145,6 +147,7 @@ const ModalReserve = ({ selectedItem }) => {
                                                 required
                                                 value={name}
                                                 onChange={handleNameChange}
+                                                pattern="[A-Za-z0-9-_,.]+"
                                             />
                                         </label>
                                         <label className='pb-3'>E-Mail:
@@ -167,6 +170,7 @@ const ModalReserve = ({ selectedItem }) => {
                                                 required
                                                 value={telegram}
                                                 onChange={handleTelegramChange}
+                                                pattern="[A-Za-z0-9-_,.]+"
                                             />
                                         </label>
                                     </div>
@@ -176,17 +180,20 @@ const ModalReserve = ({ selectedItem }) => {
                                         <span className='mb-1'><u>Please enter your information.</u></span>
                                         <label className='pb-3'>Exchange Store:
                                         <select
-                                                name="shop"
-                                                id="shop-select"
-                                                className='reserves'
-                                                required
-                                                value={selectedOption}
-                                                onChange={handleSelectChange}
-                                            >
-                                                {shopOptions.map((option) => (
-                                                    <option key={option.value} value={option.value}>{option.label}</option>
-                                                ))}
-                                            </select>
+                                            name="shop"
+                                            id="shop-select"
+                                            className='reserves'
+                                            required
+                                            value={selectedOption}
+                                            onChange={handleSelectChange}
+                                        >
+                                            <option value="" disabled>--Please choose an option--</option>
+                                            {storeOptions.map((store) => (
+                                                <option key={store.id} value={store.id}>
+                                                    {store.country.name}--{store.name}
+                                                </option>
+                                            ))}
+                                        </select>
                                         </label>
                                     </div>
                                 </div>
