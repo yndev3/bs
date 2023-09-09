@@ -5,7 +5,6 @@ import ModalReserve from '../Modal/ModalReserves';
 const Account = ({ initData, data }) => {
     const [selectedItem, setSelectedItem] = useState({ id: "", title: "" });
 
-    // todo 選択されたアイテムが変更されたときに、selectedItemを更新する関数
     const handleItemSelected = (id, title) => {
     setSelectedItem({ id, title });
     };
