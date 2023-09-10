@@ -75,7 +75,7 @@ const ModalReserve = ({ selectedItem }) => {
                 endpoint: '/api/create-booking',
                 method: 'POST',
                 data: {
-                    nft_id: data.itemId, 
+                    token_id: data.itemId, 
                     name: name,
                     email: email,
                     tg: telegram,
