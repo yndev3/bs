@@ -22,13 +22,17 @@ class CreateBooking extends Mailable
     public function __construct(
         public readonly Authenticatable $user,
         public readonly Store $store,
-        public readonly Product $product
+        public readonly Product $product,
+        public readonly string $name,
+        public readonly string $tg,
     )
     {
         Log::debug('CreateBooking::__construct');
         Log::debug($user);
         Log::debug($store);
         Log::debug($product);
+        Log::debug($name);
+        Log::debug($tg);
     }
 
     /**

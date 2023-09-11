@@ -3,6 +3,7 @@
 namespace app\Http\Api;
 
 use App\Mail\CreateBooking;
+use App\Models\Product;
 use App\Models\Store;
 use Carbon\Carbon;
 use Illuminate\Http\JsonResponse;
@@ -37,11 +38,21 @@ final class UserController
     {
         // create booking
         $user = Auth::user();
+        $name = $request->input('name');
+        $email = $user->email ?? $request->input('email');
+        $tg = $request->input('tg') ?? '' ; // telegram
+        $tokenId = $request->input('token_id'); // NFTのID
+        $storeId = $request->input('store_id');
         // 店舗
-        $store = Store::findOrFail($request->input('store_id'));
+        $store = Store::findOrFail($storeId);
         $dateThreshold = Carbon::now()->subDays(90);
-        $product = $user->products()->findOrFail($request->input('product_id'));
-        $updatedAt = new Carbon($product->pivot->updated_at);
+
+        // fetch product by token_id with user
+        $product = Product::query()
+            ->where('token_id', $tokenId)
+            ->first();
+         // 商品の取得した日付をどうやって保持するか
+        $updatedAt = new Carbon($product->last_hold_at);
         if ($updatedAt->lt($dateThreshold)) {
             // 商品は所有から30日以上経過している必要がある
             return response()->json([
@@ -49,12 +60,10 @@ final class UserController
             ], 403);
         }
 
-        $email = $user->email ?? $request->input('email');
-
         // 予約内容をメールで送信
         Mail::to($email)
             ->cc($email)
-            ->send(new CreateBooking($user, $store, $product));
+            ->send(new CreateBooking($user, $store, $product, $name, $tg));
 
         return response()->json([
             'product' => $product,

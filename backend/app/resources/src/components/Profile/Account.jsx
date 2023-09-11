@@ -1,72 +1,78 @@
-import React, { Component } from 'react';
+import React, { useState, useEffect } from 'react';
+import { fetchFromApi } from '../../utils/fetchFromApi';
+import ModalReserve from '../Modal/ModalReserves';
+import NFTCard from '../Profile/Card';
 
+const Account = ({ initData, data }) => {
+    const [selectedItem, setSelectedItem] = useState({ id: "", title: "" });
 
+    const handleItemSelected = (id, title) => {
+        setSelectedItem({ id, title });
+    };
 
-class Account extends Component {
-    render() {
-        const { initData, data } = this.props;
-        
-        return (
-            <section className="explore-area">
-                <div className="container">
-                    <div className="row justify-content-center">
-                        <div className="col-12">
-                            {/* Intro */}
-                            <div className="intro mb-4">
-                                <div className="intro-content">
-                                    <span>NFT Assets</span>
-                                    <h3 className="mt-3 mb-0 silver-color">{initData.heading}</h3>
-                                </div>
+    const [products, setProducts] = useState([]); 
+
+    useEffect(() => {
+        fetchFromApi({
+            endpoint: '/api/user-nft-list'
+        })
+        .then((data) => {
+            console.log("API returned data:", data);  
+            setProducts(data); 
+        })
+        .catch(error => {
+            console.error('Error fetching data:', error);
+        });
+    }, []);
+
+    const calculateCountdown = (targetDate) => {
+        const currentDate = new Date();
+        const timeDiff = targetDate - currentDate;
+        const days = Math.floor(timeDiff / (1000 * 60 * 60 * 24));
+        const hours = Math.floor((timeDiff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+        const minutes = Math.floor((timeDiff % (1000 * 60 * 60)) / (1000 * 60));
+        const seconds = Math.floor((timeDiff % (1000 * 60)) / 1000);
+        return `${days} days ${hours} hrs ${minutes} mins ${seconds} secs remaining`;
+    }
+
+    const [countdown, setCountdown] = useState('');
+
+    useEffect(() => {
+        const targetDate = new Date();
+        targetDate.setDate(targetDate.getDate() + 90);
+
+        const timer = setInterval(() => {
+            const newCountdown = calculateCountdown(targetDate);
+            setCountdown(newCountdown);
+        }, 1000);
+
+        return () => clearInterval(timer);
+    }, []);
+
+    return (
+        <section className="profile-area">
+            <div className="container">
+                <div className="row justify-content-center">
+                    <div className="col-12">
+                        {/* Intro */}
+                        <div className="intro mb-4">
+                            <div className="intro-content">
+                                <span>NFT Assets</span>
+                                <h3 className="mt-3 mb-0 silver-color">{initData.heading}</h3>
                             </div>
                         </div>
                     </div>
-
-                    <div className="row items explore-items">
-                        {data.map((item, idx) => {
-                            return (
-                                <div key={`edth_${idx}`} className="col-12 col-sm-6 col-lg-3 item explore-item" data-groups={item.group}>
-                                    <div className="card min-h">
-                                        <div className="image-over">
-                                            <a href="/item-details">
-                                                <img className="card-img-top" src={item.img} alt="" />
-                                            </a>
-                                        </div>
-                                        {/* Card Caption */}
-                                        <div className="card-caption col-12 p-0">
-                                            {/* Card Body */}
-                                            <div className="card-body">
-                                                <div className="card-bottom d-flex justify-content-between">
-                                                    <span>ID</span>
-                                                    <span>{item.id}</span>
-                                                </div>
-                                                <div className="seller align-items-center my-3">
-                                                    <a href="/item-details">
-                                                        <h5 className="mb-0">{item.title}</h5>
-                                                    </a>
-                                                </div>
-                                                <div className="seller align-items-center my-3">
-                                                    <span>Last Update</span>
-                                                    <h6 className="mb-0">{item.up_date}</h6>
-                                                </div>
-                                                <div className="seller align-items-center my-3">
-                                                    <span>Exchangeable date and time</span>
-                                                    <h6 className="mb-0">{item.ex_date}</h6>
-                                                </div>
-
-                                                <div className="col-12 text-center mt-2">
-                                                    <a className="btn btn-bordered-white btn-smaller mt-3" href="#" data-toggle="modal" data-target="#reserves"><i className="icon-handbag mr-2" />Reserve Now</a>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            );
-                        })}
-                    </div>
                 </div>
-            </section>
-        );
-    }
+
+                <div className="row items explore-items">
+                    {products.map((item, idx) => (
+                        <NFTCard key={`edth_${idx}`} item={item} idx={idx} handleItemSelected={handleItemSelected} up_date={countdown} />
+                    ))}
+                </div>
+            </div>
+            <ModalReserve selectedItem={selectedItem} />
+        </section>
+    );
 }
 
 export default Account;
