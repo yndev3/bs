@@ -4,11 +4,9 @@ import { useAccount, useConnect, useDisconnect, useSignMessage } from 'wagmi';
 import { toMessage } from '../SignIn/toMessage';
 import { useWeb3Modal } from '@web3modal/react';
 import { fetchFromApi } from '../../utils/fetchFromApi';
-import axios from 'axios';
 
 const domain = window.location.host;
 const origin = window.location.origin;
-axios.defaults.withCredentials = true;
 export default function Wallet() {
   const {connectAsync, connectors, error} = useConnect();
   const {isConnected, isDisconnected} = useAccount();
@@ -42,12 +40,7 @@ export default function Wallet() {
           nonce,
           issuedAt,
       );
-
       const signature = await signMessageAsync({message});
-
-      // to set the CSRF cookie for Laravel Sanctum
-      await fetchFromApi({endpoint: '/sanctum/csrf-cookie'});
-
       const payload = {
         signature,
         message,
