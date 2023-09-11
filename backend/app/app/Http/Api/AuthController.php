@@ -40,6 +40,7 @@ final class AuthController
         try {
             $this->checkSignature($request);
         } catch (ValidationException $e) {
+            Log::info($e->getMessage());
             return new JsonResponse([
                 'message' => $e->getMessage(),
                 ResponseAlias::HTTP_BAD_REQUEST
