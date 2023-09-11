@@ -7,6 +7,14 @@ export const fetchFromApi = async ({
   headers = {},
   params = null,
 }) => {
+
+  // to set the CSRF cookie for Laravel Sanctum
+  if (method === 'POST') {
+    await fetchFromApi({
+      endpoint: '/sanctum/csrf-cookie'
+    });
+  }
+
   const config = {
     method,
     url: `${ import.meta.env.VITE_BASE_URL }${ endpoint }`,
