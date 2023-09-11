@@ -16,6 +16,9 @@ return new class extends Migration
             $table->bigInteger('token_id')
                 ->index()
                 ->unsigned();
+            $table->string('owner_address')
+                ->index();
+            $table->timestamp('last_hold_at'); // 最終所有日時
             $table->string('name');
             $table->string('description');
             $table->string('image');
