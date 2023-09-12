@@ -14,12 +14,13 @@ import Marketplace from '../../contracts/Marketplace.json';
 import BrandSwap from '../../contracts/BrandSwap.json';
 import ERC20 from '../../contracts/erc20.abi.json';
 
-export default function Selling() {
+export default function Selling(itemDataApi) {
   const BrandSwapAddress = '0x0B306BF915C4d645ff596e518fAf3F9669b97016';
   const marketplaceAddress = '0x9A9f2CCfdE556A7E9Ff0848998Aa4a0CFD8863AE';
   const TXT = '0x68B1D87F95878fE05B998F19b66F4baba5De1aed';
   let isAdmin = true;
   const [itemData, setItemData] = useState({});
+  
 
   const requiredLoop = [
     'Brand',
@@ -31,18 +32,6 @@ export default function Selling() {
     'Accessories',
   ];
 
-  const getMarket = async (e) => {
-    e.preventDefault();
-    connectMarket().then((market) => {
-      return market.getSale(
-          itemData.tokenId,
-      ).then(({seller, price, isSale}) => {
-        console.log(`getMarket seller: ${ seller }`);
-        console.log(`getMarket price: ${ price }`);
-        console.log(`getMarket isSale: ${ isSale }`);
-      });
-    });
-  };
   const handleSubmit = async (e) => {
     e.preventDefault();
     const price = ethers.utils.parseEther(e.target.price.value);
@@ -95,17 +84,6 @@ export default function Selling() {
     );
   };
 
-  const connectMarket = async () => {
-    const {ethereum} = window;
-    const provider = new ethers.providers.Web3Provider(ethereum);
-    const signer = provider.getSigner();
-    return new ethers.Contract(
-        marketplaceAddress,
-        Marketplace.abi,
-        await signer,
-    );
-  };
-
   const handleBuy = async (e) => {
     e.preventDefault();
 
@@ -147,7 +125,7 @@ export default function Selling() {
     //   console.log(`TokenSold token: ${ token }`);
     // });
   };
-
+  console.log("API returned data:", itemDataApi);  
   useEffect(() => {
     // todo APIから取得する想定
     setItemData({
@@ -245,8 +223,7 @@ export default function Selling() {
                 </div>
               </div>
               <a className="d-block btn btn-bordered-white mt-4"
-                 href="#"
-                 onClick={ getMarket }>
+                 href="#">
                 getMarket
               </a>
 
