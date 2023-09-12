@@ -19,10 +19,17 @@ class ProductSeeder extends Seeder
     public function run()
     {
         $faker = Faker::create();
+        $preset_addresses = [
+            '0xD38Eb334caC02650c1Dc01f6f98b78dbdFAC7A67',
+            // 他のプリセットアドレス
+            '0xF5255246E7BDEBA1CfAE3710Fd0d0a0e6f6FE3AC',
+        ];
 
         for ($i = 0; $i < 1000; $i++) {
             $product = Product::create([
                 'token_id' => $i + 1,
+                'owner_address' => strtolower($preset_addresses[array_rand($preset_addresses)]),
+                'last_hold_at' => now(),
                 'name' => $faker->word,
                 'description' => $faker->sentence,
                 'image' => $faker->imageUrl(),
