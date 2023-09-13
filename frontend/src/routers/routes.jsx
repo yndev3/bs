@@ -9,10 +9,7 @@ import ExploreMaterials from '../themes/explore-three';
 import ItemDetails from '../themes/item-details';
 import Activity from '../themes/activity';
 import WalletConnect from '../themes/wallet-connect';
-import Create from '../themes/create';
 import Contact from '../themes/contact';
-import AdminItemDetails from '../themes/admin-item-details';
-import AdminItemList from '../themes/admin-item-list';
 import Account from '../themes/account';
 import Error from '../themes/error';
 
@@ -33,9 +30,6 @@ const MyRouts = () => {
             <Route exact path="/contact" component={ Contact }/>
 
             <Route exact path="/account" component={ Account }/>
-            <Route exact path="/admin/create" component={ Create }/>
-            <Route exact path="/admin/itemDetails/:id" component={ AdminItemDetails }/>
-            <Route exact path="/admin/itemlist" component={ AdminItemList }/>
 
             <Route exact path="/error" component={ Error }/>
 
