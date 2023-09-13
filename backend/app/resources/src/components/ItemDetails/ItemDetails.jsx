@@ -1,48 +1,27 @@
 import React, { useEffect, useState } from 'react';
+
+import { Required } from '../ItemDetails/Required';
+import { OptionList } from '../ItemDetails/optionlist';
+import ModalBuyButton from '../Modal/ModalBuyButton';
+
 import { Splide, SplideSlide } from '@splidejs/react-splide';
 import '@splidejs/react-splide/css';
-import {
-  Accordion,
-  AccordionItem,
-  AccordionItemButton,
-  AccordionItemHeading,
-  AccordionItemPanel,
-} from 'react-accessible-accordion';
-import 'react-accessible-accordion/dist/fancy-example.css';
 import { ethers } from 'ethers';
 import Marketplace from '../../contracts/Marketplace.json';
 import BrandSwap from '../../contracts/BrandSwap.json';
 import ERC20 from '../../contracts/erc20.abi.json';
 
+import { fetchFromApi } from '../../utils/fetchFromApi';
+import { useParams } from 'react-router-dom';
+
+
 export default function Selling() {
   const BrandSwapAddress = '0x0B306BF915C4d645ff596e518fAf3F9669b97016';
   const marketplaceAddress = '0x9A9f2CCfdE556A7E9Ff0848998Aa4a0CFD8863AE';
+  const brandSwapMintAddress = import.meta.env.VITE_BRANDSWAP_MINT_ADDRESS;
   const TXT = '0x68B1D87F95878fE05B998F19b66F4baba5De1aed';
-  let isAdmin = true;
   const [itemData, setItemData] = useState({});
 
-  const requiredLoop = [
-    'Brand',
-    'State',
-    'Weight',
-    'Color',
-    'Material',
-    'Size',
-    'Accessories',
-  ];
-
-  const getMarket = async (e) => {
-    e.preventDefault();
-    connectMarket().then((market) => {
-      return market.getSale(
-          itemData.tokenId,
-      ).then(({seller, price, isSale}) => {
-        console.log(`getMarket seller: ${ seller }`);
-        console.log(`getMarket price: ${ price }`);
-        console.log(`getMarket isSale: ${ isSale }`);
-      });
-    });
-  };
   const handleSubmit = async (e) => {
     e.preventDefault();
     const price = ethers.utils.parseEther(e.target.price.value);
@@ -84,17 +63,6 @@ export default function Selling() {
     }
   };
 
-  const connectMintContract = async () => {
-    const {ethereum} = window;
-    const provider = new ethers.providers.Web3Provider(ethereum);
-    const signer = provider.getSigner();
-    return new ethers.Contract(
-        BrandSwapAddress,
-        BrandSwap.abi,
-        await signer,
-    );
-  };
-
   const connectMarket = async () => {
     const {ethereum} = window;
     const provider = new ethers.providers.Web3Provider(ethereum);
@@ -102,6 +70,17 @@ export default function Selling() {
     return new ethers.Contract(
         marketplaceAddress,
         Marketplace.abi,
+        await signer,
+    );
+  };
+
+  const connectMintContract = async () => {
+    const {ethereum} = window;
+    const provider = new ethers.providers.Web3Provider(ethereum);
+    const signer = provider.getSigner();
+    return new ethers.Contract(
+        BrandSwapAddress,
+        BrandSwap.abi,
         await signer,
     );
   };
@@ -147,200 +126,154 @@ export default function Selling() {
     //   console.log(`TokenSold token: ${ token }`);
     // });
   };
+  
+  // API
+
+  const [itemDataApi, setItemDataApi] = useState(null); 
+  const [error, setError] = useState(null); 
+  const { id } = useParams(); 
+  const [prevId, setPrevId] = useState(null);
 
   useEffect(() => {
-    // todo APIから取得する想定
-    setItemData({
-      ContractAddress: '0xdAC17F958D2ee523a2206206994597C13D831ec7',
-      tokenId: '1',
-      Category: 'Watch',
-      title: 'Walking On AirWalking On AirWalking On Air',
-      price: '1,000',
-      images: [
-        '/img/Watches.jpg',
-        '/img/Jewelrys.jpg',
-        '/img/Materials.jpg',
-        '/img/auction_2.jpg',
-        '/img/auction_2.jpg',
-        '/img/auction_2.jpg',
-        '/img/auction_2.jpg',
-        '/img/auction_2.jpg',
-        '/img/auction_2.jpg',
-        '/img/auction_2.jpg',
-        '/img/auction_2.jpg',
-        '/img/Jewelrys.jpg',
-        '/img/Materials.jpg',
-        '/img/auction_2.jpg',
-        '/img/auction_2.jpg',
-        '/img/auction_2.jpg',
-        '/img/auction_2.jpg',
-        '/img/auction_2.jpg',
-        '/img/auction_2.jpg',
-        '/img/auction_2.jpg',
-      ],
-      Brand: 'ROLEX',
-      State: 'Brand new',
-      Weight: '500',
-      Color: 'Black/Silver',
-      Material: 'ROLEX',
-      Size: '100*30*20',
-      Accessories: 'Box, manual,Box, manual,Box',
-      created: '15 Jul 2021',
-      content: 'Lorem ipsum dolor sit amet, consectetur adipisicing elit. Laborum obcaecati dignissimos quae quo ad iste ipsum officiis deleniti asperiores sit.',
-      price_1: '1.5 ETH',
-      price_2: '$500.89',
-      count: '1 of 5',
-      size: '14000 x 14000 px',
-      volume: '64.1',
-    });
-  }, []);
+    console.log(`Current id: ${id}, Previous id: ${prevId}`);
+  
+    if (id !== prevId) {
+      console.log('Fetching data from API...');
+  
+      const fetchData = async () => {
+        try {
+          const data = await fetchFromApi({
+            endpoint: '/api/item',
+            params: { token_id: id },
+          });
+  
+          setPrevId(id);
+          setItemDataApi(data);
+  
+          console.log("API returned data:", data);
+        } catch (err) {
+          console.error('Error fetching data:', err);
+          setError(err);
+        }
+      };
+  
+      fetchData();
+    }
+  }, [id]);
+
+  // Splide image list
+
+  useEffect(() => {
+    if (itemDataApi) {  
+      setItemData(itemDataApi); 
+    }
+  }, [itemDataApi]);
+
+  const [splideImages, setSplideImages] = useState([]); 
+
+  useEffect(() => {
+    if (itemDataApi) {
+      const otherImages = JSON.parse(itemDataApi.image_list);
+      setSplideImages(otherImages); 
+    }
+  }, [itemDataApi]);
+
+  // owner_address
+
+  let outputAddress = 'Address not available';
+
+  if (itemData?.owner_address) {
+    if (itemData.owner_address === brandSwapMintAddress) {
+      outputAddress = 'BrandSwap';
+    } else {
+      outputAddress = `${itemData.owner_address.substring(0, 5)}...${itemData.owner_address.substring(itemData.owner_address.length - 6)}`;
+    }
+  }
+
+  // Price toLocaleString
+
+  const formattedPrice = itemData && itemData.price ? itemData.price.toLocaleString() : "Price not available";
+
+  // Item States
+
+  const saleStatus = itemData.is_sale === 1 ? "For Sale" : "Not for Sale";
 
   return (
+
       <section className="item-details-area">
         <div className="container">
           <div className="row justify-content-between">
+            <div className="col-12">
+                <div className="item-info">
+                  <h3 className="mt-0">{itemData.name}</h3>
+                </div>
+            </div>
             <div className="col-12 col-lg-5">
               <div className="item-info">
-                <h3 className="mt-0">{ itemData.title }</h3>
                 <div className="item-thumb text-center">
                   <Splide aria-label="itemImg">
-                    { itemData.images?.map((image, key) => {
-                      return (
-                          <SplideSlide key={ key }>
-                            <img src={ image } alt={ `item_${ key }_image` }/>
+                    { 
+                      splideImages.map((image, key) => {
+                        return (
+                          <SplideSlide key={key}>
+                            <img src={image} alt={`item_${key}_image`} />
                           </SplideSlide>
-                      );
-                    })
+                        );
+                      })
                     }
                   </Splide>
                 </div>
               </div>
               <div className="col-12 item px-lg-2 mt-3">
+
                 <div className="card no-hover">
-                  <div
-                      className="price d-flex justify-content-between align-items-center">
-                    <span>Price</span>
-                    <span>1 of 1</span>
+                  { itemData.is_sale === 1 && itemData.is_burn === 0 ? (
+                    <div className="price d-flex justify-content-between align-items-center mb-3">
+                      <h4 className="mt-0 mb-2">
+                        <img className="mr-3" src="../img/tether-usdt-logo.png" alt="usdtlogo" width="30px"/>
+                        { formattedPrice }<span className="h6"> USDT</span>
+                      </h4>
+                      <span>1 of 1</span>
+                    </div>   
+                  ) : null }
+                    <li className="price d-flex justify-content-between">
+                      <span className="mr-3 text-white">Owned By</span>
+                      <span className="word-break">{outputAddress}</span>
+                    </li>
+                    <li className="price d-flex justify-content-between">
+                      <span className="mr-3 text-white">Status</span>
+                      <span className="word-break">{saleStatus}</span>
+                    </li>
+                   { itemData.is_sale === 1 && itemData.is_burn === 0 ? (
+                  <div className="col-12 text-center mt-2">
+                    <a 
+                        className="btn btn-bordered-white btn-smaller mt-3" 
+                        href="#" 
+                        data-toggle="modal" 
+                        data-target="#buybutton"
+                    >
+                    <i className="icon-handbag mr-2" />Confirm Purchase</a>
                   </div>
-                  {
-                    isAdmin
-                        ?
-                        <form className="card-body p-0"
-                              onSubmit={ handleSubmit }>
-                          <div className="form-group mt-3">
-                            <input id="price" type="number"
-                                   className="form-control" name="price"
-                                   required/>
-                            <input type="hidden" className="form-control"
-                                   name="tokenId" value={ itemData.tokenId }/>
-                          </div>
-                          <button
-                              className="btn btn-bordered-white w-100 mt-3"
-                              type="submit">Sale
-                          </button>
-                        </form>
-                        : <h4 className="mt-0 mb-2">{ itemData.price }<span
-                            className="h6"> USDT</span></h4>
-                  }
+                   ) : null }
                 </div>
               </div>
-              <a className="d-block btn btn-bordered-white mt-4"
-                 href="#"
-                 onClick={ getMarket }>
-                getMarket
-              </a>
+              <ModalBuyButton handleBuy={handleBuy} itemData={itemData} />
 
-              <a className="d-block btn btn-bordered-white mt-4"
-                 href="#"
-                 onClick={ handleBuy }>
-                buy
-              </a>
+
             </div>
 
             {/* Right column*/ }
             <div className="col-12 col-lg-6">
               {/* Content */ }
               <div className="content mt-5 mt-lg-0">
-                {/* Description */ }
-                <p>
-                  <span className="text-white h5">Description</span><br/>
-                  <span className="h6">{ itemData.content }</span>
-                </p>
+
                 {/* Required List */ }
-                <div className="item-info-list mt-4">
-                  <ul className="list-unstyled">
-                    { requiredLoop.map((key) => (
-                        <li className="price d-flex justify-content-between"
-                            key={ key }>
-                          <span className="mr-3 text-white">{ key }</span>
-                          <span
-                              className="word-break">{ itemData[key] }</span>
-                        </li>
-                    )) }
-                  </ul>
-                </div>
+                <Required itemData={itemData} />
                 {/* Item Info List */ }
-                <div className="accordion mt-5">
-                  <Accordion allowZeroExpanded>
-                    {/* Optional List */ }
-                    <AccordionItem>
-                      <AccordionItemHeading>
-                        <AccordionItemButton>
-                          Optional
-                        </AccordionItemButton>
-                      </AccordionItemHeading>
-                      <AccordionItemPanel>
-                        <p>
-                          Exercitation in fugiat est ut ad ea cupidatat ut in
-                          cupidatat occaecat ut occaecat consequat est minim
-                          minim
-                          esse tempor laborum consequat esse adipisicing eu
-                          reprehenderit enim.
-                        </p>
-                      </AccordionItemPanel>
-                    </AccordionItem>
-                    {/* Details List */ }
-                    <AccordionItem>
-                      <AccordionItemHeading>
-                        <AccordionItemButton>
-                          Details
-                        </AccordionItemButton>
-                      </AccordionItemHeading>
-                      <AccordionItemPanel>
-                        <p>
-                          <ul className="list-unstyled">
-                            <li className="price d-flex justify-content-between">
-                              <span
-                                  className="mr-3 text-white">Contract Address</span>
-                              <span className="word-break">
-                                <a href={ `https://etherscan.io/address/${ itemData.ContractAddress }` }
-                                   target="_blank">{ itemData.ContractAddress }</a>
-                              </span>
-                            </li>
-                            <li className="price d-flex justify-content-between">
-                              <span className="mr-3 text-white">Token ID</span>
-                              <span className="word-break">
-                                <a href="https://ipfs.io/ipfs/QmeifaBHYmARgCDU2ZnzajKNEsAyAYgz67g25c9KkbcR5y/2657.json"
-                                   target="_blank">1234</a>
-                              </span>
-                            </li>
-                            <li className="price d-flex justify-content-between">
-                              <span
-                                  className="mr-3 text-white">Token Standard</span>
-                              <span className="word-break">ERC-721</span>
-                            </li>
-                            <li className="price d-flex justify-content-between">
-                              <span className="mr-3 text-white">Chain</span>
-                              <span className="word-break">Polygon</span>
-                            </li>
-                          </ul>
-                        </p>
-                      </AccordionItemPanel>
-                    </AccordionItem>
-                  </Accordion>
-                </div>
+                <OptionList itemData={itemData} />
               </div>
             </div>
+
           </div>
         </div>
       </section>

@@ -1,20 +1,20 @@
 import React, { Component } from 'react';
 
 import Header from '../components/Header/Header';
-import Breadcrumb from '../components/Breadcrumb/AdminBreadcrumb';
-import ItemDetail from '../components/Admin/ItemDetails';
+import Breadcrumb from '../components/Breadcrumb/Breadcrumb';
+import Error from '../components/Error/Error';
 import Footer from '../components/Footer/Footer';
 import ModalSearch from '../components/Modal/ModalSearch';
 import ModalMenu from '../components/Modal/ModalMenu';
 import Scrollup from '../components/Scrollup/Scrollup';
 
-class ItemDetails extends Component {
+class Login extends Component {
     render() {
         return (
             <div className="main">
                 <Header />
-                <Breadcrumb title="Item Details" subpage="ItemName"/>
-                <ItemDetail />
+                <Breadcrumb title="Error" subpage="Pages" page="Error" />
+                <Error />
                 <Footer />
                 <ModalSearch />
                 <ModalMenu />
@@ -24,4 +24,4 @@ class ItemDetails extends Component {
     }
 }
 
-export default ItemDetails;
+export default Login;

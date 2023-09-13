@@ -3,7 +3,7 @@ import { fetchFromApi } from '../../utils/fetchFromApi';
 import ModalReserve from '../Modal/ModalReserves';
 import NFTCard from '../Profile/Card';
 
-const Account = ({ initData, data }) => {
+const Account = ({ initData }) => {
     const [selectedItem, setSelectedItem] = useState({ id: "", title: "" });
 
     const handleItemSelected = (id, title) => {

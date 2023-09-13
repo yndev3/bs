@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 
 const NFTCard = ({ item, idx, handleItemSelected }) => {
     const { "name": title, "image": img, updated_at: up_date, } = item;
