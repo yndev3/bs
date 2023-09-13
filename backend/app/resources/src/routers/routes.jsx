@@ -8,7 +8,6 @@ import ExploreJewelrys from '../themes/explore-two';
 import ExploreMaterials from '../themes/explore-three';
 import ItemDetails from '../themes/item-details';
 import Activity from '../themes/activity';
-import HelpCenter from '../themes/help-center';
 import WalletConnect from '../themes/wallet-connect';
 import Create from '../themes/create';
 import Contact from '../themes/contact';
@@ -16,6 +15,7 @@ import AdminItemDetails from '../themes/admin-item-details';
 import AdminItemList from '../themes/admin-item-list';
 import Account from '../themes/account';
 import Error from '../themes/error';
+
 
 const MyRouts = () => {
   return (
@@ -27,8 +27,8 @@ const MyRouts = () => {
             <Route exact path="/explore-jewelrys" component={ ExploreJewelrys }/>
             <Route exact path="/explore-materials" component={ ExploreMaterials }/>
             <Route exact path="/item-details/:id"component={ ItemDetails }/>
+            <Route exact path="/item-details" component={ ItemDetails }/>
             <Route exact path="/activity" component={ Activity }/>
-            <Route exact path="/help-center" component={ HelpCenter }/>
             <Route exact path="/wallet-connect" component={ WalletConnect }/>
             <Route exact path="/contact" component={ Contact }/>
 
@@ -38,6 +38,11 @@ const MyRouts = () => {
             <Route exact path="/admin/itemlist" component={ AdminItemList }/>
 
             <Route exact path="/error" component={ Error }/>
+            <Route exact path="/admin/create" component={ Create }/>
+            <Route exact path="/admin/itemDetails" component={ AdminItemDetails }/>
+            <Route exact path="/admin/itemlist" component={ AdminItemList }/>
+
+            <Route exact path="/account" component={ Account }/>
 
           </Switch>
         </Router>
