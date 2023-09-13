@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
+
 import { Splide, SplideSlide } from '@splidejs/react-splide';
-import '@splidejs/react-splide/dist/css/themes/splide-default.min.css';
+import '@splidejs/react-splide/css';
 import {
   Accordion,
   AccordionItem,
@@ -14,12 +15,16 @@ import Marketplace from '../../contracts/Marketplace.json';
 import BrandSwap from '../../contracts/BrandSwap.json';
 import ERC20 from '../../contracts/erc20.abi.json';
 
+import { fetchFromApi } from '../../utils/fetchFromApi';
+import { useParams } from 'react-router-dom';
+
 export default function Selling() {
   const BrandSwapAddress = '0x0B306BF915C4d645ff596e518fAf3F9669b97016';
   const marketplaceAddress = '0x9A9f2CCfdE556A7E9Ff0848998Aa4a0CFD8863AE';
   const TXT = '0x68B1D87F95878fE05B998F19b66F4baba5De1aed';
   let isAdmin = true;
   const [itemData, setItemData] = useState({});
+  
 
   const requiredLoop = [
     'Brand',
@@ -31,18 +36,6 @@ export default function Selling() {
     'Accessories',
   ];
 
-  const getMarket = async (e) => {
-    e.preventDefault();
-    connectMarket().then((market) => {
-      return market.getSale(
-          itemData.tokenId,
-      ).then(({seller, price, isSale}) => {
-        console.log(`getMarket seller: ${ seller }`);
-        console.log(`getMarket price: ${ price }`);
-        console.log(`getMarket isSale: ${ isSale }`);
-      });
-    });
-  };
   const handleSubmit = async (e) => {
     e.preventDefault();
     const price = ethers.utils.parseEther(e.target.price.value);
@@ -95,17 +88,6 @@ export default function Selling() {
     );
   };
 
-  const connectMarket = async () => {
-    const {ethereum} = window;
-    const provider = new ethers.providers.Web3Provider(ethereum);
-    const signer = provider.getSigner();
-    return new ethers.Contract(
-        marketplaceAddress,
-        Marketplace.abi,
-        await signer,
-    );
-  };
-
   const handleBuy = async (e) => {
     e.preventDefault();
 
@@ -140,77 +122,73 @@ export default function Selling() {
     console.log(tx);
     // listen to the event when the transaction is confirmed and the NFT is transferred
     const {seller, buyer, price, tokenId} = await tx.wait();
-    ethers.on('TokenSold', (tokenId, sender, payment, token) => {
-      console.log(`TokenSold tokenId: ${ tokenId }`);
-      console.log(`TokenSold sender: ${ sender }`);
-      console.log(`TokenSold payment: ${ payment }`);
-      console.log(`TokenSold token: ${ token }`);
-    });
+    // ethers.on('TokenSold', (tokenId, sender, payment, token) => {
+    //   console.log(`TokenSold tokenId: ${ tokenId }`);
+    //   console.log(`TokenSold sender: ${ sender }`);
+    //   console.log(`TokenSold payment: ${ payment }`);
+    //   console.log(`TokenSold token: ${ token }`);
+    // });
   };
+  
+  const [itemDataApi, setItemDataApi] = useState(null); // 状態追加
+  const [error, setError] = useState(null); // エラー状態追加
+  const { id } = useParams(); // 追加
 
   useEffect(() => {
-    // todo APIから取得する想定
-    setItemData({
-      ContractAddress: '0xdAC17F958D2ee523a2206206994597C13D831ec7',
-      tokenId: '1',
-      Category: 'Watch',
-      title: 'Walking On AirWalking On AirWalking On Air',
-      price: '1,000',
-      images: [
-        '/img/Watches.jpg',
-        '/img/Jewelrys.jpg',
-        '/img/Materials.jpg',
-        '/img/auction_2.jpg',
-        '/img/auction_2.jpg',
-        '/img/auction_2.jpg',
-        '/img/auction_2.jpg',
-        '/img/auction_2.jpg',
-        '/img/auction_2.jpg',
-        '/img/auction_2.jpg',
-        '/img/auction_2.jpg',
-        '/img/Jewelrys.jpg',
-        '/img/Materials.jpg',
-        '/img/auction_2.jpg',
-        '/img/auction_2.jpg',
-        '/img/auction_2.jpg',
-        '/img/auction_2.jpg',
-        '/img/auction_2.jpg',
-        '/img/auction_2.jpg',
-        '/img/auction_2.jpg',
-      ],
-      Brand: 'ROLEX',
-      State: 'Brand new',
-      Weight: '500',
-      Color: 'Black/Silver',
-      Material: 'ROLEX',
-      Size: '100*30*20',
-      Accessories: 'Box, manual,Box, manual,Box',
-      created: '15 Jul 2021',
-      content: 'Lorem ipsum dolor sit amet, consectetur adipisicing elit. Laborum obcaecati dignissimos quae quo ad iste ipsum officiis deleniti asperiores sit.',
-      price_1: '1.5 ETH',
-      price_2: '$500.89',
-      count: '1 of 5',
-      size: '14000 x 14000 px',
-      volume: '64.1',
-    });
-  }, []);
+    const fetchData = async () => { // 非同期関数を定義
+      try {
+        const data = await fetchFromApi({
+          endpoint: '/api/item',
+          params: { token_id: id }
+        });
+        setItemDataApi(data); // 正常にデータが取得できたらステートを更新
+      } catch (err) {
+        console.error('Error fetching data:', err);
+        setError(err); // エラーが発生したらエラーのステートを更新
+      }
+    };
+    fetchData(); // fetchData関数を呼び出し
+  }, [id]);
+
+  useEffect(() => {
+    if (itemDataApi) {  // itemDataApiが存在する場合のみ
+      setItemData(itemDataApi); // itemDataを更新
+    }
+  }, [itemDataApi]);
+  console.log("API returned data:", itemData);  
+
+  const [splideImages, setSplideImages] = useState([]); // Splide用の画像リスト
+
+  useEffect(() => {
+    if (itemDataApi) {
+      // 1枚目と2枚目以降の画像をまとめる
+      const firstImage = itemDataApi.image;
+      const otherImages = JSON.parse(itemDataApi.image_list);
+      const allImages = [firstImage, ...otherImages];
+      
+      setSplideImages(allImages); // Splide用の画像リストを更新
+      setItemData(itemDataApi);
+    }
+  }, [itemDataApi]);
 
   return (
+
       <section className="item-details-area">
         <div className="container">
           <div className="row justify-content-between">
             <div className="col-12 col-lg-5">
               <div className="item-info">
-                <h3 className="mt-0">{ itemData.title }</h3>
+                <h3 className="mt-0">{itemData.name}</h3>
                 <div className="item-thumb text-center">
                   <Splide aria-label="itemImg">
-                    { itemData.images?.map((image, key) => {
-                      return (
-                          <SplideSlide key={ key }>
-                            <img src={ image } alt={ `item_${ key }_image` }/>
+                    { 
+                      splideImages.map((image, key) => {
+                        return (
+                          <SplideSlide key={key}>
+                            <img src={image} alt={`item_${key}_image`} />
                           </SplideSlide>
-                      );
-                    })
+                        );
+                      })
                     }
                   </Splide>
                 </div>
@@ -245,8 +223,7 @@ export default function Selling() {
                 </div>
               </div>
               <a className="d-block btn btn-bordered-white mt-4"
-                 href="#"
-                 onClick={ getMarket }>
+                 href="#">
                 getMarket
               </a>
 
@@ -264,7 +241,7 @@ export default function Selling() {
                 {/* Description */ }
                 <p>
                   <span className="text-white h5">Description</span><br/>
-                  <span className="h6">{ itemData.content }</span>
+                  <span className="h6">{itemData.description}</span>
                 </p>
                 {/* Required List */ }
                 <div className="item-info-list mt-4">

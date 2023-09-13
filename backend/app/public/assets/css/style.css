@@ -307,6 +307,10 @@ p:last-child {
   color: var(--white-color);
 }
 
+hr.white {
+  border-top: 1px solid var(--white-color);
+}
+
 h1 {
   margin-bottom: 1.5rem;
   font-size: var(--h1-size);
@@ -3208,6 +3212,13 @@ padding: 100px 0 140px !important;
   /* #endregion Modal */
 }
 
+/* splide__slide */
+.item-details-area .item-info img {
+  aspect-ratio: 1 / 1;
+}
+.square-image {
+  aspect-ratio: 1 / 1 !important;
+}
 /* #endregion All Media Queries */
 /*# sourceMappingURL=style.css.map */
 

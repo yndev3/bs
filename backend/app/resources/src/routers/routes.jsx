@@ -33,7 +33,7 @@ const MyRouts = () => {
             <Route exact path="/contact" component={ Contact }/>
 
             <Route exact path="/admin/create" component={ Create }/>
-            <Route exact path="/admin/itemDetails" component={ AdminItemDetails }/>
+            <Route exact path="/admin/itemDetails/:id" component={ AdminItemDetails }/>
             <Route exact path="/admin/itemlist" component={ AdminItemList }/>
 
             <Route exact path="/account" component={ Account }/>
