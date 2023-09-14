@@ -27,6 +27,11 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/create-booking', [UserController::class, 'createBooking']);
 });
 // Admin only
+Route::middleware('auth:sanctum')
+    ->prefix('admin')
+    ->group(function (){
+        Route::get('items', [ItemListController::class, 'items']);
+});
 Route::post('/exists-sku', UniqueCheckController::class);
 Route::post('/creat-item', ItemRegistrationController::class);
 // All
