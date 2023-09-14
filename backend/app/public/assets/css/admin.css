@@ -1,0 +1,23 @@
+.search_box {
+  padding: 20px;
+}
+
+.makeStyles-filterLabel-6 {
+  font-weight: 200 !important;
+  margin-bottom: 4px;
+  border-bottom: solid 1px;
+}
+
+.MuiInputBase-input input::placeholder {
+  color: white !important;
+}
+.MuiTypography-body1 {
+  font-size: 0.9em !important;
+  font-family: "Roboto", "Helvetica", "Arial", sans-serif;
+  font-weight: 400;
+  line-height: 1.5;
+  letter-spacing: 0.00938em;
+}
+.MuiInputAdornment-root {
+  font-size: 0.8em;
+}

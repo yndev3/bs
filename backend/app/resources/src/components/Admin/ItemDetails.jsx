@@ -244,6 +244,7 @@ export default function Selling() {
                   <span className="h6">{itemData.description}</span>
                 </p>
                 {/* Required List */ }
+                
                 <div className="item-info-list mt-4">
                   <ul className="list-unstyled">
                     { requiredLoop.map((key) => (
