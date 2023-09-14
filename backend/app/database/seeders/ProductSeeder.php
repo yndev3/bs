@@ -42,7 +42,7 @@ class ProductSeeder extends Seeder
                 'material' => $faker->randomElement(['Metal', 'Leather', 'Plastic']),
                 'size' => $faker->randomElement(['Small', 'Medium', 'Large']),
                 'accessories' => $faker->word,
-                'is_sale' => true,
+                'is_sale' => 1,
                 'is_burn' => false,
                 'note' => $faker->text(50)
             ]);
