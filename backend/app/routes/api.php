@@ -45,3 +45,7 @@ Route::get('/stores', StoreController::class);
 Route::get('/statement', [AuthController::class, 'getStatement']);
 Route::post('/login'   , [AuthController::class, 'login']);
 Route::post('/logout'   , [AuthController::class, 'logout']);
+
+Route::any('{any}', function () {
+    abort(404);
+})->where('any', '.*');
