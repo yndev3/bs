@@ -170,13 +170,13 @@ const Create = () => {
       <>
         <section className="author-area admin-form">
           <div className="container">
-          <div className="intro mt-5 mt-lg-0 mb-4 mb-lg-5">
-            <div className="col-12 col-md-8">
-              <div className="intro-content">
-                <span>Get Started</span>
-                <h3 className="mt-3 mb-0">Create Item</h3>
+            <div className="intro mt-5 mt-lg-0 mb-4 mb-lg-5">
+              <div className="col-12 col-md-8">
+                <div className="intro-content">
+                  <span>Get Started</span>
+                  <h3 className="mt-3 mb-0">Create Item</h3>
+                </div>
               </div>
-            </div>
             </div>
             <div className="row justify-content-between">
               <div className="col-12 col-md-8">
