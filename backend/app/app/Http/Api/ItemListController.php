@@ -8,7 +8,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 final class ItemListController
 {
-    const PAGE_SIZE = 10;
+    const PAGE_SIZE = 1000;
 
     public function __construct(private readonly Product $product)
     {
