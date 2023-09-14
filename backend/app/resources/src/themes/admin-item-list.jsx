@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 
 import Header from '../components/Header/Header';
-import Breadcrumb from '../components/Breadcrumb/AdminBreadcrumb';
 import ItemList from '../components/Admin/ItemList';
 import Footer from '../components/Footer/Footer';
 import ModalSearch from '../components/Modal/ModalSearch';
@@ -13,7 +12,7 @@ class ItemDetails extends Component {
         return (
             <div className="main">
                 <Header />
-                <Breadcrumb title="Item List"/>
+
                 <ItemList />
                 <Footer />
                 <ModalSearch />

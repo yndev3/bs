@@ -11,7 +11,7 @@ import TableRow from '@material-ui/core/TableRow';
 import SearchIcon from '@material-ui/icons/Search'; 
 
 const columns = [
-  { id: 'id', label: 'ID', minWidth: 100 },
+  { id: 'id', label: 'ID', minWidth: 10 },
   { id: 'name', label: 'Name', minWidth: 300 },
   { id: 'category', label: 'Category', minWidth: 100 },
   { id: 'price', label: 'Price', minWidth: 100 },
@@ -44,7 +44,7 @@ const useStyles = makeStyles({
     width: '100%',
   },
   container: {
-    maxHeight: 440,
+    maxHeight: 628,
   },
   searchBar: {
     display: 'flex',
@@ -59,11 +59,18 @@ const useStyles = makeStyles({
 });
 
 
+
 export default function StickyHeadTable() {
   const classes = useStyles();
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(10);
   const [searchValue, setSearchValue] = useState('');
+
+  const darkTheme = createTheme({
+    palette: {
+      type: 'dark', 
+    },
+  });
 
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
@@ -83,86 +90,93 @@ export default function StickyHeadTable() {
     row.name.toLowerCase().includes(searchValue.toLowerCase())
   );
 
-  const darkTheme = createTheme({
-    palette: {
-      type: 'dark', // todo ダークモードを有効にする
-    },
-  });
+
 
   return (
-    <ThemeProvider theme={darkTheme}>
-    <div className="row justify-content-center">
-    <div className="col-11 col-md-11 col-lg-11 mt-5 mb-5">
-      
-      <Paper className={classes.root}>
-        <div className={classes.searchBar}>
-          <SearchIcon />
-          <input
-            className={classes.searchInput}
-            type="text"
-            placeholder="Search"
-            value={searchValue}
-            onChange={handleSearchChange}
-          />
+    <section className="author-area admin-form">
+     <div className="row justify-content-center">  
+        <div className="col-11 intro mt-2 mt-lg-0 mb-4 mb-lg-2">
+            <div className="intro-content">
+              <span>Get Started</span>
+              <h3 className="mt-3 mb-0">Create Item</h3>
+            </div>
         </div>
-        <TableContainer className={classes.container}>
-          <Table stickyHeader aria-label="sticky table">
-            <TableHead>
-              <TableRow>
-                {columns.map((column) => (
-                  <TableCell
-                    key={column.id}
-                    align={column.align}
-                    style={{ minWidth: column.minWidth }}
-                  >
-                    {column.label}
-                  </TableCell>
-                ))}
-              </TableRow>
-            </TableHead>
-            <TableBody>
-            {filteredRows.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => {
-              return (
-                <TableRow hover role="checkbox" tabIndex={-1} key={row.id}>
-                  {columns.map((column) => {
-                    const value = row[column.id];
-                    if (column.id === 'id') {
-                      return (
-                        <TableCell key={column.id} align={column.align}>
-                          <a
-                            href={`https://example.com/${row.id}`}  // todo 実際のリンクに置き換える
-                            target="_blank"
-                            rel="noopener noreferrer"
+        </div>
+        <ThemeProvider theme={darkTheme}>
+        <div className="row justify-content-center">  
+            <div className="col-11 mt-5 mb-5">
+              <Paper className={classes.root}>
+                <div className={classes.searchBar}>
+                  <SearchIcon />
+                  <input
+                    className={classes.searchInput}
+                    type="text"
+                    placeholder="Search"
+                    value={searchValue}
+                    onChange={handleSearchChange}
+                  />
+                </div>
+                <TableContainer className={classes.container}>
+                  <Table stickyHeader aria-label="sticky table">
+                    <TableHead>
+                      <TableRow>
+                        {columns.map((column) => (
+                          <TableCell
+                            key={column.id}
+                            align={column.align}
+                            style={{ minWidth: column.minWidth }}
                           >
-                            {value}
-                          </a>
-                        </TableCell>
+                            {column.label}
+                          </TableCell>
+                        ))}
+                      </TableRow>
+                    </TableHead>
+                    <TableBody>
+                    {filteredRows.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => {
+                      return (
+                        <TableRow hover role="checkbox" tabIndex={-1} key={row.id}>
+                          {columns.map((column) => {
+                            const value = row[column.id];
+                            if (column.id === 'id') {
+                              return (
+                                <TableCell key={column.id} align={column.align}>
+                                  <a
+                                    href={`https://example.com/${row.id}`}  // todo 実際のリンクに置き換える
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                  >
+                                    {value}
+                                  </a>
+                                </TableCell>
+                              );
+                            }
+                            return (
+                              <TableCell key={column.id} align={column.align}>
+                                {column.format && typeof value === 'number' ? column.format(value) : value}
+                              </TableCell>
+                            );
+                          })}
+                        </TableRow>
                       );
-                    }
-                    return (
-                      <TableCell key={column.id} align={column.align}>
-                        {column.format && typeof value === 'number' ? column.format(value) : value}
-                      </TableCell>
-                    );
-                  })}
-                </TableRow>
-              );
-            })}
-          </TableBody>
-          </Table>
-        </TableContainer>
-        <TablePagination
-          rowsPerPageOptions={[10, 25, 100]}
-          component="div"
-          count={filteredRows.length}
-          rowsPerPage={rowsPerPage}
-          page={page}
-          onPageChange={handleChangePage}
-          onRowsPerPageChange={handleChangeRowsPerPage}
-        />
-      </Paper>
-    </div>
-    </div>
-    </ThemeProvider>
+                    })}
+                  </TableBody>
+                  </Table>
+                </TableContainer>
+                <TablePagination
+                  rowsPerPageOptions={[10, 25, 100]}
+                  component="div"
+                  count={filteredRows.length}
+                  rowsPerPage={rowsPerPage}
+                  page={page}
+                  onPageChange={handleChangePage}
+                  onRowsPerPageChange={handleChangeRowsPerPage}
+                />
+              </Paper>
+            </div>
+          </div>
+        </ThemeProvider>
+
+    </section>
+    
   );
 }
