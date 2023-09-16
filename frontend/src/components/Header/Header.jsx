@@ -31,14 +31,6 @@ const Header = () => {
                                 <li className="nav-item"><NavLink to={'/explore-materials'} className="nav-link">Materials</NavLink></li>
                             </ul>
                         </li>
-                        <li className="nav-item dropdown">
-                            <a className="nav-link" href="#">ADMIN<i className="fas fa-angle-down ml-1" /></a>
-                            <ul className="dropdown-menu">
-                                <li className="nav-item"><NavLink to={'/admin/create'} className="nav-link">Create</NavLink></li>
-                                <li className="nav-item"><NavLink to={'/admin/itemDetails'} className="nav-link">ItemDetails</NavLink></li>
-                                <li className="nav-item"><NavLink to={'/admin/itemlist'} className="nav-link">ItemList</NavLink></li>
-                            </ul>
-                        </li>
                     </ul>
                     {/* Navbar Icons */}
                     <ul className="navbar-nav icons">

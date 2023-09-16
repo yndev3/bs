@@ -1,7 +1,5 @@
 import React, { Component } from 'react';
 
-
-
 class Explore extends Component {
     render() {
         const { initData, data } = this.props;
