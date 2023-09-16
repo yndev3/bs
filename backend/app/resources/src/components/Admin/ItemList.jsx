@@ -1,5 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { useHistory } from 'react-router-dom';
 import { makeStyles, ThemeProvider, createTheme } from '@material-ui/core/styles';
+import Grid from '@material-ui/core/Grid';
 import Paper from '@material-ui/core/Paper';
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
@@ -8,44 +10,57 @@ import TableContainer from '@material-ui/core/TableContainer';
 import TableHead from '@material-ui/core/TableHead';
 import TablePagination from '@material-ui/core/TablePagination';
 import TableRow from '@material-ui/core/TableRow';
-import SearchIcon from '@material-ui/icons/Search'; 
+import SearchIcon from '@material-ui/icons/Search';
+import Input from '@material-ui/core/Input';
+import InputAdornment from '@material-ui/core/InputAdornment';
+import FormControlLabel from '@material-ui/core/FormControlLabel';
+import Checkbox from '@material-ui/core/Checkbox';
+import '../../../../public/assets/css/admin.css';
+
+import { fetchFromApi } from '../../utils/fetchFromApi';
 
 const columns = [
-  { id: 'id', label: 'ID', minWidth: 10 },
-  { id: 'name', label: 'Name', minWidth: 300 },
-  { id: 'category', label: 'Category', minWidth: 100 },
-  { id: 'price', label: 'Price', minWidth: 100 },
+  { id: 'token_id', label: 'Token ID', minWidth: 10 },
+  { id: 'name', label: 'Name', minWidth: 200 },
+  { id: 'category', label: 'Category', minWidth: 10 },
+  { id: 'price', label: 'Price', minWidth: 10 },
+  { id: 'is_sale', label: 'Is Sale', minWidth: 10 },
+  { id: 'is_burn', label: 'Is Burn', minWidth: 10 },
+  { id: 'owner_address', label: 'Owner Address', minWidth: 20 },
 ];
 
-function createData(id, name, category, price) {
-  return { id, name, category, price };
+const scan_url = import.meta.env.VITE_POLYGON_SCAN_ADDRESS;
+const mint_address = import.meta.env.VITE_BRANDSWAP_MINT_ADDRESS;
+
+function createData(id, name, category, price, is_sale, is_burn) {
+  return { id, name, category, price, is_sale, is_burn };
 }
 
-const rows = [
-  createData('1', '(Rolex) 2020 Daytona steel white dial 116500LN (Unworn). full set', 'watch', 115000),
-  createData('2', '(Omega) Speedmaster Professional Moonwatch 311.30.42.30.01.005 (Unworn). full set', 'watch', 7800),
-  createData('3', '(Patek Philippe) Calatrava 5196R-001 (Unworn). full set', 'watch', 32000),
-  createData('4', '(Audemars Piguet) Royal Oak Selfwinding 15400ST.OO.1220ST.02 (Unworn). full set', 'watch', 25000),
-  createData('5', '(Tag Heuer) Carrera Calibre 16 CBM2110.BA0651 (Unworn). full set', 'watch', 3500),
-  createData('6', '(Breitling) Navitimer B01 AB0121211B1P1 (Unworn). full set', 'watch', 7200),
-  createData('7', '(Breitling) Navitimer B01 AB0121211B1P1 (Unworn). full set', 'watch', 7200),
-  createData('8', '(Breitling) Navitimer B01 AB0121211B1P1 (Unworn). full set', 'watch', 7200),
-  createData('9', '(Breitling) Navitimer B01 AB0121211B1P1 (Unworn). full set', 'watch', 7200),
-  createData('10', '(Breitling) Navitimer B01 AB0121211B1P1 (Unworn). full set', 'watch', 7200),
-  createData('11', '(Breitling) Navitimer B01 AB0121211B1P1 (Unworn). full set', 'watch', 7200),
-  createData('12', '(Breitling) Navitimer B01 AB0121211B1P1 (Unworn). full set', 'watch', 7200),
-  createData('13', '(Breitling) Navitimer B01 AB0121211B1P1 (Unworn). full set', 'watch', 7200),
-  createData('14', '(Breitling) Navitimer B01 AB0121211B1P1 (Unworn). full set', 'watch', 7200),
-  createData('15', '(Breitling) Navitimer B01 AB0121211B1P1 (Unworn). full set', 'watch', 7200),
-];
+const isSaleText = {
+  0: 'Not sale',
+  1: 'On sale',
+  2: 'SOLD',
+};
 
-const useStyles = makeStyles({
+const isBurnText = {
+  0: 'Unburned',
+  1: 'Burned',
+};
+
+// Owner Addressを短縮表示する関数
+function shortenAddress(address) {
+  if (address.length > 10) {
+    return `${address.substring(0, 5)}...${address.substring(address.length - 8)}`;
+  }
+  return address;
+}
+
+
+const useStyles = makeStyles((theme) => ({
   root: {
     width: '100%',
   },
-  container: {
-    maxHeight: 628,
-  },
+
   searchBar: {
     display: 'flex',
     alignItems: 'center',
@@ -56,19 +71,46 @@ const useStyles = makeStyles({
   searchInput: {
     marginLeft: 8,
   },
-});
-
-
+  idSearchInput: {
+    marginLeft: 8,
+  },
+  filterGroup: {
+    display: 'flex',
+    flexDirection: 'column',
+    marginLeft: 16,
+  },
+  filterLabel: {
+    fontWeight: 'bold',
+    marginBottom: 4,
+  },
+  tableCell: {
+    padding: '4px', // セル内のパディングを調整
+    fontSize: '0.85rem !inportant', // フォントサイズを調整
+    height: '35px',
+  },
+  customCheckbox: {
+    color: theme.palette.success.main, // チェックが入った状態の色を緑に設定
+  },
+}));
 
 export default function StickyHeadTable() {
   const classes = useStyles();
   const [page, setPage] = React.useState(0);
-  const [rowsPerPage, setRowsPerPage] = React.useState(10);
-  const [searchValue, setSearchValue] = useState('');
+  const [rowsPerPage, setRowsPerPage] = React.useState(25);
+  const [nameSearchValue, setNameSearchValue] = useState('');
+  const [idSearchValue, setIdSearchValue] = useState('');
+  const [isSaleFilters, setIsSaleFilters] = useState(['0', '1', '2']); // フィルター初期値
+  const [isBurnFilters, setIsBurnFilters] = useState(['0', '1']); // フィルター初期値
+  const [categoryFilters, setCategoryFilters] = useState({
+    Watch: true,
+    Jewelry: true,
+    Material: true,
+  }); // カテゴリフィルター初期値
+  const [rows, setRows] = useState([]);
 
   const darkTheme = createTheme({
     palette: {
-      type: 'dark', 
+      type: 'dark',
     },
   });
 
@@ -81,27 +123,76 @@ export default function StickyHeadTable() {
     setPage(0);
   };
 
-  const handleSearchChange = (event) => {
-    setSearchValue(event.target.value);
+  const handleNameSearchChange = (event) => {
+    setNameSearchValue(event.target.value);
   };
 
-  // todo フィルタリングされた行を取得
+  const handleIdSearchChange = (event) => {
+    setIdSearchValue(event.target.value);
+  };
+
+  const handleIsSaleFilterChange = (event) => {
+    const { value, checked } = event.target;
+    if (checked) {
+      setIsSaleFilters([...isSaleFilters, value]);
+    } else {
+      setIsSaleFilters(isSaleFilters.filter((filter) => filter !== value));
+    }
+  };
+
+  const handleIsBurnFilterChange = (event) => {
+    const { value, checked } = event.target;
+    if (checked) {
+      setIsBurnFilters([...isBurnFilters, value]);
+    } else {
+      setIsBurnFilters(isBurnFilters.filter((filter) => filter !== value));
+    }
+  };
+
+  const handleCategoryFilterChange = (event) => {
+    const { name, checked } = event.target;
+    setCategoryFilters({
+      ...categoryFilters,
+      [name]: checked,
+    });
+  };
+
+  // フィルタリングされた行を取得
   const filteredRows = rows.filter((row) =>
-    row.name.toLowerCase().includes(searchValue.toLowerCase())
+    row.name.toLowerCase().includes(nameSearchValue.toLowerCase()) &&
+    row.id.toString().includes(idSearchValue) &&
+    isSaleFilters.includes(row.is_sale.toString()) &&
+    isBurnFilters.includes(row.is_burn.toString()) &&
+    categoryFilters[row.category] // 選択されたカテゴリでフィルタリング
   );
 
+  // API
+  const history = useHistory();
 
+  useEffect(() => {
+    fetchFromApi({
+      endpoint: '/api/admin/items',
+    })
+      .then((data) => {
+        console.log('API returned data:', data);
+        setRows(data.data); // データをセット
+      })
+      .catch((error) => {
+        console.error('Error fetching data:', error);
+        history.push('/error');
+      });
+  }, []);
 
   return (
     <section className="author-area admin-form">
-     <div className="row justify-content-center">  
+      <div className="row justify-content-center">
         <div className="col-11 intro mt-2 mt-lg-0 mb-4 mb-lg-2">
-            <div className="intro-content">
-              <span>Get Started</span>
-              <h3 className="mt-3 mb-0">Create Item</h3>
-            </div>
+          <div className="intro-content">
+            <span>Dashboard</span>
+            <h3 className="mt-3 mb-0">Item List</h3>
+          </div>
         </div>
-    </div>
+        </div>
         <ThemeProvider theme={darkTheme}>
         <div className="row justify-content-center">  
             <div className="col-11 mt-5 mb-5">
@@ -160,23 +251,21 @@ export default function StickyHeadTable() {
                       );
                     })}
                   </TableBody>
-                  </Table>
-                </TableContainer>
-                <TablePagination
-                  rowsPerPageOptions={[10, 25, 100]}
-                  component="div"
-                  count={filteredRows.length}
-                  rowsPerPage={rowsPerPage}
-                  page={page}
-                  onPageChange={handleChangePage}
-                  onRowsPerPageChange={handleChangeRowsPerPage}
-                />
-              </Paper>
-            </div>
+                </Table>
+              </TableContainer>
+              <TablePagination
+                rowsPerPageOptions={[25, 50, 100]}
+                component="div"
+                count={filteredRows.length}
+                rowsPerPage={rowsPerPage}
+                page={page}
+                onPageChange={handleChangePage}
+                onRowsPerPageChange={handleChangeRowsPerPage}
+              />
+            </Paper>
           </div>
-        </ThemeProvider>
-
+        </div>
+      </ThemeProvider>
     </section>
-    
   );
 }

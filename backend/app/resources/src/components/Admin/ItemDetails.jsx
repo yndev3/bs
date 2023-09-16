@@ -254,74 +254,79 @@ export default function Selling() {
                 <p>
                   <span className="text-white h5">Owner</span>        
                 </p>
-                <li className="price d-flex justify-content-between">
-                  <span className="mr-3 text-white">By</span>
-                  <a 
-                    href={`${scan_address}address/${itemData.owner_address}`} 
-                    target="_blank" 
-                    rel="noopener noreferrer">
-                    <span className="word-break">{outputAddress}</span>
-                  </a>
-                </li>
-                <li className="price d-flex justify-content-between">
-                  <span className="mr-3 text-white">Burn</span>
-                  <span className="word-break">{burnStatus}</span>
-                </li>
-              </div>
-
-              {/* Item Price Change */}
-              {(itemData.is_sale === 0 || itemData.is_sale === 1) && itemData.is_burn === 0 && (
-              <div className="card no-hover mb-2">
-                <p>
-                  <span className="text-white h5">Price Change</span>        
-                </p>
-                <div className='form-inline'>
-                  <div class="form-group">
-                    <div className="price d-flex justify-content-between align-items-center">
-                      <input 
-                        type='text' 
-                        defaultValue={ itemData.price } 
-                        className='mr-3'
-                        style={{ width: '200px' }}
-                      /> USDT
-                      <a 
-                        className="btn btn-bordered-white btn-smaller ml-3" 
-                        href="#" 
-                        data-toggle="modal" 
-                        data-target="#buybutton"
-                        >
-                        Change
-                      </a>
-                    </div>  
-                  </div>
-                </div> 
-              </div>
-              )}
-
-              <div className="card no-hover">  
-                <li className="price d-flex justify-content-between">
-                  <span className="mr-3 text-white">Status</span>
-                  <span className="word-break">{saleStatus}</span>
-                </li>
-                <div className="col-12 text-center">
-                {itemData.is_sale === 0 && itemData.is_burn === 0 && (
-                  <a 
-                      className="btn btn-bordered-white btn-smaller mt-3" 
-                      href="#" 
-                      data-toggle="modal" 
-                      data-target="#buybutton"
-                      >Start Sale
-                  </a>
-                )}
-                {itemData.is_sale === 1 && itemData.is_burn === 0 && (
-                  <a 
-                      className="btn btn-bordered-white btn-smaller mt-3" 
-                      href="#" 
-                      data-toggle="modal" 
-                      data-target="#buybutton"
-                      >Stop Sale
-                  </a>
-                  )}
+                {/* Required List */ }
+                
+                <div className="item-info-list mt-4">
+                  <ul className="list-unstyled">
+                    { requiredLoop.map((key) => (
+                        <li className="price d-flex justify-content-between"
+                            key={ key }>
+                          <span className="mr-3 text-white">{ key }</span>
+                          <span
+                              className="word-break">{ itemData[key] }</span>
+                        </li>
+                    )) }
+                  </ul>
+                </div>
+                {/* Item Info List */ }
+                <div className="accordion mt-5">
+                  <Accordion allowZeroExpanded>
+                    {/* Optional List */ }
+                    <AccordionItem>
+                      <AccordionItemHeading>
+                        <AccordionItemButton>
+                          Optional
+                        </AccordionItemButton>
+                      </AccordionItemHeading>
+                      <AccordionItemPanel>
+                        <p>
+                          Exercitation in fugiat est ut ad ea cupidatat ut in
+                          cupidatat occaecat ut occaecat consequat est minim
+                          minim
+                          esse tempor laborum consequat esse adipisicing eu
+                          reprehenderit enim.
+                        </p>
+                      </AccordionItemPanel>
+                    </AccordionItem>
+                    {/* Details List */ }
+                    <AccordionItem>
+                      <AccordionItemHeading>
+                        <AccordionItemButton>
+                          Details
+                        </AccordionItemButton>
+                      </AccordionItemHeading>
+                      <AccordionItemPanel>
+                        <p>
+                          <ul className="list-unstyled">
+                            <li className="price d-flex justify-content-between">
+                              <span
+                                  className="mr-3 text-white">Contract Address</span>
+                              <span className="word-break">
+                                <a href={ `https://etherscan.io/address/${ itemData.ContractAddress }` }
+                                   target="_blank">{ itemData.ContractAddress }</a>
+                              </span>
+                            </li>
+                            <li className="price d-flex justify-content-between">
+                              <span className="mr-3 text-white">Token ID</span>
+                              <span className="word-break">
+                                <a href="https://ipfs.io/ipfs/QmeifaBHYmARgCDU2ZnzajKNEsAyAYgz67g25c9KkbcR5y/2657.json"
+                                   target="_blank">1234</a>
+                              </span>
+                            </li>
+                            <li className="price d-flex justify-content-between">
+                              <span
+                                  className="mr-3 text-white">Token Standard</span>
+                              <span className="word-break">ERC-721</span>
+                            </li>
+                            <li className="price d-flex justify-content-between">
+                              <span className="mr-3 text-white">Chain</span>
+                              <span className="word-break">Polygon</span>
+                            </li>
+                          </ul>
+                        </p>
+                      </AccordionItemPanel>
+                    </AccordionItem>
+                  </Accordion>
                 </div>
               </div>
             </div>
