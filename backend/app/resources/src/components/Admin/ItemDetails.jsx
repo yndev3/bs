@@ -1,15 +1,10 @@
 import React, { useEffect, useState } from 'react';
 
+import { Required } from './Required';
+import { OptionList } from './optionlist';
+
 import { Splide, SplideSlide } from '@splidejs/react-splide';
 import '@splidejs/react-splide/css';
-import {
-  Accordion,
-  AccordionItem,
-  AccordionItemButton,
-  AccordionItemHeading,
-  AccordionItemPanel,
-} from 'react-accessible-accordion';
-import 'react-accessible-accordion/dist/fancy-example.css';
 import { ethers } from 'ethers';
 import Marketplace from '../../contracts/Marketplace.json';
 import BrandSwap from '../../contracts/BrandSwap.json';
@@ -18,23 +13,15 @@ import ERC20 from '../../contracts/erc20.abi.json';
 import { fetchFromApi } from '../../utils/fetchFromApi';
 import { useParams } from 'react-router-dom';
 
+
 export default function Selling() {
   const BrandSwapAddress = '0x0B306BF915C4d645ff596e518fAf3F9669b97016';
   const marketplaceAddress = '0x9A9f2CCfdE556A7E9Ff0848998Aa4a0CFD8863AE';
+  const brandSwapMintAddress = import.meta.env.VITE_BRANDSWAP_MINT_ADDRESS;
   const TXT = '0x68B1D87F95878fE05B998F19b66F4baba5De1aed';
-  let isAdmin = true;
+  const scan_address = import.meta.env.VITE_POLYGON_SCAN_ADDRESS
   const [itemData, setItemData] = useState({});
-  
-
-  const requiredLoop = [
-    'Brand',
-    'State',
-    'Weight',
-    'Color',
-    'Material',
-    'Size',
-    'Accessories',
-  ];
+  console.log(`scan: ${ scan_address }`);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -75,6 +62,17 @@ export default function Selling() {
     } catch (error) {
       console.log(error);
     }
+  };
+
+  const connectMarket = async () => {
+    const {ethereum} = window;
+    const provider = new ethers.providers.Web3Provider(ethereum);
+    const signer = provider.getSigner();
+    return new ethers.Contract(
+        marketplaceAddress,
+        Marketplace.abi,
+        await signer,
+    );
   };
 
   const connectMintContract = async () => {
@@ -130,55 +128,111 @@ export default function Selling() {
     // });
   };
   
-  const [itemDataApi, setItemDataApi] = useState(null); // 状態追加
-  const [error, setError] = useState(null); // エラー状態追加
-  const { id } = useParams(); // 追加
+  // API
+
+  const [itemDataApi, setItemDataApi] = useState(null); 
+  const [error, setError] = useState(null); 
+  const { id } = useParams(); 
+  const [prevId, setPrevId] = useState(null);
 
   useEffect(() => {
-    const fetchData = async () => { // 非同期関数を定義
-      try {
-        const data = await fetchFromApi({
-          endpoint: '/api/item',
-          params: { token_id: id }
-        });
-        setItemDataApi(data); // 正常にデータが取得できたらステートを更新
-      } catch (err) {
-        console.error('Error fetching data:', err);
-        setError(err); // エラーが発生したらエラーのステートを更新
-      }
-    };
-    fetchData(); // fetchData関数を呼び出し
+    console.log(`Current id: ${id}, Previous id: ${prevId}`);
+  
+    if (id !== prevId) {
+      console.log('Fetching data from API...');
+  
+      const fetchData = async () => {
+        try {
+          const data = await fetchFromApi({
+            endpoint: '/api/item',
+            params: { token_id: id },
+          });
+  
+          setPrevId(id);
+          setItemDataApi(data);
+  
+          console.log("API returned data:", data);
+        } catch (err) {
+          console.error('Error fetching data:', err);
+          setError(err);
+        }
+      };
+  
+      fetchData();
+    }
   }, [id]);
 
+  // Splide image list
+
   useEffect(() => {
-    if (itemDataApi) {  // itemDataApiが存在する場合のみ
-      setItemData(itemDataApi); // itemDataを更新
+    if (itemDataApi) {  
+      setItemData(itemDataApi); 
     }
   }, [itemDataApi]);
-  console.log("API returned data:", itemData);  
 
-  const [splideImages, setSplideImages] = useState([]); // Splide用の画像リスト
+  const [splideImages, setSplideImages] = useState([]); 
 
   useEffect(() => {
     if (itemDataApi) {
-      // 1枚目と2枚目以降の画像をまとめる
-      const firstImage = itemDataApi.image;
       const otherImages = JSON.parse(itemDataApi.image_list);
-      const allImages = [firstImage, ...otherImages];
-      
-      setSplideImages(allImages); // Splide用の画像リストを更新
-      setItemData(itemDataApi);
+      setSplideImages(otherImages); 
     }
   }, [itemDataApi]);
 
+  // owner_address
+
+  let outputAddress = 'Address not available';
+
+  if (itemData?.owner_address) {
+    if (itemData.owner_address === brandSwapMintAddress) {
+      outputAddress = 'BrandSwap';
+    } else {
+      outputAddress = `${itemData.owner_address.substring(0, 8)}...${itemData.owner_address.substring(itemData.owner_address.length - 10)}`;
+    }
+  }
+
+  // Price toLocaleString
+
+  const formattedPrice = itemData && itemData.price ? itemData.price.toLocaleString() : "Not Sale";
+
+  // Item States
+
+  let saleStatus;
+
+  if (itemData.is_sale === 1) {
+    saleStatus = "For Sale";
+  } else if (itemData.is_sale === 0) {
+    saleStatus = "Not for Sale";
+  } else if (itemData.is_sale === 2) {
+    saleStatus = "SOLD";
+  } else {
+    // 1, 2, 3以外の場合のデフォルト値を指定できます
+    saleStatus = "Unknown Status";
+  }
+
+  // Burn States
+
+  const burnStatus = itemData.is_burn === 1 ? "Burned" : "Unburned";
+  
   return (
 
       <section className="item-details-area">
         <div className="container">
+          <div className="col-12 intro mt-2 mt-lg-0 mb-5">
+              <div className="intro-content">
+                <span>Dashboard</span>
+                <h3 className="mt-3 mb-0">Item Detail</h3>
+                <hr className='white' />
+              </div>
+          </div>
           <div className="row justify-content-between">
+            <div className="col-12">
+                <div className="item-info">
+                  <h3 className="mt-0">{itemData.name}</h3>
+                </div>
+            </div>
             <div className="col-12 col-lg-5">
               <div className="item-info">
-                <h3 className="mt-0">{itemData.name}</h3>
                 <div className="item-thumb text-center">
                   <Splide aria-label="itemImg">
                     { 
@@ -194,130 +248,97 @@ export default function Selling() {
                 </div>
               </div>
               <div className="col-12 item px-lg-2 mt-3">
-                <div className="card no-hover">
-                  <div
-                      className="price d-flex justify-content-between align-items-center">
-                    <span>Price</span>
-                    <span>1 of 1</span>
-                  </div>
-                  {
-                    isAdmin
-                        ?
-                        <form className="card-body p-0"
-                              onSubmit={ handleSubmit }>
-                          <div className="form-group mt-3">
-                            <input id="price" type="number"
-                                   className="form-control" name="price"
-                                   required/>
-                            <input type="hidden" className="form-control"
-                                   name="tokenId" value={ itemData.tokenId }/>
-                          </div>
-                          <button
-                              className="btn btn-bordered-white w-100 mt-3"
-                              type="submit">Sale
-                          </button>
-                        </form>
-                        : <h4 className="mt-0 mb-2">{ itemData.price }<span
-                            className="h6"> USDT</span></h4>
-                  }
-                </div>
-              </div>
-              <a className="d-block btn btn-bordered-white mt-4"
-                 href="#">
-                getMarket
-              </a>
 
-              <a className="d-block btn btn-bordered-white mt-4"
-                 href="#"
-                 onClick={ handleBuy }>
-                buy
-              </a>
-            </div>
-
-            {/* Right column*/ }
-            <div className="col-12 col-lg-6">
-              {/* Content */ }
-              <div className="content mt-5 mt-lg-0">
-                {/* Description */ }
+              {/* Item Price Change */}                
+              <div className="card no-hover mb-2">  
                 <p>
-                  <span className="text-white h5">Description</span><br/>
-                  <span className="h6">{itemData.description}</span>
+                  <span className="text-white h5">Owner</span>        
                 </p>
-                {/* Required List */ }
-                <div className="item-info-list mt-4">
-                  <ul className="list-unstyled">
-                    { requiredLoop.map((key) => (
-                        <li className="price d-flex justify-content-between"
-                            key={ key }>
-                          <span className="mr-3 text-white">{ key }</span>
-                          <span
-                              className="word-break">{ itemData[key] }</span>
-                        </li>
-                    )) }
-                  </ul>
-                </div>
-                {/* Item Info List */ }
-                <div className="accordion mt-5">
-                  <Accordion allowZeroExpanded>
-                    {/* Optional List */ }
-                    <AccordionItem>
-                      <AccordionItemHeading>
-                        <AccordionItemButton>
-                          Optional
-                        </AccordionItemButton>
-                      </AccordionItemHeading>
-                      <AccordionItemPanel>
-                        <p>
-                          Exercitation in fugiat est ut ad ea cupidatat ut in
-                          cupidatat occaecat ut occaecat consequat est minim
-                          minim
-                          esse tempor laborum consequat esse adipisicing eu
-                          reprehenderit enim.
-                        </p>
-                      </AccordionItemPanel>
-                    </AccordionItem>
-                    {/* Details List */ }
-                    <AccordionItem>
-                      <AccordionItemHeading>
-                        <AccordionItemButton>
-                          Details
-                        </AccordionItemButton>
-                      </AccordionItemHeading>
-                      <AccordionItemPanel>
-                        <p>
-                          <ul className="list-unstyled">
-                            <li className="price d-flex justify-content-between">
-                              <span
-                                  className="mr-3 text-white">Contract Address</span>
-                              <span className="word-break">
-                                <a href={ `https://etherscan.io/address/${ itemData.ContractAddress }` }
-                                   target="_blank">{ itemData.ContractAddress }</a>
-                              </span>
-                            </li>
-                            <li className="price d-flex justify-content-between">
-                              <span className="mr-3 text-white">Token ID</span>
-                              <span className="word-break">
-                                <a href="https://ipfs.io/ipfs/QmeifaBHYmARgCDU2ZnzajKNEsAyAYgz67g25c9KkbcR5y/2657.json"
-                                   target="_blank">1234</a>
-                              </span>
-                            </li>
-                            <li className="price d-flex justify-content-between">
-                              <span
-                                  className="mr-3 text-white">Token Standard</span>
-                              <span className="word-break">ERC-721</span>
-                            </li>
-                            <li className="price d-flex justify-content-between">
-                              <span className="mr-3 text-white">Chain</span>
-                              <span className="word-break">Polygon</span>
-                            </li>
-                          </ul>
-                        </p>
-                      </AccordionItemPanel>
-                    </AccordionItem>
-                  </Accordion>
+                <li className="price d-flex justify-content-between">
+                  <span className="mr-3 text-white">By</span>
+                  <a 
+                    href={`${scan_address}address/${itemData.owner_address}`} 
+                    target="_blank" 
+                    rel="noopener noreferrer">
+                    <span className="word-break">{outputAddress}</span>
+                  </a>
+                </li>
+                <li className="price d-flex justify-content-between">
+                  <span className="mr-3 text-white">Burn</span>
+                  <span className="word-break">{burnStatus}</span>
+                </li>
+              </div>
+
+              {/* Item Price Change */}
+              {(itemData.is_sale === 0 || itemData.is_sale === 1) && itemData.is_burn === 0 && (
+              <div className="card no-hover mb-2">
+                <p>
+                  <span className="text-white h5">Price Change</span>        
+                </p>
+                <div className='form-inline'>
+                  <div class="form-group">
+                    <div className="price d-flex justify-content-between align-items-center">
+                      <input 
+                        type='text' 
+                        defaultValue={ itemData.price } 
+                        className='mr-3'
+                        style={{ width: '200px' }}
+                      /> USDT
+                      <a 
+                        className="btn btn-bordered-white btn-smaller ml-3" 
+                        href="#" 
+                        data-toggle="modal" 
+                        data-target="#buybutton"
+                        >
+                        Change
+                      </a>
+                    </div>  
+                  </div>
+                </div> 
+              </div>
+              )}
+
+              <div className="card no-hover">  
+                <li className="price d-flex justify-content-between">
+                  <span className="mr-3 text-white">Status</span>
+                  <span className="word-break">{saleStatus}</span>
+                </li>
+                <div className="col-12 text-center">
+                {itemData.is_sale === 0 && itemData.is_burn === 0 && (
+                  <a 
+                      className="btn btn-bordered-white btn-smaller mt-3" 
+                      href="#" 
+                      data-toggle="modal" 
+                      data-target="#buybutton"
+                      >Start Sale
+                  </a>
+                )}
+                {itemData.is_sale === 1 && itemData.is_burn === 0 && (
+                  <a 
+                      className="btn btn-bordered-white btn-smaller mt-3" 
+                      href="#" 
+                      data-toggle="modal" 
+                      data-target="#buybutton"
+                      >Stop Sale
+                  </a>
+                  )}
                 </div>
               </div>
             </div>
+          </div>
+
+          {/* Right column*/ }
+          <div className="col-12 col-lg-6">
+            {/* Content */ }
+            <div className="content mt-5 mt-lg-0">
+
+              {/* Required List */ }
+              <Required itemData={itemData} />
+              {/* Item Info List */ }
+              <OptionList itemData={itemData} />
+            </div>
+          </div>
+
           </div>
         </div>
       </section>

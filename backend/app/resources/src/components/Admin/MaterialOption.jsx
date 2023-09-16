@@ -2,6 +2,7 @@ import React from 'react';
 
 export const MaterialOption = ({ itemData }) => (
   <>
+                        <hr className='white' />
                         <p>
                         <span className="text-white h5">Optional</span>
                         </p>
@@ -16,6 +17,5 @@ export const MaterialOption = ({ itemData }) => (
                               <span className="word-break">{itemData.option[0].weight}</span>
                             </li>
                           </ul>
-
   </>
 );

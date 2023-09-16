@@ -101,7 +101,7 @@ export default function StickyHeadTable() {
               <h3 className="mt-3 mb-0">Create Item</h3>
             </div>
         </div>
-        </div>
+    </div>
         <ThemeProvider theme={darkTheme}>
         <div className="row justify-content-center">  
             <div className="col-11 mt-5 mb-5">
