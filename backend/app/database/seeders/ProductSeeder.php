@@ -29,7 +29,8 @@ class ProductSeeder extends Seeder
             $product = Product::create([
                 'token_id' => $i + 1,
                 'owner_address' => strtolower($preset_addresses[array_rand($preset_addresses)]),
-                'last_hold_at' => now(),
+                'transfer_at' => now(),
+                'meta_url' => $faker->url,
                 'name' => $faker->word,
                 'description' => $faker->sentence,
                 'image' => $faker->imageUrl(),

@@ -18,12 +18,13 @@ return new class extends Migration
                 ->unsigned();
             $table->string('owner_address')
                 ->index();
-            $table->timestamp('last_hold_at'); // 最終所有日時
+            $table->timestamp('transfer_at'); // 最終所有日時
+            $table->string('meta_url'); // メタデータのURL
             $table->string('name');
             $table->string('description');
             $table->string('image');
             $table->json('image_list');
-            $table->integer('price')->unsigned();
+            $table->integer('price')->unsigned()->default(0);
             $table->string('sku')->unique();
             $table->enum('category', ['Watch', 'Jewelry', 'Material']);
             $table->string('brand')->index();
