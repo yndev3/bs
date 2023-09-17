@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { useHistory } from 'react-router-dom';
 
 import { Required } from '../ItemDetails/Required';
 import { OptionList } from '../ItemDetails/optionlist';
@@ -22,7 +23,7 @@ export default function Selling() {
   const TXT = '0x68B1D87F95878fE05B998F19b66F4baba5De1aed';
   const [itemData, setItemData] = useState({});
   const scan_address = process.env.REACT_APP_POLYGON_SCAN_ADDRESS
-  console.log(`mint: ${ brandSwapMintAddress}`);
+  const history = useHistory();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -155,6 +156,7 @@ export default function Selling() {
       } catch (err) {
         console.error('Error fetching data:', err);
         setError(err);
+        history.push('/error'); 
       }
     };
   

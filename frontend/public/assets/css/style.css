@@ -256,7 +256,11 @@ a:active:not(.btn) {
   color: var(--primary-color);
   text-decoration: none;
 }
-
+.btn-disabled{
+  background-color: #343a40 !important;
+  background-image: none !important;
+  pointer-events: none;
+}
 a:not([href]),
 a:not([href]):hover,
 a:not([href]) i,
