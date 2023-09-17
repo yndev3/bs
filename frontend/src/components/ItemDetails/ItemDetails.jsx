@@ -139,10 +139,8 @@ export default function Selling() {
   const [splideImages, setSplideImages] = useState([]); 
 
   useEffect(() => {
-    console.log(`Current id: ${id}, Previous id: ${prevId}`);
   
     const fetchData = async () => {
-      console.log('Fetching data from API...');
       try {
         const data = await fetchFromApi({
           endpoint: '/api/item',

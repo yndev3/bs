@@ -1725,11 +1725,12 @@ header .navbar-expand .dropdown:hover > .dropdown-menu {
 .card .card-body .card-bottom span {
   color: var(--white-color);
 }
-
 .card-min {
   min-height: 476px !important;
 }
-
+.card-img-top {
+  aspect-ratio: 1 / 1;
+}
 .card .card-footer {
   border-radius: 0;
   background: none;
