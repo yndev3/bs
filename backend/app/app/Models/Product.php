@@ -52,11 +52,17 @@ class Product extends Model
         return $this->belongsToMany(User::class, 'user_product');
     }
 
-    public function productCreate($tokenId, $metaData)
+    /**
+     * @throws \Exception
+     */
+    public function productCreate($owner, $tokenId, $metaData, $metaUrl)
     {
         $product = $this->create([
             'token_id' => $tokenId,
             'name' => $metaData->name,
+            'owner_address' => $owner,
+            'transfer_at' => now(),
+            'meta_url' => $metaUrl,
             'description' => $metaData->description,
             'image' => $metaData->image,
             'image_list' => $metaData->imageList,
@@ -67,9 +73,8 @@ class Product extends Model
             'material' => $metaData->material,
             'size' => $metaData->size,
             'accessories' => $metaData->accessories,
-            'is_sale' => true,
+            'is_sale' => 1,
             'note' => $metaData->note,
-            'price' => 10,
         ]);
 
         $option = match ($product->category) {
