@@ -39,7 +39,7 @@ const Card = (props) => {
 
                   <a className="btn btn-bordered-white btn-smaller mt-3"
                      href={ `/item-details/${ item.id }` }>
-                      <i class="fa fa-arrow-circle-right mr-2" aria-hidden="true"></i>
+                      <i className="fa fa-arrow-circle-right mr-2" aria-hidden="true"></i>
                      ItemDetail
                   </a>
                 </div>
