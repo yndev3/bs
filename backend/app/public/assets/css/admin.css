@@ -21,3 +21,7 @@
 .MuiInputAdornment-root {
   font-size: 0.8em;
 }
+
+.container.header {
+  max-width: 90% !important;
+}

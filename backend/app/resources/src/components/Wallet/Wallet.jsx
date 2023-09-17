@@ -77,6 +77,8 @@ export default function Wallet() {
     }
   }, [isConnected, isDisconnected]);
 
+  <button onClick={ click }>test</button>
+
   return (
       <section className="wallet-connect-area">
         <button onClick={ click }>test</button>
@@ -86,7 +88,7 @@ export default function Wallet() {
               {/* Intro */ }
               <div className="intro text-center">
                 <span>WALLET CONNECT</span>
-                <h3 className="mt-3 mb-0">Connect your Wallet</h3>
+                <h3 className="mt-3 mb-0">MASTER DASHBOARD</h3>
               </div>
             </div>
           </div>
