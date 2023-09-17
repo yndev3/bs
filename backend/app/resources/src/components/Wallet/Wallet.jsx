@@ -61,32 +61,14 @@ export default function Wallet() {
     }
   };
 
-  const click = async () => {
-    try {
-      const res = await fetchFromApi({endpoint:'/api/user'});
-      console.log(res);
-    } catch (e) {
-      console.log(e);
-      disconnect();
-    }
-  };
-
-  useEffect(() => {
-    if (isConnected) {
-      console.log('Connected');
-    }
-  }, [isConnected, isDisconnected]);
-
-  <button onClick={ click }>test</button>
 
   return (
       <section className="wallet-connect-area">
-        <button onClick={ click }>test</button>
         <div className="container">
           <div className="row justify-content-center">
             <div className="col-12 col-md-8 col-lg-7">
               {/* Intro */ }
-              <div className="intro text-center">
+              <div className="intro text-center mt-5">
                 <span>WALLET CONNECT</span>
                 <h3 className="mt-3 mb-0">MASTER DASHBOARD</h3>
               </div>

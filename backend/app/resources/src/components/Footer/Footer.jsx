@@ -29,7 +29,7 @@ class Footer extends Component {
 
                 {/* Footer Bottom */}
                 <div className="footer-bottom pt-3 mt-5">
-                    <div className="container">
+                    <div className="container90">
                         <div className="row">
                             <div className="col-12">
                                 {/* Copyright Area */}
