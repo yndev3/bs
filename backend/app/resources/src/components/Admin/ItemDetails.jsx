@@ -21,7 +21,6 @@ export default function Selling() {
   const TXT = '0x68B1D87F95878fE05B998F19b66F4baba5De1aed';
   const scan_address = import.meta.env.VITE_POLYGON_SCAN_ADDRESS
   const [itemData, setItemData] = useState({});
-  console.log(`scan: ${ scan_address }`);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -134,50 +133,36 @@ export default function Selling() {
   const [error, setError] = useState(null); 
   const { id } = useParams(); 
   const [prevId, setPrevId] = useState(null);
-
-  useEffect(() => {
-    console.log(`Current id: ${id}, Previous id: ${prevId}`);
-  
-    if (id !== prevId) {
-      console.log('Fetching data from API...');
-  
-      const fetchData = async () => {
-        try {
-          const data = await fetchFromApi({
-            endpoint: '/api/item',
-            params: { token_id: id },
-          });
-  
-          setPrevId(id);
-          setItemDataApi(data);
-  
-          console.log("API returned data:", data);
-        } catch (err) {
-          console.error('Error fetching data:', err);
-          setError(err);
-        }
-      };
-  
-      fetchData();
-    }
-  }, [id]);
-
-  // Splide image list
-
-  useEffect(() => {
-    if (itemDataApi) {  
-      setItemData(itemDataApi); 
-    }
-  }, [itemDataApi]);
-
   const [splideImages, setSplideImages] = useState([]); 
 
-  useEffect(() => {
-    if (itemDataApi) {
-      const otherImages = JSON.parse(itemDataApi.image_list);
-      setSplideImages(otherImages); 
+useEffect(() => {
+  const fetchData = async () => {
+    console.log('Fetching data from API...');
+    try {
+      const data = await fetchFromApi({
+        endpoint: '/api/item',
+        params: { token_id: id },
+      });
+      setPrevId(id);
+      setItemDataApi(data);
+      console.log("API returned data:", data);
+    } catch (err) {
+      console.error('Error fetching data:', err);
+      setError(err);
     }
-  }, [itemDataApi]);
+  };
+
+  if (id !== prevId) {
+    fetchData();
+  }
+
+  if (itemDataApi) {
+    setItemData(itemDataApi);
+    const otherImages = JSON.parse(itemDataApi.image_list);
+    setSplideImages(otherImages);
+  }
+}, [id, itemDataApi]);
+
 
   // owner_address
 
@@ -276,7 +261,7 @@ export default function Selling() {
                   <span className="text-white h5">Price Change</span>        
                 </p>
                 <div className='form-inline'>
-                  <div class="form-group">
+                  <div className="form-group">
                     <div className="price d-flex justify-content-between align-items-center">
                       <input 
                         type='text' 

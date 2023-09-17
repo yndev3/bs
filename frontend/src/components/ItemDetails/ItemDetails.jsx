@@ -133,50 +133,40 @@ export default function Selling() {
   const [error, setError] = useState(null); 
   const { id } = useParams(); 
   const [prevId, setPrevId] = useState(null);
+  const [splideImages, setSplideImages] = useState([]); 
 
   useEffect(() => {
     console.log(`Current id: ${id}, Previous id: ${prevId}`);
   
-    if (id !== prevId) {
+    const fetchData = async () => {
       console.log('Fetching data from API...');
+      try {
+        const data = await fetchFromApi({
+          endpoint: '/api/item',
+          params: { token_id: id },
+        });
   
-      const fetchData = async () => {
-        try {
-          const data = await fetchFromApi({
-            endpoint: '/api/item',
-            params: { token_id: id },
-          });
+        setPrevId(id);
+        setItemDataApi(data);
   
-          setPrevId(id);
-          setItemDataApi(data);
+        console.log("API returned data:", data);
+      } catch (err) {
+        console.error('Error fetching data:', err);
+        setError(err);
+      }
+    };
   
-          console.log("API returned data:", data);
-        } catch (err) {
-          console.error('Error fetching data:', err);
-          setError(err);
-        }
-      };
-  
+    if (id !== prevId) {
       fetchData();
     }
-  }, [id]);
-
-  // Splide image list
-
-  useEffect(() => {
-    if (itemDataApi) {  
-      setItemData(itemDataApi); 
-    }
-  }, [itemDataApi]);
-
-  const [splideImages, setSplideImages] = useState([]); 
-
-  useEffect(() => {
+  
     if (itemDataApi) {
+      setItemData(itemDataApi);
       const otherImages = JSON.parse(itemDataApi.image_list);
-      setSplideImages(otherImages); 
+      setSplideImages(otherImages);
     }
-  }, [itemDataApi]);
+  }, [id, itemDataApi]);
+  
 
   // owner_address
 
