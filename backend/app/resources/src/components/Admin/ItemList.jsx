@@ -88,9 +88,7 @@ const useStyles = makeStyles((theme) => ({
     fontSize: '0.85rem !inportant', // フォントサイズを調整
     height: '35px',
   },
-  customCheckbox: {
-    color: theme.palette.success.main, // チェックが入った状態の色を緑に設定
-  },
+
 }));
 
 export default function StickyHeadTable() {
@@ -231,7 +229,7 @@ export default function StickyHeadTable() {
                             checked={isSaleFilters.includes('0')}
                             onChange={handleIsSaleFilterChange}
                             value="0"
-                            color='info'
+                            color='default'
                           />
                         }
                         label={`${isSaleText[0]}`}
@@ -242,7 +240,7 @@ export default function StickyHeadTable() {
                             checked={isSaleFilters.includes('1')}
                             onChange={handleIsSaleFilterChange}
                             value="1"
-                            color='info'
+                            color='default'
                           />
                         }
                         label={`${isSaleText[1]}`}
@@ -253,7 +251,7 @@ export default function StickyHeadTable() {
                             checked={isSaleFilters.includes('2')}
                             onChange={handleIsSaleFilterChange}
                             value="2"
-                            color='info'
+                            color="default"
                           />
                         }
                         label={`${isSaleText[2]}`}
@@ -267,7 +265,7 @@ export default function StickyHeadTable() {
                             checked={isBurnFilters.includes('0')}
                             onChange={handleIsBurnFilterChange}
                             value="0"
-                            color='info'
+                            color="default"
                           />
                         }
                         label={`Unburned	`}
@@ -278,7 +276,7 @@ export default function StickyHeadTable() {
                             checked={isBurnFilters.includes('1')}
                             onChange={handleIsBurnFilterChange}
                             value="1"
-                            color='info'
+                            color="default"
                           />
                         }
                         label={`Burned`}
@@ -294,7 +292,7 @@ export default function StickyHeadTable() {
                               checked={checked}
                               onChange={handleCategoryFilterChange}
                               name={category}
-                              color='info'
+                              color="default"
                             />
                           }
                           label={category}
