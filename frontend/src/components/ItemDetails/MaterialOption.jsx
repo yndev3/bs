@@ -8,13 +8,9 @@ import {
 
 export const MaterialOption = ({ itemData }) => (
   <>
-                    <AccordionItem uuid="a">
-                      <AccordionItemHeading>
-                        <AccordionItemButton>
-                          Optional
-                        </AccordionItemButton>
-                      </AccordionItemHeading>
-                      <AccordionItemPanel>
+                        <p>
+                          <span className="text-white h5">Optional</span>
+                        </p>
                         <ul className="list-unstyled">
                             <li className="price d-flex justify-content-between">
                               <span className="mr-3 text-white">SerialNumber</span>
@@ -26,7 +22,5 @@ export const MaterialOption = ({ itemData }) => (
                               <span className="word-break">{itemData.option[0].weight}</span>
                             </li>
                           </ul>
-                      </AccordionItemPanel>
-                    </AccordionItem>
   </>
 );

@@ -4,7 +4,6 @@ import Header from '../components/Header/Header';
 import Breadcrumb from '../components/Breadcrumb/Breadcrumb';
 import Wallet from '../components/Wallet/Wallet';
 import Footer from '../components/Footer/Footer';
-import ModalSearch from '../components/Modal/ModalSearch';
 import ModalMenu from '../components/Modal/ModalMenu';
 import Scrollup from '../components/Scrollup/Scrollup';
 
@@ -16,7 +15,6 @@ export default function WalletConnect() {
                 <Breadcrumb title="Wallet Connect" subpage="Wallet Connect" page="Wallet Connect" />
                 <Wallet />
                 <Footer />
-                <ModalSearch />
                 <ModalMenu />
                 <Scrollup />
             </div>

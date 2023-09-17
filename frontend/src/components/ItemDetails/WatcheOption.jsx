@@ -8,13 +8,9 @@ import {
 
 export const WatcheOption = ({ itemData }) => (
   <>
-                    <AccordionItem uuid="a">
-                      <AccordionItemHeading>
-                        <AccordionItemButton>
-                          Optional
-                        </AccordionItemButton>
-                      </AccordionItemHeading>
-                      <AccordionItemPanel>
+                        <p>
+                          <span className="text-white h5">Optional</span>
+                        </p>
                         <ul className="list-unstyled">
                             <li className="price d-flex justify-content-between">
                               <span className="mr-3 text-white">State</span>
@@ -48,7 +44,6 @@ export const WatcheOption = ({ itemData }) => (
                             </li>
 
                           </ul>
-                      </AccordionItemPanel>
-                    </AccordionItem>
+
   </>
 );

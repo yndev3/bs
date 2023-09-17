@@ -21,6 +21,8 @@ export default function Selling() {
   const brandSwapMintAddress = process.env.REACT_APP_BRANDSWAP_MINT_ADDRESS;
   const TXT = '0x68B1D87F95878fE05B998F19b66F4baba5De1aed';
   const [itemData, setItemData] = useState({});
+  const scan_address = process.env.REACT_APP_POLYGON_SCAN_ADDRESS
+  console.log(`mint: ${ brandSwapMintAddress}`);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -226,10 +228,15 @@ export default function Selling() {
                       <span>1 of 1</span>
                     </div>   
                   ) : null }
-                    <li className="price d-flex justify-content-between">
-                      <span className="mr-3 text-white">Owned By</span>
-                      <span className="word-break">{outputAddress}</span>
-                    </li>
+                <li className="price d-flex justify-content-between">
+                  <span className="mr-3 text-white">Owned By</span>
+                  <a 
+                    href={`${scan_address}address/${itemData.owner_address}`} 
+                    target="_blank" 
+                    rel="noopener noreferrer">
+                    <span className="word-break">{outputAddress}</span>
+                  </a>
+                </li>
                     <li className="price d-flex justify-content-between">
                       <span className="mr-3 text-white">Status</span>
                       <span className="word-break">{saleStatus}</span>

@@ -7,7 +7,6 @@ import ExploreJewelrys from '../components/Explore/ExploreJewelrys';
 import ExploreMaterials from '../components/Explore/ExploreMaterials';
 import Work from '../components/Work/Work';
 import Footer from '../components/Footer/Footer';
-import ModalSearch from '../components/Modal/ModalSearch';
 import ModalMenu from '../components/Modal/ModalMenu';
 import Scrollup from '../components/Scrollup/Scrollup';
 
@@ -21,7 +20,6 @@ const ThemeOne = () => {
         <ExploreJewelrys/>
         <ExploreMaterials/>
         <Footer/>
-        <ModalSearch/>
         <ModalMenu/>
         <Scrollup/>
       </div>

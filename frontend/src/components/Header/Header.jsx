@@ -32,16 +32,8 @@ const Header = () => {
                             </ul>
                         </li>
                     </ul>
-                    {/* Navbar Icons */}
-                    <ul className="navbar-nav icons">
-                        <li className="nav-item">
-                            <a href="#" className="nav-link" data-toggle="modal" data-target="#search">
-                                <i className="fas fa-search" />
-                            </a>
-                        </li>
-                    </ul>
                     {/* User Info */}
-                    <Profile />
+                    {isConnected && <Profile />}
                     {/* Navbar Toggler */}
                     <ul className="navbar-nav toggle">
                         <li className="nav-item">
