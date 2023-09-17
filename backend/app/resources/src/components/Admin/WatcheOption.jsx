@@ -1,20 +1,11 @@
 import React from 'react';
-import {
-  AccordionItem,
-  AccordionItemButton,
-  AccordionItemHeading,
-  AccordionItemPanel,
-} from 'react-accessible-accordion';
 
 export const WatcheOption = ({ itemData }) => (
   <>
-                    <AccordionItem uuid="a">
-                      <AccordionItemHeading>
-                        <AccordionItemButton>
-                          Optional
-                        </AccordionItemButton>
-                      </AccordionItemHeading>
-                      <AccordionItemPanel>
+                        <hr className='white' />
+                        <p>
+                        <span className="text-white h5">Optional</span>
+                        </p>
                         <ul className="list-unstyled">
                             <li className="price d-flex justify-content-between">
                               <span className="mr-3 text-white">State</span>
@@ -48,7 +39,6 @@ export const WatcheOption = ({ itemData }) => (
                             </li>
 
                           </ul>
-                      </AccordionItemPanel>
-                    </AccordionItem>
+
   </>
 );

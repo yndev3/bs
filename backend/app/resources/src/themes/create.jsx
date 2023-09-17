@@ -1,7 +1,6 @@
 import React from 'react';
 
-import Header from '../components/Header/Header';
-import Breadcrumb from '../components/Breadcrumb/AdminBreadcrumb';
+import Header from '../components/Header/HeaderAdmin';
 import Creates from '../components/Create/Create';
 import Footer from '../components/Footer/Footer';
 import ModalSearch from '../components/Modal/ModalSearch';
@@ -12,7 +11,6 @@ const Create = () => {
   return (
       <div className="main">
         <Header/>
-        <Breadcrumb title="Control panel"/>
         <Creates/>
         <Footer/>
         <ModalSearch/>

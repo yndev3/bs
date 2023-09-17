@@ -192,173 +192,64 @@ export default function StickyHeadTable() {
             <h3 className="mt-3 mb-0">Item List</h3>
           </div>
         </div>
-      </div>
-      <ThemeProvider theme={darkTheme}>
-        <div className="row justify-content-center">
-          <div className="col-11 col-md-11 col-lg-11 mt-5 mb-5">
-            <Paper className={classes.root}>
-            <div className="search_box row">
-              <Grid container spacing={2}>
-                <Grid item md={2}>
-                <Input
-                    className={`${classes.idSearchInput} mt-1`}
-                    value={idSearchValue}
-                    onChange={handleIdSearchChange}
-                    startAdornment={
-                      <InputAdornment position="start">
-                        <SearchIcon />ID:
-                      </InputAdornment>
-                    }
+        </div>
+        <ThemeProvider theme={darkTheme}>
+        <div className="row justify-content-center">  
+            <div className="col-11 mt-5 mb-5">
+              <Paper className={classes.root}>
+                <div className={classes.searchBar}>
+                  <SearchIcon />
+                  <input
+                    className={classes.searchInput}
+                    type="text"
+                    placeholder="Search"
+                    value={searchValue}
+                    onChange={handleSearchChange}
                   />
-                  <Input
-                    className={`${classes.searchInput}`}
-                    value={nameSearchValue}
-                    onChange={handleNameSearchChange}
-                    startAdornment={
-                      <InputAdornment position="start">
-                        <SearchIcon />NAME:
-                      </InputAdornment>
-                    }
-                  />
-                </Grid>
-                <Grid item md={4}>
-                  <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                    <div className={classes.filterGroup}>
-                      <div className={classes.filterLabel}>Sale Status</div>
-                      <FormControlLabel
-                        control={
-                          <Checkbox
-                            checked={isSaleFilters.includes('0')}
-                            onChange={handleIsSaleFilterChange}
-                            value="0"
-                            color='info'
-                          />
-                        }
-                        label={`${isSaleText[0]}`}
-                      />
-                      <FormControlLabel
-                        control={
-                          <Checkbox
-                            checked={isSaleFilters.includes('1')}
-                            onChange={handleIsSaleFilterChange}
-                            value="1"
-                            color='info'
-                          />
-                        }
-                        label={`${isSaleText[1]}`}
-                      />
-                      <FormControlLabel
-                        control={
-                          <Checkbox
-                            checked={isSaleFilters.includes('2')}
-                            onChange={handleIsSaleFilterChange}
-                            value="2"
-                            color='info'
-                          />
-                        }
-                        label={`${isSaleText[2]}`}
-                      />
-                    </div>
-                    <div className={classes.filterGroup}>
-                      <div className={classes.filterLabel}>Burn Status</div>
-                      <FormControlLabel
-                        control={
-                          <Checkbox
-                            checked={isBurnFilters.includes('0')}
-                            onChange={handleIsBurnFilterChange}
-                            value="0"
-                            color='info'
-                          />
-                        }
-                        label={`Unburned	`}
-                      />
-                      <FormControlLabel
-                        control={
-                          <Checkbox
-                            checked={isBurnFilters.includes('1')}
-                            onChange={handleIsBurnFilterChange}
-                            value="1"
-                            color='info'
-                          />
-                        }
-                        label={`Burned`}
-                      />
-                    </div>
-                    <div className={classes.filterGroup}>
-                      <div className={classes.filterLabel}>Category</div>
-                      {Object.entries(categoryFilters).map(([category, checked]) => (
-                        <FormControlLabel
-                          key={category}
-                          control={
-                            <Checkbox
-                              checked={checked}
-                              onChange={handleCategoryFilterChange}
-                              name={category}
-                              color='info'
-                            />
-                          }
-                          label={category}
-                        />
-                      ))}
-                    </div>
-                  </div>
-                </Grid>
-              </Grid>
-            </div>
-
-              <TableContainer className={classes.container}>
-                <Table stickyHeader aria-label="sticky table">
-                  <TableHead>
-                    <TableRow>
-                      {columns.map((column) => (
-                        <TableCell
-                          key={column.id}
-                          align={column.align}
-                          style={{ minWidth: column.minWidth }}
-                          align={column.id !== 'name' ? 'center' : column.align}
-                        >
-                          {column.label}
-                        </TableCell>
-                      ))}
-                    </TableRow>
-                  </TableHead>
-                  <TableBody>
-                  {filteredRows
-                  .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                  .map((row) => (
-                    <TableRow hover role="checkbox" tabIndex={-1} key={row.token_id}>
-                      {columns.map((column) => (
-                        <TableCell key={column.id} align={column.id !== 'name' ? 'center' : column.align} className={classes.tableCell}>
-                          {column.id === 'name' && (
-                            <a
-                              href={`itemDetails/${row.token_id}`} // 実際のリンクに置き換える
-                              target="_blank"
-                              rel="noopener noreferrer"
-                            >
-                              {row[column.id]}
-                            </a>
-                          )}
-                          {column.id === 'is_sale' && isSaleText[row[column.id]]}
-                          {column.id === 'is_burn' && isBurnText[row[column.id]]}
-                          {column.id === 'owner_address' && (
-                          <span>
-                            {row[column.id] === mint_address ? 'BrandSwap' : (
-                              <a
-                                href={`${scan_url}address/${row[column.id]}`} // Owner Addressのリンクを生成
-                                target="_blank"
-                                rel="noopener noreferrer"
-                              >
-                                {shortenAddress(row[column.id])}
-                              </a>
-                              )}
-                            </span>
-                           )}
-                          {column.id === 'price' && parseInt(row[column.id]).toLocaleString()} {/* 価格をtoLocaleStringでフォーマット */}
-                          {column.id !== 'name' && column.id !== 'is_sale' && column.id !== 'is_burn' && column.id !== 'owner_address' && column.id !== 'price' && row[column.id]}
-                        </TableCell>
-                      ))}
-                    </TableRow>
-                  ))}
+                </div>
+                <TableContainer className={classes.container}>
+                  <Table stickyHeader aria-label="sticky table">
+                    <TableHead>
+                      <TableRow>
+                        {columns.map((column) => (
+                          <TableCell
+                            key={column.id}
+                            align={column.align}
+                            style={{ minWidth: column.minWidth }}
+                          >
+                            {column.label}
+                          </TableCell>
+                        ))}
+                      </TableRow>
+                    </TableHead>
+                    <TableBody>
+                    {filteredRows.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => {
+                      return (
+                        <TableRow hover role="checkbox" tabIndex={-1} key={row.id}>
+                          {columns.map((column) => {
+                            const value = row[column.id];
+                            if (column.id === 'id') {
+                              return (
+                                <TableCell key={column.id} align={column.align}>
+                                  <a
+                                    href={`https://example.com/${row.id}`}  // todo 実際のリンクに置き換える
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                  >
+                                    {value}
+                                  </a>
+                                </TableCell>
+                              );
+                            }
+                            return (
+                              <TableCell key={column.id} align={column.align}>
+                                {column.format && typeof value === 'number' ? column.format(value) : value}
+                              </TableCell>
+                            );
+                          })}
+                        </TableRow>
+                      );
+                    })}
                   </TableBody>
                 </Table>
               </TableContainer>

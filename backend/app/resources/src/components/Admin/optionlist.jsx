@@ -1,11 +1,4 @@
 import React from 'react';
-import {
-  Accordion,
-  AccordionItem,
-  AccordionItemButton,
-  AccordionItemHeading,
-  AccordionItemPanel,
-} from 'react-accessible-accordion';
 import 'react-accessible-accordion/dist/fancy-example.css';
 import { WatcheOption } from './WatcheOption'; 
 import { JewelryOption } from './JewelryOption';
@@ -28,18 +21,14 @@ export const OptionList = ({ itemData }) => {
 
   return (
   <>
-                <div className="accordion mt-5">
-                  <Accordion  preExpanded={['a']}>
+                <div className="accordion mt-3">
                     {/* Optional List */ }
                     {renderDynamicComponent()}
-                    {/* Details List */ }
-                    <AccordionItem>
-                      <AccordionItemHeading>
-                        <AccordionItemButton>
-                          Details
-                        </AccordionItemButton>
-                      </AccordionItemHeading>
-                      <AccordionItemPanel>
+                          <hr className='white' />
+                          <p>
+                            <span className="text-white h5">Details</span>
+                            
+                          </p>
                           <ul className="list-unstyled">
                             <li className="price d-flex justify-content-between">
                               <span className="mr-3 text-white">Token ID</span>
@@ -57,9 +46,6 @@ export const OptionList = ({ itemData }) => {
                               <span className="word-break">Polygon</span>
                             </li>
                           </ul>
-                      </AccordionItemPanel>
-                    </AccordionItem>
-                  </Accordion>
                 </div>
                 </>
   );
