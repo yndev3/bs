@@ -1,7 +1,9 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
+import { useAccount } from 'wagmi';
 
 const ModalMenu = () => {
+  const { isConnected} = useAccount();
   const [showExploreDropdown, setShowExploreDropdown] = useState(false);
   const [showUserDropdown, setShowUserDropdown] = useState(false);
 
@@ -64,6 +66,7 @@ const ModalMenu = () => {
                     </ul>
                   </li>
                 </ul>
+                {isConnected && (
                 <ul className="navbar-nav items mx-auto">
                   <li className="nav-item dropdown">
                     <a className="nav-link" href="#" onClick={toggleUserDropdown}>
@@ -95,6 +98,7 @@ const ModalMenu = () => {
                     </ul>
                   </li>
                 </ul>
+                )}
               </div>
             </div>
           </div>

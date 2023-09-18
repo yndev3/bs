@@ -1,5 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { fetchFromApi } from '../../utils/fetchFromApi';
+import { useAccount } from 'wagmi';
+import { useHistory } from 'react-router-dom';
+
 
 const initData = {
     menuName: "Reserves Now",
@@ -12,6 +15,17 @@ const initData = {
 };
 
 const ModalReserve = ({ selectedItem }) => {
+
+    const {isConnected} = useAccount();
+    const history = useHistory();
+
+    // Redirect to /wallet-connect if isConnected is false
+    useEffect(() => {
+        if (!isConnected) {
+            history.push('/wallet-connect');
+        }
+    }, [isConnected, history]);
+
     const [data, setData] = useState(initData);
     const [isFormSubmitted, setIsFormSubmitted] = useState(false);
     const [isCompleted, setIsCompleted] = useState(false);
