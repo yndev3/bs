@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { fetchFromApi } from '../../utils/fetchFromApi';
 import Card from '../Item/Card';
+import { Link } from 'react-router-dom';
 
 const ExploreWatches = (props) => {
   const [products, setProducts] = useState([]);
@@ -44,8 +45,8 @@ const ExploreWatches = (props) => {
                   <h3 className="mt-3 mb-0">{ props.heading }</h3>
                 </div>
                 <div className="intro-btn">
-                  <a className="btn content-btn" href="/item-list">View
-                    All</a>
+                  <Link className="btn content-btn" to="/explore-watches">View
+                    All</Link>
                 </div>
               </div>
             </div>
@@ -57,10 +58,10 @@ const ExploreWatches = (props) => {
           </div>
           <div className="row">
             <div className="col-12 text-center">
-              <a className="btn btn-bordered-white mt-5"
-                 href="/item-list">
+              <Link to="/explore-watches" className="btn btn-bordered-white mt-5">
                 View All
-              </a>
+                <i className="fa fa-arrow-circle-right ml-2" />
+              </Link>
             </div>
           </div>
         </div>

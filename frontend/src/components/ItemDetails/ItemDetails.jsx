@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { useHistory } from 'react-router-dom';
 
 import { Required } from '../ItemDetails/Required';
 import { OptionList } from '../ItemDetails/optionlist';
@@ -21,6 +22,8 @@ export default function Selling() {
   const brandSwapMintAddress = process.env.REACT_APP_BRANDSWAP_MINT_ADDRESS;
   const TXT = '0x68B1D87F95878fE05B998F19b66F4baba5De1aed';
   const [itemData, setItemData] = useState({});
+  const scan_address = process.env.REACT_APP_POLYGON_SCAN_ADDRESS
+  const history = useHistory();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -136,10 +139,8 @@ export default function Selling() {
   const [splideImages, setSplideImages] = useState([]); 
 
   useEffect(() => {
-    console.log(`Current id: ${id}, Previous id: ${prevId}`);
   
     const fetchData = async () => {
-      console.log('Fetching data from API...');
       try {
         const data = await fetchFromApi({
           endpoint: '/api/item',
@@ -153,6 +154,7 @@ export default function Selling() {
       } catch (err) {
         console.error('Error fetching data:', err);
         setError(err);
+        history.push('/error'); 
       }
     };
   
@@ -226,10 +228,15 @@ export default function Selling() {
                       <span>1 of 1</span>
                     </div>   
                   ) : null }
-                    <li className="price d-flex justify-content-between">
-                      <span className="mr-3 text-white">Owned By</span>
-                      <span className="word-break">{outputAddress}</span>
-                    </li>
+                <li className="price d-flex justify-content-between">
+                  <span className="mr-3 text-white">Owned By</span>
+                  <a 
+                    href={`${scan_address}address/${itemData.owner_address}`} 
+                    target="_blank" 
+                    rel="noopener noreferrer">
+                    <span className="word-break">{outputAddress}</span>
+                  </a>
+                </li>
                     <li className="price d-flex justify-content-between">
                       <span className="mr-3 text-white">Status</span>
                       <span className="word-break">{saleStatus}</span>

@@ -1,4 +1,5 @@
 import React, { useEffect } from 'react';
+import { useHistory } from 'react-router-dom';
 import WalletCard from './WalletCard';
 import { useAccount, useConnect, useDisconnect, useSignMessage } from 'wagmi';
 import { toMessage } from '../SignIn/toMessage';
@@ -13,6 +14,7 @@ export default function Wallet() {
   const {disconnect} = useDisconnect();
   const {signMessageAsync} = useSignMessage();
   const {open, close} = useWeb3Modal();
+  const history = useHistory();
 
   const createSiweMessage = (address, chainId, statement, nonce, issuedAt) => {
     return toMessage({
@@ -55,21 +57,14 @@ export default function Wallet() {
         data: payload,
       });
       console.log(responseData);
+      history.push('/');
     } catch (error) {
       console.error('Error during connection:', error);
       disconnect();
     }
   };
 
-  const click = async () => {
-    try {
-      const res = await fetchFromApi({endpoint:'/api/user'});
-      console.log(res);
-    } catch (e) {
-      console.log(e);
-      disconnect();
-    }
-  };
+
 
   useEffect(() => {
     if (isConnected) {
@@ -79,7 +74,6 @@ export default function Wallet() {
 
   return (
       <section className="wallet-connect-area">
-        <button onClick={ click }>test</button>
         <div className="container">
           <div className="row justify-content-center">
             <div className="col-12 col-md-8 col-lg-7">

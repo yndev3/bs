@@ -256,7 +256,11 @@ a:active:not(.btn) {
   color: var(--primary-color);
   text-decoration: none;
 }
-
+.btn-disabled{
+  background-color: #343a40 !important;
+  background-image: none !important;
+  pointer-events: none;
+}
 a:not([href]),
 a:not([href]):hover,
 a:not([href]) i,
@@ -820,6 +824,13 @@ aside {
 .card-caption .seller a h6{
   font-weight: 200 !important;
   width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.ellipsis{
+
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -1692,20 +1703,34 @@ header .navbar-expand .dropdown:hover > .dropdown-menu {
 }
 
 .card .card-body h5 {
-  font-size: 110%;
-  width: 100%;
+  font-size: 18px;
+  line-height: 1.2; /* Optional, adjust as needed */
+  margin: 0;
+  padding: 10px 0;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
   overflow: hidden;
   text-overflow: ellipsis;
-  white-space: nowrap;
+  min-height: 53.2px; /* 2 lines */
+  max-height: 53.2px; /* 2 lines */
 }
-
+.card .card-body .card-price {
+  font-size: 110%;
+  font-weight: 500;
+}
 .card-caption .card-body .seller {
   font-size: 90%;
 }
 .card .card-body .card-bottom span {
   color: var(--white-color);
 }
-
+.card-min {
+  min-height: 476px !important;
+}
+.card-img-top {
+  aspect-ratio: 1 / 1;
+}
 .card .card-footer {
   border-radius: 0;
   background: none;

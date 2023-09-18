@@ -7,7 +7,6 @@ function ModalBuyButton(props) {
     const formattedPrice = itemData && itemData.price ? itemData.price.toLocaleString() : "Price not available";
 
     const {address, isConnected} = useAccount();
-    console.log("isConnected:", isConnected);
 
 
     return (

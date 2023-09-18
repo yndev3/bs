@@ -29,22 +29,18 @@ export const OptionList = ({ itemData }) => {
   return (
   <>
                 <div className="accordion mt-5">
-                  <Accordion  preExpanded={['a']}>
                     {/* Optional List */ }
                     {renderDynamicComponent()}
                     {/* Details List */ }
-                    <AccordionItem>
-                      <AccordionItemHeading>
-                        <AccordionItemButton>
-                          Details
-                        </AccordionItemButton>
-                      </AccordionItemHeading>
-                      <AccordionItemPanel>
+                    <hr className='white'/>
+                          <p>
+                            <span className="text-white h5">Details</span>
+                          </p>
                           <ul className="list-unstyled">
                             <li className="price d-flex justify-content-between">
                               <span className="mr-3 text-white">Token ID</span>
                               <span className="word-break">
-                                {itemData.token_id}
+                                <a href={itemData.meta_url} target='blank'>{itemData.token_id}</a>
                               </span>
                             </li>
                             <li className="price d-flex justify-content-between">
@@ -57,9 +53,6 @@ export const OptionList = ({ itemData }) => {
                               <span className="word-break">Polygon</span>
                             </li>
                           </ul>
-                      </AccordionItemPanel>
-                    </AccordionItem>
-                  </Accordion>
                 </div>
                 </>
   );

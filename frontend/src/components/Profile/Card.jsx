@@ -1,7 +1,5 @@
-import React from 'react';
-
 const NFTCard = ({ item, idx, handleItemSelected }) => {
-    const { "name": title, "image": img, updated_at: up_date, } = item;
+    const { "name": title, "image": img, transfer_at: up_date, } = item;
 
     const formattedUpDate = (() => {
         const dateObject = new Date(up_date);
@@ -23,17 +21,18 @@ const NFTCard = ({ item, idx, handleItemSelected }) => {
     const minutes = Math.floor((timeDiff % (1000 * 60 * 60)) / (1000 * 60));
     const seconds = Math.floor((timeDiff % (1000 * 60)) / 1000);
 
+    const isExchangeable = timeDiff <= 0;
+    const isButtonDisabled = timeDiff > 0;
+
     return (
         <div key={`edth_${idx}`} className="col-12 col-sm-6 col-lg-3 item explore-item" data-groups={item.group}>
             <div className="card min-h">
                 <div className="image-over">
-                    <a href="/item-details">
+                    <a href={`/item-details/${item.token_id}`}>
                         <img className="card-img-top" src={img} alt="" />
                     </a>
                 </div>
-                {/* Card Caption */}
                 <div className="card-caption col-12 p-0">
-                    {/* Card Body */}
                     <div className="card-body">
                         <div className="card-bottom d-flex justify-content-between">
                             <span>ID</span>
@@ -50,18 +49,24 @@ const NFTCard = ({ item, idx, handleItemSelected }) => {
                         </div>
                         <div className="seller align-items-center my-3">
                             <span>Exchangeable date and time</span>
-                            <h6 className="mb-0">{`${days}d ${hours}h ${minutes}m ${seconds}s remaining`}</h6> 
+                            <h6 className="mb-0">{isExchangeable ? "Exchangeable now" : `${days}d ${hours}h ${minutes}m ${seconds}s remaining`}</h6> 
                         </div>
-
                         <div className="col-12 text-center mt-2">
-                            <a 
-                                className="btn btn-bordered-white btn-smaller mt-3" 
+                        <a 
+                                className={`btn btn-smaller mt-3 ${isExchangeable ? 'btn-bordered-white' : 'btn-disabled'}`} 
                                 href="#" 
-                                data-toggle="modal" 
-                                data-target="#reserves"
-                                onClick={() => handleItemSelected(item.id, title)} 
+                                data-toggle={isButtonDisabled ? null : "modal"} 
+                                data-target={isButtonDisabled ? null : "#reserves"}
+                                onClick={(e) => {
+                                    if (isButtonDisabled) {
+                                        e.preventDefault();
+                                    } else {
+                                        handleItemSelected(item.id, title);
+                                    }
+                                }}
                             >
-                            <i className="icon-handbag mr-2" />Reserve Now</a>
+                            <i className={`icon-${isExchangeable ? 'handbag' : 'ban'} mr-2`}></i>{isExchangeable ? "Reserve Now" : "Holding Period"}
+                            </a>
                         </div>
                     </div>
                 </div>
