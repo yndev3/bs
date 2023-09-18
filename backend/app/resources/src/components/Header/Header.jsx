@@ -31,14 +31,7 @@ const Header = () => {
                         </li>            
                     </ul>
 
-                    {/* Navbar Toggler */}
-                    <ul className="navbar-nav toggle">
-                        <li className="nav-item">
-                            <a href="#" className="nav-link" data-toggle="modal" data-target="#menu">
-                                <i className="fas fa-bars toggle-icon m-0" />
-                            </a>
-                        </li>
-                    </ul>
+
                     {/* Navbar Action Button */ }
                     <ul className="navbar-nav action">
                         <li className="nav-item ml-3">
