@@ -34,7 +34,7 @@ const ModalMenu = () => {
                     </Link>
                   </li>
                   <li className="nav-item dropdown">
-                    <Link className="nav-link" href="#" onClick={toggleExploreDropdown}>
+                    <Link className="nav-link" to="#" onClick={toggleExploreDropdown}>
                       Explore
                     <svg
                     className="svg-inline--fa fa-angle-down fa-w-10 ml-1"
@@ -69,7 +69,7 @@ const ModalMenu = () => {
                 {isConnected && (
                 <ul className="navbar-nav items mx-auto">
                   <li className="nav-item dropdown">
-                    <Link className="nav-link" href="#" onClick={toggleUserDropdown}>
+                    <Link className="nav-link" to="#" onClick={toggleUserDropdown}>
                     Dashboard
                     <svg
                     className="svg-inline--fa fa-angle-down fa-w-10 ml-1"
