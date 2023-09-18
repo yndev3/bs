@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import AuthorProfile from '../AuthorProfile/AuthorProfile';
 import BrandSwap from '../../contracts/BrandSwap.json';
 import { WatchForm, JewelryForm, MaterialForm } from './CategoryForm';
 import useMintSubmit from '../../hooks/useMintSubmit';
@@ -55,7 +54,11 @@ const Create = () => {
     eventName: 'nftMinted',
     listener(log) {
       const {uri, tokenId, sender} = log[0].args;
-      axios.post('http://localhost/api/creat-item', {uri: uri, tokenId: tokenId.toString()})
+      axios.post(`${import.meta.env.VITE_BASE_URL}/api/creat-item`, {
+        uri: uri,
+        tokenId: tokenId.toString(),
+        owner: sender,
+      })
       .then(function (response) {
         console.log(response);
       })
@@ -97,7 +100,7 @@ const Create = () => {
   }, 1000); // 1sec の遅延
 
   const skuCheck = async (sku) => {
-    const response = await axios.post('http://localhost/api/exists-sku', {sku: sku});
+    const response = await axios.post(`${import.meta.env.VITE_BASE_URL}/api/exists-sku`, {sku: sku});
     console.log(response.data.exists);
     return response.data.exists;
   };

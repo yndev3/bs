@@ -15,23 +15,26 @@ import { useParams } from 'react-router-dom';
 
 
 export default function Selling() {
-  const BrandSwapAddress = '0x0B306BF915C4d645ff596e518fAf3F9669b97016';
-  const marketplaceAddress = '0x9A9f2CCfdE556A7E9Ff0848998Aa4a0CFD8863AE';
+  const BrandSwapAddress = import.meta.env.VITE_BRANDSWAP_ADDRESS;
+  const marketplaceAddress = import.meta.env.VITE_SELLING_ADDRESS;
   const brandSwapMintAddress = import.meta.env.VITE_BRANDSWAP_MINT_ADDRESS;
-  const TXT = '0x68B1D87F95878fE05B998F19b66F4baba5De1aed';
+  const TXT = import.meta.env.VITE_ERC20_ADDRESS;
   const scan_address = import.meta.env.VITE_POLYGON_SCAN_ADDRESS
   const [itemData, setItemData] = useState({});
-
+  const [itemDataApi, setItemDataApi] = useState(null); // 状態追加
+  const [error, setError] = useState(null); // エラー状態追加
+  const { id } = useParams(); // 追加
+  const [prevId, setPrevId] = useState(null);
+  const [splideImages, setSplideImages] = useState([]);
   const handleSubmit = async (e) => {
     e.preventDefault();
     const price = ethers.utils.parseEther(e.target.price.value);
-    const tokenId = e.target.tokenId.value;
 
     try {
       const market = await connectMarket();
       const tx = await market.setTokenContract(TXT);
       const marketTx = await market.setSale(
-          tokenId,
+          id,
           price,
           true,
       );
@@ -97,7 +100,7 @@ export default function Selling() {
     const market = await connectMarket();
 
     // Fetch the sale data
-    const sale = await market.getSale(itemData.tokenId);
+    const sale = await market.getSale(id);
     if (!sale.isSale) {
       throw new Error('The token is not for sale');
     }
@@ -115,25 +118,8 @@ export default function Selling() {
     await approveTx.wait();
 
     // Purchase the NFT with the ERC20 token
-    const tx = await market.buyWithERC20(itemData.tokenId, sale.price, TXT);
-    console.log(tx);
-    // listen to the event when the transaction is confirmed and the NFT is transferred
-    const {seller, buyer, price, tokenId} = await tx.wait();
-    // ethers.on('TokenSold', (tokenId, sender, payment, token) => {
-    //   console.log(`TokenSold tokenId: ${ tokenId }`);
-    //   console.log(`TokenSold sender: ${ sender }`);
-    //   console.log(`TokenSold payment: ${ payment }`);
-    //   console.log(`TokenSold token: ${ token }`);
-    // });
+    const tx = await market.buyWithERC20(id, sale.price, TXT);
   };
-  
-  // API
-
-  const [itemDataApi, setItemDataApi] = useState(null); 
-  const [error, setError] = useState(null); 
-  const { id } = useParams(); 
-  const [prevId, setPrevId] = useState(null);
-  const [splideImages, setSplideImages] = useState([]); 
 
 useEffect(() => {
   const fetchData = async () => {
@@ -198,7 +184,7 @@ useEffect(() => {
   // Burn States
 
   const burnStatus = itemData.is_burn === 1 ? "Burned" : "Unburned";
-  
+
   return (
 
       <section className="item-details-area">
@@ -234,16 +220,16 @@ useEffect(() => {
               </div>
               <div className="col-12 item px-lg-2 mt-3">
 
-              {/* Item Price Change */}                
-              <div className="card no-hover mb-2">  
+              {/* Item Price Change */}
+              <div className="card no-hover mb-2">
                 <p>
-                  <span className="text-white h5">Owner</span>        
+                  <span className="text-white h5">Owner</span>
                 </p>
                 <li className="price d-flex justify-content-between">
                   <span className="mr-3 text-white">By</span>
-                  <a 
-                    href={`${scan_address}address/${itemData.owner_address}`} 
-                    target="_blank" 
+                  <a
+                    href={`${scan_address}address/${itemData.owner_address}`}
+                    target="_blank"
                     rel="noopener noreferrer">
                     <span className="word-break">{outputAddress}</span>
                   </a>
@@ -258,51 +244,51 @@ useEffect(() => {
               {(itemData.is_sale === 0 || itemData.is_sale === 1) && itemData.is_burn === 0 && (
               <div className="card no-hover mb-2">
                 <p>
-                  <span className="text-white h5">Price Change</span>        
+                  <span className="text-white h5">Price Change</span>
                 </p>
                 <div className='form-inline'>
                   <div className="form-group">
                     <div className="price d-flex justify-content-between align-items-center">
-                      <input 
-                        type='text' 
-                        defaultValue={ itemData.price } 
+                      <input
+                        type='text'
+                        defaultValue={ itemData.price }
                         className='mr-3'
                         style={{ width: '200px' }}
                       /> USDT
-                      <a 
-                        className="btn btn-bordered-white btn-smaller ml-3" 
-                        href="#" 
-                        data-toggle="modal" 
+                      <a
+                        className="btn btn-bordered-white btn-smaller ml-3"
+                        href="#"
+                        data-toggle="modal"
                         data-target="#buybutton"
                         >
                         Change
                       </a>
-                    </div>  
+                    </div>
                   </div>
-                </div> 
+                </div>
               </div>
               )}
 
-              <div className="card no-hover">  
+              <div className="card no-hover">
                 <li className="price d-flex justify-content-between">
                   <span className="mr-3 text-white">Status</span>
                   <span className="word-break">{saleStatus}</span>
                 </li>
                 <div className="col-12 text-center">
                 {itemData.is_sale === 0 && itemData.is_burn === 0 && (
-                  <a 
-                      className="btn btn-bordered-white btn-smaller mt-3" 
-                      href="#" 
-                      data-toggle="modal" 
+                  <a
+                      className="btn btn-bordered-white btn-smaller mt-3"
+                      href="#"
+                      data-toggle="modal"
                       data-target="#buybutton"
                       >Start Sale
                   </a>
                 )}
                 {itemData.is_sale === 1 && itemData.is_burn === 0 && (
-                  <a 
-                      className="btn btn-bordered-white btn-smaller mt-3" 
-                      href="#" 
-                      data-toggle="modal" 
+                  <a
+                      className="btn btn-bordered-white btn-smaller mt-3"
+                      href="#"
+                      data-toggle="modal"
                       data-target="#buybutton"
                       >Stop Sale
                   </a>
