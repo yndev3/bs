@@ -2,7 +2,7 @@ import React from 'react';
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 
 // importing all the themes
-import ThemeOne from '../themes/theme-one';
+import Home from '../themes/home';
 import ScrollToTop from '../components/Scrollup/ScrollTop';
 import ExploreWatches from '../themes/explore-one';
 import ExploreJewelrys from '../themes/explore-two';
@@ -21,7 +21,7 @@ const MyRouts = () => {
         <Router>
           <ScrollToTop />
           <Switch>
-            <Route exact path="/" component={ ThemeOne }/>
+            <Route exact path="/" component={ Home }/>
             <Route exact path="/explore-watches" component={ ExploreWatches }/>
             <Route exact path="/explore-jewelrys" component={ ExploreJewelrys }/>
             <Route exact path="/explore-materials" component={ ExploreMaterials }/>
