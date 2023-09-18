@@ -2549,7 +2549,15 @@ padding: 100px 0 140px !important;
 .wallet-connect-area .single-wallet:hover h4 {
   color: var(--primary-color);
 }
-
+@media (max-width: 575px) {
+  .wallet-btn {
+  padding: 9px 10px !important;
+  font-size: 90%;
+  }
+  .wallet-btn i{
+    margin-right: 5px;
+    }
+}
 .help-center-area .card {
   padding: 45px;
   min-height: 300px;

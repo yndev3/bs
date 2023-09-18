@@ -9,7 +9,6 @@ const Profile = () => {
 
     useEffect(() => {
         if (isConnected) {
-          console.log('Connected');
         }
       }, [isConnected, isDisconnected]);
 

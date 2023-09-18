@@ -43,10 +43,10 @@ const Header = () => {
                         </li>
                     </ul>
                     {/* Navbar Action Button */ }
-                    <ul className="navbar-nav action">
+                    <ul className="navbar-nav">
                         <li className="nav-item ml-3">
                             <NavLink to={ '/wallet-connect' }
-                               className="btn ml-lg-auto btn-bordered-white">
+                               className="btn ml-lg-auto btn-bordered-white wallet-btn">
                                 <i className="icon-wallet mr-md-2"/>{
                                 isConnected
                                     ? shortenAddress(address)
