@@ -1,5 +1,5 @@
 import React from 'react';
-import { NavLink } from 'react-router-dom';
+import { NavLink, Link } from 'react-router-dom';
 import { useAccount } from 'wagmi'
 import Profile from './Profile';
 const Header = () => {
@@ -14,9 +14,9 @@ const Header = () => {
             <nav data-aos="zoom-out" data-aos-delay={800} className="navbar navbar-expand">
                 <div className="container header">
                     {/* Navbar Brand*/}
-                    <a className="navbar-brand" href="/">
+                    <Link className="navbar-brand" to="/">
                         <img className="navbar-brand-sticky" src="/img/logo.png" alt="sticky brand-logo" />
-                    </a>
+                    </Link>
                     <div className="ml-auto" />
                     {/* Navbar */}
                     <ul className="navbar-nav items mx-auto">
@@ -24,11 +24,11 @@ const Header = () => {
                             <NavLink to={'/'} className="nav-link">Home</NavLink>
                         </li>
                         <li className="nav-item dropdown">
-                            <a className="nav-link" href="#">Explore<i className="fas fa-angle-down ml-1" /></a>
+                            <Link className="nav-link" to="#">Explore<i className="fas fa-angle-down ml-1" /></Link>
                             <ul className="dropdown-menu">
-                                <li className="nav-item"><NavLink to={'/explore-watches'} className="nav-link">Watches</NavLink></li>
-                                <li className="nav-item"><NavLink to={'/explore-jewelrys'} className="nav-link">Jewelrys</NavLink></li>
-                                <li className="nav-item"><NavLink to={'/explore-materials'} className="nav-link">Materials</NavLink></li>
+                                <li className="nav-item"><Link to={'/explore-watches'} className="nav-link">Watches</Link></li>
+                                <li className="nav-item"><Link to={'/explore-jewelrys'} className="nav-link">Jewelrys</Link></li>
+                                <li className="nav-item"><Link to={'/explore-materials'} className="nav-link">Materials</Link></li>
                             </ul>
                         </li>
                     </ul>
@@ -37,21 +37,21 @@ const Header = () => {
                     {/* Navbar Toggler */}
                     <ul className="navbar-nav toggle">
                         <li className="nav-item">
-                            <a href="#" className="nav-link" data-toggle="modal" data-target="#menu">
+                            <Link to="#" className="nav-link" data-toggle="modal" data-target="#menu">
                                 <i className="fas fa-bars toggle-icon m-0" />
-                            </a>
+                            </Link>
                         </li>
                     </ul>
                     {/* Navbar Action Button */ }
                     <ul className="navbar-nav">
                         <li className="nav-item ml-3">
-                            <NavLink to={ '/wallet-connect' }
+                            <Link to={ '/wallet-connect' }
                                className="btn ml-lg-auto btn-bordered-white wallet-btn">
                                 <i className="icon-wallet mr-md-2"/>{
                                 isConnected
                                     ? shortenAddress(address)
                                     : 'Connect Wallet'
-                            }</NavLink>
+                            }</Link>
                         </li>
                     </ul>
                 </div>

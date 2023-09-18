@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { Link } from 'react-router-dom';
 import axios from 'axios';
 
 const BASE_URL = "https://my-json-server.typicode.com/themeland/netstorm-json-2/sidebar";
@@ -35,7 +36,7 @@ class Sidebar extends Component {
                                 {this.state.widgetData_1.map((item, idx) => {
                                     return (
                                         <li key={`wdo_${idx}`} className="list-group-item d-flex justify-content-between align-items-center">
-                                            <a href="#">{item.title}</a>
+                                            <Link to="#">{item.title}</Link>
                                             <span className="badge circle">{item.content}</span>
                                         </li>
                                     );
@@ -47,7 +48,7 @@ class Sidebar extends Component {
                             <h4 className="title">{this.state.data.widgetTitle_2}</h4>
                             {this.state.widgetData_2.map((item, idx) => {
                                 return (
-                                    <a key={`wdt_${idx}`} href="" className="badge tag">{item.title}</a>
+                                    <Link key={`wdt_${idx}`} to="" className="badge tag">{item.title}</Link>
                                 );
                             })}
                         </div>
@@ -58,7 +59,7 @@ class Sidebar extends Component {
                                 {this.state.widgetData_3.map((item, idx) => {
                                     return (
                                         <li key={`wdth_${idx}`} className="nav-item">
-                                            <a href="#" className="nav-link"><i className={item.icon} /></a>
+                                            <Link to="#" className="nav-link"><i className={item.icon} /></Link>
                                         </li>
                                     );
                                 })}

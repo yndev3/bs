@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import { useRecoilValue } from 'recoil';
 import { walletAddressAtom } from '../../atoms/WalletAddressAtom';
 
@@ -12,13 +13,13 @@ export default function WalletAddress() {
         {/* Navbar Action Button */ }
         <ul className="navbar-nav action">
           <li className="nav-item ml-3">
-            <a href="/wallet-connect"
+            <Link to="/wallet-connect"
                className="btn ml-lg-auto btn-bordered-white">
               <i className="icon-wallet mr-md-2"/>{
               address !== null
                   ? shortenAddress(address)
                   : 'Connect Wallet'
-            }</a>
+            }</Link>
           </li>
         </ul>
       </>
