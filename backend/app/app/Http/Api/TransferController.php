@@ -15,7 +15,7 @@ final class TransferController
 
     public function __invoke(Request $request): void
     {
-        $hex_string = substr($request->input('event.activity.0.erc721TokenId'), 2);
+        $hex_string = $request->input('event.activity.0.erc721TokenId');
 
         $hex_string_cleaned = str_replace("0x", "", $hex_string);
         $token_id = hexdec($hex_string_cleaned);
