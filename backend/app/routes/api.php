@@ -4,6 +4,7 @@ use App\Http\Api\AuthController;
 use App\Http\Api\ItemController;
 use App\Http\Api\ItemRegistrationController;
 use App\Http\Api\StoreController;
+use App\Http\Api\TransferController;
 use App\Http\Api\UniqueCheckController;
 use App\Http\Api\ItemListController;
 use App\Http\Api\UserController;
@@ -40,6 +41,8 @@ Route::get('/item-limit', [ItemListController::class, 'withLimit']);
 Route::get('/item', [ItemController::class, 'getProductByTokenId']);
 // fetchRegisteredStores
 Route::get('/stores', StoreController::class);
+
+Route::post('/transfer', TransferController::class);
 
 
 Route::get('/statement', [AuthController::class, 'getStatement']);
