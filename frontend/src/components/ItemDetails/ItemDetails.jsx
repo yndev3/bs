@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useHistory } from 'react-router-dom';
 import { Link } from 'react-router-dom';
+import { useAccount } from 'wagmi';
 
 import { Required } from '../ItemDetails/Required';
 import { OptionList } from '../ItemDetails/optionlist';
@@ -25,6 +26,7 @@ export default function Selling() {
   const [itemData, setItemData] = useState({});
   const scan_address = process.env.REACT_APP_POLYGON_SCAN_ADDRESS
   const history = useHistory();
+  const { isConnected } = useAccount();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -242,17 +244,29 @@ export default function Selling() {
                       <span className="mr-3 text-white">Status</span>
                       <span className="word-break">{saleStatus}</span>
                     </li>
-                   { itemData.is_sale === 1 && itemData.is_burn === 0 ? (
-                  <div className="col-12 text-center mt-2">
-                    <Link  
-                        className="btn btn-bordered-white btn-smaller mt-3" 
-                        to="#" 
-                        data-toggle="modal" 
-                        data-target="#buybutton"
-                    >
-                    <i className="icon-handbag mr-2" />Confirm Purchase</Link>
-                  </div>
-                   ) : null }
+
+
+                    {isConnected ? (
+                    <div className="col-12 text-center mt-2">
+                      <Link  
+                          className="btn btn-bordered-white btn-smaller mt-3" 
+                          to="#" 
+                          data-toggle="modal" 
+                          data-target="#buybutton"
+                      >
+                      <i className="icon-handbag mr-2" />Confirm Purchase</Link>
+                    </div>
+                    ) : (
+                        <div className="col-12 align-self-center">
+                            <Link 
+                                className="d-block btn btn-bordered-white mt-4" 
+                                to="/wallet-connect" 
+                            >
+                                <i className="icon-wallet mr-md-2" />Wallet Connect
+                            </Link >
+                        </div>
+                    )}
+
                 </div>
               </div>
               <ModalBuyButton handleBuy={handleBuy} itemData={itemData} />
