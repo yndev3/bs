@@ -2556,7 +2556,13 @@ padding: 100px 0 140px !important;
   }
   .wallet-btn i{
     margin-right: 5px;
-    }
+  }
+  .breadcrumb-area{
+    height: 238px !important;
+  }
+  .breadcrumb-content{
+    padding-top: 51px !important;
+  }
 }
 .help-center-area .card {
   padding: 45px;

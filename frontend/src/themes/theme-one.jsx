@@ -17,8 +17,8 @@ const ThemeOne = () => {
         <Hero/>
         <Work/>
         <ExploreWatches heading='Watches'/>
-        <ExploreJewelrys/>
-        <ExploreMaterials/>
+        <ExploreJewelrys heading='Jewelrys'/>
+        <ExploreMaterials heading='Materials'/>
         <Footer/>
         <ModalMenu/>
         <Scrollup/>
