@@ -7,6 +7,12 @@ function ModalBuyButton(props) {
     const formattedPrice = itemData && itemData.price ? itemData.price.toLocaleString() : "Price not available";
     const { isConnected } = useAccount();
 
+    const removeModalBackdrop = () => {
+        const backdrop = document.querySelector('.modal-backdrop.fade.show');
+        if (backdrop) {
+          backdrop.classList.remove('show');
+        }
+      };
 
     return (
         <div id="buybutton" className="modal fade p-0">
@@ -66,6 +72,7 @@ function ModalBuyButton(props) {
                                         <Link 
                                             className="d-block btn btn-bordered-white mt-4" 
                                             to="/wallet-connect" 
+                                            onClick={removeModalBackdrop}
                                         >
                                             <i className="icon-wallet mr-md-2" />Wallet Connect
                                         </Link >

@@ -3,7 +3,7 @@ import { NavLink, Link } from 'react-router-dom';
 import { useAccount } from 'wagmi'
 
 const Header = () => {
-    const { address , isConnected} = useAccount();
+    const { address , isConnected } = useAccount();
     const shortenAddress = (address, chars = 4) => {
         return `${ address.slice(0, 2) }...${ address.slice(-chars) }`;
     };
