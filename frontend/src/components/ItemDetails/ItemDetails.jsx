@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useHistory } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 
 import { Required } from '../ItemDetails/Required';
 import { OptionList } from '../ItemDetails/optionlist';
@@ -243,13 +244,13 @@ export default function Selling() {
                     </li>
                    { itemData.is_sale === 1 && itemData.is_burn === 0 ? (
                   <div className="col-12 text-center mt-2">
-                    <a 
+                    <Link  
                         className="btn btn-bordered-white btn-smaller mt-3" 
-                        href="#" 
+                        to="#" 
                         data-toggle="modal" 
                         data-target="#buybutton"
                     >
-                    <i className="icon-handbag mr-2" />Confirm Purchase</a>
+                    <i className="icon-handbag mr-2" />Confirm Purchase</Link>
                   </div>
                    ) : null }
                 </div>

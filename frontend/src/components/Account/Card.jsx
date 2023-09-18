@@ -1,3 +1,5 @@
+import { NavLink, Link } from 'react-router-dom';
+
 const NFTCard = ({ item, idx, handleItemSelected }) => {
     const { "name": title, "image": img, transfer_at: up_date, } = item;
 
@@ -28,9 +30,9 @@ const NFTCard = ({ item, idx, handleItemSelected }) => {
         <div key={`edth_${idx}`} className="col-12 col-sm-6 col-lg-3 item explore-item" data-groups={item.group}>
             <div className="card min-h">
                 <div className="image-over">
-                    <a href={`/item-details/${item.token_id}`}>
+                    <Link to={`/item-details/${item.token_id}`}>
                         <img className="card-img-top" src={img} alt="" />
-                    </a>
+                    </Link>
                 </div>
                 <div className="card-caption col-12 p-0">
                     <div className="card-body">
@@ -39,9 +41,9 @@ const NFTCard = ({ item, idx, handleItemSelected }) => {
                             <span>{item.id}</span>
                         </div>
                         <div className="seller align-items-center my-3">
-                            <a href="/item-details">
+                            <Link to={`/item-details/${item.token_id}`}>
                                 <h5 className="mb-0">{title}</h5>
-                            </a>
+                            </Link>
                         </div>
                         <div className="seller align-items-center my-3">
                             <span>Last Update</span>
@@ -52,9 +54,9 @@ const NFTCard = ({ item, idx, handleItemSelected }) => {
                             <h6 className="mb-0">{isExchangeable ? "Exchangeable now" : `${days}d ${hours}h ${minutes}m ${seconds}s remaining`}</h6> 
                         </div>
                         <div className="col-12 text-center mt-2">
-                        <a 
+                        <Link 
                                 className={`btn btn-smaller mt-3 ${isExchangeable ? 'btn-bordered-white' : 'btn-disabled'}`} 
-                                href="#" 
+                                to="#" 
                                 data-toggle={isButtonDisabled ? null : "modal"} 
                                 data-target={isButtonDisabled ? null : "#reserves"}
                                 onClick={(e) => {
@@ -66,7 +68,7 @@ const NFTCard = ({ item, idx, handleItemSelected }) => {
                                 }}
                             >
                             <i className={`icon-${isExchangeable ? 'handbag' : 'ban'} mr-2`}></i>{isExchangeable ? "Reserve Now" : "Holding Period"}
-                            </a>
+                            </Link>
                         </div>
                     </div>
                 </div>

@@ -20,11 +20,11 @@ const Hero = () => {
               <p className="f140">{ data.content }</p>
               {/* Buttons */ }
               <div className="button-group mt-5">
-                <a className="mr-4" href="/create"><i
+                <a className="mr-4" href="/create" target='Blank'><i
                     className="fab fa-twitter fa-3x"></i></a>
-                <a className="mr-4" href="/create"><i
+                <a className="mr-4" href="/create" target='Blank'><i
                     className="fab fa-discord fa-3x"></i></a>
-                <a className="mr-4" href="/create"><i
+                <a className="mr-4" href="/create" target='Blank'><i
                     className="fab fa-telegram fa-3x"></i></a>
               </div>
             </div>

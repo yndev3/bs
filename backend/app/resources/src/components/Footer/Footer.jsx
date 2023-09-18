@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { Link } from 'react-router-dom';
 import axios from 'axios';
 
 const BASE_URL = "https://my-json-server.typicode.com/themeland/netstorm-json-2/footer";
@@ -37,7 +38,7 @@ class Footer extends Component {
                                     {/* Copyright Left */}
                                     <div className="copyright-left">© All Rights Reserved.</div>
                                     {/* Copyright Right */}
-                                    <div className="copyright-right">Made with <i className="fas fa-heart" /> By <a href="#">BrandSwap</a></div>
+                                    <div className="copyright-right">Made with <i className="fas fa-heart" /> By <Link to="#">BrandSwap</Link></div>
                                 </div>
                             </div>
                         </div>

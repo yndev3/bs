@@ -1,6 +1,7 @@
 import React, { useEffect } from 'react';
 import { useHistory } from 'react-router-dom';
 import { useAccount } from 'wagmi';
+import { Link } from 'react-router-dom';
 
 function ModalBuyButton(props) {
     const history = useHistory();
@@ -60,22 +61,22 @@ function ModalBuyButton(props) {
                                 <div className="row">
                                 {isConnected ? (
                                     <div className="col-12 align-self-center">
-                                        <a 
+                                        <Link 
                                             className="d-block btn btn-bordered-white mt-4" 
-                                            href="#" 
+                                            to="#" 
                                             onClick={props.handleBuy}
                                         >
                                             <i className="icon-handbag mr-2" />Complete purchase
-                                        </a>
+                                        </Link>
                                     </div>
                                 ) : (
                                     <div className="col-12 align-self-center">
-                                        <a 
+                                        <Link 
                                             className="d-block btn btn-bordered-white mt-4" 
-                                            href="/wallet-connect" 
+                                            to="/wallet-connect" 
                                         >
                                             <i className="icon-wallet mr-md-2" />Wallet Connect
-                                        </a>
+                                        </Link >
                                     </div>
                                 )}
                             </div>

@@ -1,11 +1,5 @@
 import React from 'react';
-import {
-  Accordion,
-  AccordionItem,
-  AccordionItemButton,
-  AccordionItemHeading,
-  AccordionItemPanel,
-} from 'react-accessible-accordion';
+import { Link } from 'react-router-dom';
 import 'react-accessible-accordion/dist/fancy-example.css';
 import { WatcheOption } from './WatcheOption'; 
 import { JewelryOption } from './JewelryOption';
@@ -40,7 +34,7 @@ export const OptionList = ({ itemData }) => {
                             <li className="price d-flex justify-content-between">
                               <span className="mr-3 text-white">Token ID</span>
                               <span className="word-break">
-                                <a href={itemData.meta_url} target='blank'>{itemData.token_id}</a>
+                                <Link to={itemData.meta_url} target='blank'>{itemData.token_id}</Link>
                               </span>
                             </li>
                             <li className="price d-flex justify-content-between">
