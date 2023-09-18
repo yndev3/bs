@@ -1,20 +1,12 @@
-import React, { useEffect } from 'react';
-import { useHistory } from 'react-router-dom';
+import React from 'react';
 import { useAccount } from 'wagmi';
 import { Link } from 'react-router-dom';
 
 function ModalBuyButton(props) {
-    const history = useHistory();
     const { itemData } = props;
     const formattedPrice = itemData && itemData.price ? itemData.price.toLocaleString() : "Price not available";
     const { isConnected } = useAccount();
 
-    // Redirect to /wallet-connect if isConnected is false
-    useEffect(() => {
-        if (!isConnected) {
-            history.push('/wallet-connect');
-        }
-    }, [isConnected, history]);
 
     return (
         <div id="buybutton" className="modal fade p-0">
