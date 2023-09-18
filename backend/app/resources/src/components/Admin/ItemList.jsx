@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import { useHistory } from 'react-router-dom';
 import { makeStyles, ThemeProvider, createTheme } from '@material-ui/core/styles';
 import Grid from '@material-ui/core/Grid';
@@ -328,12 +329,12 @@ export default function StickyHeadTable() {
                       {columns.map((column) => (
                         <TableCell key={column.id} align={column.id !== 'name' ? 'center' : column.align} className={classes.tableCell}>
                           {column.id === 'name' && (
-                            <a
-                              href={`itemDetails/${row.token_id}`} // 実際のリンクに置き換える
+                            <Link
+                              to={`itemDetails/${row.token_id}`} // 実際のリンクに置き換える
                               rel="noopener noreferrer"
                             >
                               {row[column.id]}
-                            </a>
+                            </Link>
                           )}
                           {column.id === 'is_sale' && isSaleText[row[column.id]]}
                           {column.id === 'is_burn' && isBurnText[row[column.id]]}

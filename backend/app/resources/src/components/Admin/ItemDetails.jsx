@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { Link } from 'react-router-dom';
 
 import { Required } from './Required';
 import { OptionList } from './optionlist';
@@ -255,14 +256,14 @@ useEffect(() => {
                         className='mr-3'
                         style={{ width: '200px' }}
                       /> USDT
-                      <a
+                      <Link
                         className="btn btn-bordered-white btn-smaller ml-3"
-                        href="#"
+                        to="#"
                         data-toggle="modal"
                         data-target="#buybutton"
                         >
                         Change
-                      </a>
+                      </Link>
                     </div>
                   </div>
                 </div>
@@ -276,22 +277,22 @@ useEffect(() => {
                 </li>
                 <div className="col-12 text-center">
                 {itemData.is_sale === 0 && itemData.is_burn === 0 && (
-                  <a
+                  <Link
                       className="btn btn-bordered-white btn-smaller mt-3"
-                      href="#"
+                      to="#"
                       data-toggle="modal"
                       data-target="#buybutton"
                       >Start Sale
-                  </a>
+                  </Link>
                 )}
                 {itemData.is_sale === 1 && itemData.is_burn === 0 && (
-                  <a
+                  <Link
                       className="btn btn-bordered-white btn-smaller mt-3"
-                      href="#"
+                      to="#"
                       data-toggle="modal"
                       data-target="#buybutton"
                       >Stop Sale
-                  </a>
+                  </Link>
                   )}
                 </div>
               </div>

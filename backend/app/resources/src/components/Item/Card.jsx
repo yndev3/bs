@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 
 const Card = (props) => {
   const item = props.item;
@@ -17,10 +18,10 @@ const Card = (props) => {
         <div className="mt-3 col-12 col-sm-6 col-lg-3">
           <div className="card">
             <div className="image-over">
-              <a href={ `/item-details/${ item.id }` }>
+              <Link to={ `/item-details/${ item.id }` }>
                 <img className="card-img-top"
                      src={ convertIpfsLink(item.image) } alt=""/>
-              </a>
+              </Link>
             </div>
             {/* Card Caption */ }
             <div className="card-caption col-12 p-0">
@@ -37,11 +38,11 @@ const Card = (props) => {
                 </div>
                 <div className="col-12 text-center mt-2">
 
-                  <a className="btn btn-bordered-white btn-smaller mt-3"
-                     href={ `/item-details/${ item.id }` }>
+                  <Link className="btn btn-bordered-white btn-smaller mt-3"
+                     to={ `/item-details/${ item.id }` }>
                       <i className="fa fa-arrow-circle-right mr-2" aria-hidden="true"></i>
                      ItemDetail
-                  </a>
+                  </Link>
                 </div>
               </div>
             </div>

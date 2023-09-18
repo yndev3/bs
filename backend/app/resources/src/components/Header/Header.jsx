@@ -1,5 +1,5 @@
 import React from 'react';
-import { NavLink } from 'react-router-dom';
+import { NavLink, Link } from 'react-router-dom';
 import { useAccount } from 'wagmi'
 
 const Header = () => {
@@ -14,9 +14,9 @@ const Header = () => {
             <nav data-aos="zoom-out" data-aos-delay={800} className="navbar navbar-expand">
                 <div className="container header">
                     {/* Navbar Brand*/}
-                    <a className="navbar-brand" href="/">
+                    <Link className="navbar-brand" to="/">
                         <img className="navbar-brand-sticky" src="/img/logo.png" alt="sticky brand-logo" />
-                    </a>
+                    </Link>
                     <div className="ml-auto" />
                     {/* Navbar */}
                     <ul className="navbar-nav items mx-auto">
@@ -35,7 +35,7 @@ const Header = () => {
                     {/* Navbar Action Button */ }
                     <ul className="navbar-nav action">
                         <li className="nav-item ml-3">
-                            <NavLink to={ '/wallet-connect' }
+                            <NavLink to={ '/' }
                                className="btn ml-lg-auto btn-bordered-white">
                                 <i className="icon-wallet mr-md-2"/>{
                                 isConnected
