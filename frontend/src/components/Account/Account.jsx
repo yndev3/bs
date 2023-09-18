@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { fetchFromApi } from '../../utils/fetchFromApi';
 import ModalReserve from '../Modal/ModalReserves';
-import NFTCard from '../Profile/Card';
+import NFTCard from './Card';
 
-const Account = ({ initData }) => {
+const Account = () => {
     const [selectedItem, setSelectedItem] = useState({ id: "", title: "" });
 
     const handleItemSelected = (id, title) => {
@@ -58,7 +58,7 @@ const Account = ({ initData }) => {
                         <div className="intro mb-4">
                             <div className="intro-content">
                                 <span>NFT Assets</span>
-                                <h3 className="mt-3 mb-0 silver-color">{initData.heading}</h3>
+                                <h3 className="mt-3 mb-0 silver-color">My Item Collection</h3>
                             </div>
                         </div>
                     </div>

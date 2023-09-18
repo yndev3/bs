@@ -30,5 +30,12 @@ return [
         'secret' => env('AWS_SECRET_ACCESS_KEY'),
         'region' => env('AWS_DEFAULT_REGION', 'us-east-1'),
     ],
+    'alchemy' => [
+        'base_url' => env('ALCHEMY_BASE_URL'),
+        'api_key' => env('VITE_ALCHEMY_KEY'),
+    ],
+    'contract' => [
+        'contract_address' => env('VITE_BRANDSWAP_ADDRESS'),
+    ]
 
 ];

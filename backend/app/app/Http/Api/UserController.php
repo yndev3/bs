@@ -9,6 +9,7 @@ use Carbon\Carbon;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Log;
 
@@ -28,8 +29,29 @@ final class UserController
             return response()->json(['error' => 'Unauthenticated'], 401);
         }
 
-        // 認証されているユーザーが所有している商品（NFT）のリストを取得
-        $nftList = $user->products()->get();
+        $alchemyBaseUrl = config('services.alchemy.base_url');
+        $alchemyApiKey = config('services.alchemy.api_key');
+        $response = Http::withHeaders([
+            "accept" => "application/json"
+        ])->get("$alchemyBaseUrl$alchemyApiKey/getNFTs", [
+            "owner" => $user->address,
+            "contractAddresses[]" => config("services.contract.contract_address"),
+        ]);
+
+        $tokenIds = [];
+        if ($response->failed()) {
+            echo "HTTPリクエストエラー: " . $response->status();
+        } else {
+            $data = $response->json();
+            foreach ($data['ownedNfts'] as $nft) {
+                $integerTokenId = hexdec($nft['id']['tokenId']);
+                $tokenIds[] = $integerTokenId;
+            }
+        }
+
+        $nftList =  Product::query()
+            ->whereIn('token_id', $tokenIds)
+            ->get();
 
         return response()->json($nftList);
     }
