@@ -180,6 +180,7 @@ export default function StickyHeadTable() {
       })
       .catch((error) => {
         console.error('Error fetching data:', error);
+        history.push('/error');
       });
   }, []);
 
