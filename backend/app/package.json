@@ -26,6 +26,7 @@
         "web3.storage": "^4.5.5"
     },
     "dependencies": {
+        "@material-ui/data-grid": "^4.0.0-alpha.37",
         "@splidejs/react-splide": "^0.7.12",
         "ethers": "^5.7.2"
     }
