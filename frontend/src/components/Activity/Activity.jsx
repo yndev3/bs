@@ -1,11 +1,11 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import ListItem from './ListItem'; 
 
 const ActivityArea = () => {
 
   const scan_address = process.env.REACT_APP_POLYGON_SCAN_ADDRESS;
 
-  const [tabData_1, setTabData_1] = useState([
+  const [tabData_1] = useState([
     {
       token_id: '1',
       title: 'Item 1 sampleNama sampleNama sampleNama sampleNama sampleNama sampleNama',
@@ -28,40 +28,6 @@ const ActivityArea = () => {
       tx_id:'XXXXXXXXXXXXXXXX'
     }
   ]);
-
-  const renderListItem = (item, idx) => (
-    <li key={`ato_${idx}`} className="single-tab-list d-flex align-items-center w100">
-      <a href="/item-details">
-        <img className="avatar-lg" src={item.img} alt="" />
-      </a>
-      <div className="activity-content ml-4">
-        <a href="/item-details">
-          <h5 className="mt-0 mb-2 ellipsis ">
-            <strong>
-              <Link 
-                to={`/item-details/${item.token_id}`}
-                className='d-inline h5'
-              >
-                {item.title}
-              </Link>
-            </strong>
-          </h5>
-        </a>
-        <p className="m-0">Purchased for <strong>{item.price} USDT</strong></p>
-        <p className="m-0">
-            by BrandSwap
- 
-            <a 
-                href={`${scan_address}tx/${item.tx_id}`} 
-                className='d-inline'
-                target="_blank" 
-                rel="noopener noreferrer">
-                <i className="fas fa-external-link-alt ml-3" />
-            </a>
-        </p>
-      </div>
-    </li>
-  );
 
   return (
     <section className="activity-area load-more">
@@ -88,7 +54,9 @@ const ActivityArea = () => {
             <div className="tab-content" id="nav-tabContent">
               <div className="tab-pane fade show active" id="nav-home">
                 <ul className="list-unstyled">
-                  {tabData_1.map(renderListItem)}
+                  {tabData_1.map((item, idx) => (
+                    <ListItem item={item} idx={idx} scan_address={scan_address} />  
+                  ))}
                 </ul>
               </div>
             </div>
