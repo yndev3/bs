@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { createTheme, ThemeProvider } from '@material-ui/core/styles';
-import { DataGrid } from '@material-ui/data-grid';
+import { createTheme, ThemeProvider } from '@mui/material/styles';
+import { DataGrid } from '@mui/x-data-grid';
 
 const columns = [
   { field: 'id', headerName: 'ID', minWidth: 50 },
@@ -27,7 +27,16 @@ export default function DataGridDemo() {
 
   const darkTheme = createTheme({
     palette: {
-      type: 'dark',
+      mode: 'dark',
+    },
+    components: {
+      MuiDataGrid: {
+        styleOverrides: {
+          cell: {
+            color: 'white',  // セル内の文字色を白色に設定
+          },
+        },
+      },
     },
   });
 
