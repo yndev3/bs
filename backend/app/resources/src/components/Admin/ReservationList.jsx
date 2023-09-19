@@ -22,7 +22,7 @@ export default function DataGridDemo() {
   const [rows, setRows] = useState([]);
 
   useEffect(() => {
-    setRows(reserve.map((item, index) => ({ ...item, id: index })));
+    setRows(reserve);
   }, []);
 
   const darkTheme = createTheme({
@@ -45,7 +45,7 @@ export default function DataGridDemo() {
         <div className="row justify-content-center">
           <div className="col-11 col-md-11 col-lg-11 mt-5 mb-5">
             <div style={{ height: 440, width: '100%' }}>
-              <DataGrid rows={rows} columns={columns} pageSize={5} rowsPerPageOptions={[5, 10, 20]} />
+              <DataGrid rows={rows} columns={columns} pageSize={10} rowsPerPageOptions={[10, 25, 50]} />
             </div>
           </div>
         </div>
