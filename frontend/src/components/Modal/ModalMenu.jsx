@@ -34,7 +34,7 @@ const ModalMenu = () => {
                     </Link>
                   </li>
                   <li className="nav-item dropdown">
-                    <Link className="nav-link" href="#" onClick={toggleExploreDropdown}>
+                    <a className="nav-link" href="#" onClick={toggleExploreDropdown}>
                       Explore
                     <svg
                     className="svg-inline--fa fa-angle-down fa-w-10 ml-1"
@@ -52,7 +52,7 @@ const ModalMenu = () => {
                         d="M143 352.3L7 216.3c-9.4-9.4-9.4-24.6 0-33.9l22.6-22.6c9.4-9.4 24.6-9.4 33.9 0l96.4 96.4 96.4-96.4c9.4-9.4 24.6-9.4 33.9 0l22.6 22.6c9.4 9.4 9.4 24.6 0 33.9l-136 136c-9.2 9.4-24.4 9.4-33.8 0z"
                     />
                     </svg>
-                    </Link>
+                    </a>
                     <ul className={`dropdown-menu ${showExploreDropdown ? 'show' : ''}`}>
                       <li className="nav-item">
                         <Link className="nav-link" to="/explore-watches" onClick={removeModalBackdrop}>Watches</Link>
@@ -69,7 +69,7 @@ const ModalMenu = () => {
                 {isConnected && (
                 <ul className="navbar-nav items mx-auto">
                   <li className="nav-item dropdown">
-                    <Link className="nav-link" href="#" onClick={toggleUserDropdown}>
+                    <a className="nav-link" href="#" onClick={toggleUserDropdown}>
                     Dashboard
                     <svg
                     className="svg-inline--fa fa-angle-down fa-w-10 ml-1"
@@ -87,7 +87,7 @@ const ModalMenu = () => {
                         d="M143 352.3L7 216.3c-9.4-9.4-9.4-24.6 0-33.9l22.6-22.6c9.4-9.4 24.6-9.4 33.9 0l96.4 96.4 96.4-96.4c9.4-9.4 24.6-9.4 33.9 0l22.6 22.6c9.4 9.4 9.4 24.6 0 33.9l-136 136c-9.2 9.4-24.4 9.4-33.8 0z"
                     />
                     </svg>
-                    </Link>
+                    </a>
                     <ul className={`dropdown-menu ${showUserDropdown ? 'show' : ''}`}>
                       <li className="nav-item">
                         <Link className="nav-link" to="/account" onClick={removeModalBackdrop}>My Account</Link>
