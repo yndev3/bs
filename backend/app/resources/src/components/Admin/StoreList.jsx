@@ -1,28 +1,37 @@
 import React, { useState, useEffect } from 'react';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { DataGrid } from '@mui/x-data-grid';
+import { fetchFromApi } from '../../utils/fetchFromApi';
 
 const columns = [
   { field: 'id', headerName: 'ID', minWidth: 50 },
-  { field: 'name', headerName: 'Name', minWidth: 120 },
-  { field: 'date', headerName: 'Date', minWidth: 170 },
-  { field: 'itemId', headerName: 'ItemID', minWidth: 120 },
-  { field: 'itemName', headerName: 'ItemName', minWidth: 400 },
-  { field: 'mail', headerName: 'Mail', minWidth: 200 },
-  { field: 'tg', headerName: 'TG Handle', minWidth: 150 },
-  { field: 'storeName', headerName: 'StoreName', minWidth: 250 },
-];
-
-const reserve = [
-  { id: '1', name: 'John', date: '2021-09-10 00:00:00', itemId: '1001', itemName: 'Item 1', mail: 'john@example.com', tg: '@john', storeName: 'Store 1' },
-  { id: '2', name: 'Jane', date: '2021-09-11 00:00:00', itemId: '1002', itemName: 'Item 2', mail: 'jane@example.com', tg: '@jane', storeName: 'Store 2' },
+  { field: 'name', headerName: 'Name', minWidth: 300 },
+  { field: 'countryName', headerName: 'Country', minWidth: 250 },
+  { field: 'fullAddress', headerName: 'Full Address', minWidth: 500 }, 
 ];
 
 export default function DataGridDemo() {
   const [rows, setRows] = useState([]);
+  const [storeOptions, setStoreOptions] = useState([]);
 
   useEffect(() => {
-    setRows(reserve);
+    fetchFromApi({
+      endpoint: '/api/stores'
+    })
+    .then((data) => {
+      const transformedData = data.map(store => ({
+        id: store.id,
+        name: store.name,
+        countryName: store.country.name,
+        zip_code: store.zip_code,
+        fullAddress: `${store.zip_code} ${store.state} ${store.city} ${store.street_address}`, 
+      }));
+      setStoreOptions(transformedData);
+      setRows(transformedData);  
+    })
+    .catch(error => {
+      console.error('Error fetching data:', error);
+    });
   }, []);
 
   const darkTheme = createTheme({
@@ -33,7 +42,7 @@ export default function DataGridDemo() {
       MuiDataGrid: {
         styleOverrides: {
           cell: {
-            color: 'white',  // セル内の文字色を白色に設定
+            color: 'white',
           },
         },
       },
@@ -53,9 +62,9 @@ export default function DataGridDemo() {
       <ThemeProvider theme={darkTheme}>
         <div className="row justify-content-center">
           <div className="col-11 col-md-11 col-lg-11 mt-5 mb-5">
-            <div style={{ height: 440, width: '100%' }}>
+            <div style={{ minHeight: '500px', width: '100%' }}>
               <DataGrid 
-                rows={rows} 
+                rows={storeOptions} 
                 columns={columns} 
                 initialState={{
                   pagination: { paginationModel: { pageSize: 10 } },
