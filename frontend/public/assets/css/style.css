@@ -612,7 +612,10 @@ aside {
   padding: 0;
   max-width: 1170px;
 }
-
+.container.w720{
+  padding: 0;
+  max-width: 720px !important;
+}
 .container.header {
   max-width: 1140px;
 }
@@ -829,8 +832,19 @@ aside {
   white-space: nowrap;
 }
 
-.ellipsis{
+.single-tab-list {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+}
 
+.activity-content {
+  flex: 1; 
+  min-width: 0; 
+}
+
+.ellipsis {
+  width: 100%;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -867,7 +881,9 @@ aside {
   padding: 25px;
   margin-top: 35px;
 }
-
+.w100{
+  width: 100%;
+}
 .posted-on a:not(.btn) {
   font-weight: 600;
 }

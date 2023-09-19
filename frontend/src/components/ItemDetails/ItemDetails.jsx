@@ -24,7 +24,7 @@ export default function Selling() {
   const brandSwapMintAddress = process.env.REACT_APP_BRANDSWAP_MINT_ADDRESS;
   const TXT = '0x68B1D87F95878fE05B998F19b66F4baba5De1aed';
   const [itemData, setItemData] = useState({});
-  const scan_address = process.env.REACT_APP_POLYGON_SCAN_ADDRESS
+  const scan_address = process.env.REACT_APP_POLYGON_SCAN_ADDRESS;
   const history = useHistory();
   const { isConnected } = useAccount();
 

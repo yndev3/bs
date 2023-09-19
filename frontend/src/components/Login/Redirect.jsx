@@ -6,9 +6,7 @@ export const useRedirectIfNotConnected = () => {
   const { isConnected } = useAccount();
   const history = useHistory();
 
-  useEffect(() => {
-    if (!isConnected) {
-      history.push('/wallet-connect');
-    }
-  }, [isConnected, history]);
+  if (!isConnected) {
+    history.push('/wallet-connect');
+  }
 };
