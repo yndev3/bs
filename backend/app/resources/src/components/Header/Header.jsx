@@ -18,22 +18,24 @@ const Header = () => {
                         <img className="navbar-brand-sticky" src="/img/logo.png" alt="sticky brand-logo" />
                     </Link>
                     <div className="ml-auto" />
-                    {/* Navbar */}
-                    <ul className="navbar-nav items mx-auto">
-                        <li className="nav-item dropdown">
-                            <NavLink to={'/'} className="nav-link">Home</NavLink>
-                        </li>
-                        <li className="nav-item dropdown">
-                            <NavLink to={'/admin/create'} className="nav-link">Create NFT</NavLink>
-                        </li>   
-                        <li className="nav-item dropdown">
-                            <NavLink to={'/admin/itemlist'} className="nav-link">Item LIST</NavLink>
-                        </li>       
-                        <li className="nav-item dropdown">
-                            <NavLink to={'/admin/reservationlist'} className="nav-link">Reservation List</NavLink>
-                        </li>     
-                    </ul>
 
+                    {/* Navbar */}
+                    {isConnected && (
+                        <ul className="navbar-nav items mx-auto">
+                            <li className="nav-item dropdown">
+                                <NavLink to={'/'} className="nav-link">Home</NavLink>
+                            </li>
+                            <li className="nav-item dropdown">
+                                <NavLink to={'/admin/create'} className="nav-link">Create NFT</NavLink>
+                            </li>   
+                            <li className="nav-item dropdown">
+                                <NavLink to={'/admin/itemlist'} className="nav-link">Item LIST</NavLink>
+                            </li>       
+                            <li className="nav-item dropdown">
+                                <NavLink to={'/admin/reservationlist'} className="nav-link">Reservation List</NavLink>
+                            </li>     
+                        </ul>
+                    )}
 
                     {/* Navbar Action Button */ }
                     <ul className="navbar-nav action">
