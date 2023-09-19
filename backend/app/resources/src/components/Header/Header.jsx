@@ -28,7 +28,10 @@ const Header = () => {
                         </li>   
                         <li className="nav-item dropdown">
                             <NavLink to={'/admin/itemlist'} className="nav-link">Item LIST</NavLink>
-                        </li>            
+                        </li>       
+                        <li className="nav-item dropdown">
+                            <NavLink to={'/admin/reservationlist'} className="nav-link">Reservation List</NavLink>
+                        </li>     
                     </ul>
 
 
