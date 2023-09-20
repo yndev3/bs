@@ -26,6 +26,7 @@ use Illuminate\Support\Facades\Route;
 Route::middleware('auth:sanctum')->group(function () {
     Route::get('/user-nft-list', [UserController::class, 'fetchUserNFTList']);
     Route::post('/create-booking', [UserController::class, 'createBooking']);
+    Route::post('/purchase', [UserController::class, 'createPurchase']);
 });
 // Admin only
 Route::middleware('auth:sanctum')
