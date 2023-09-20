@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { waitForTransaction } from '@wagmi/core'
+import { waitForTransaction } from '@wagmi/core';
 import {
   useAccount,
   useContractReads,
@@ -17,7 +17,6 @@ import {
 } from '../../helpers/constants';
 import { formatEther } from 'viem';
 
-
 const sellingConfig = {
   address: SELLING_CONTRACT,
   abi: SELLING_ABI,
@@ -32,7 +31,7 @@ function ModalBuyButton({id: tokenId, itemData}) {
   const {address, isConnected} = useAccount();
   const [contracts, setContracts] = useState(null);
   const {data: readData} = useContractReads({
-    contracts
+    contracts,
   });
   const {data: fetchBalanceResult} = useBalance({
     address: address,
@@ -78,7 +77,7 @@ function ModalBuyButton({id: tokenId, itemData}) {
         args: [SELLING_CONTRACT, selling.price],
       });
 
-     const receipt = await waitForTransaction(erc20Result);
+      const receipt = await waitForTransaction(erc20Result);
       console.log(receipt);
       if (receipt && receipt.status === 'success') { // ステータスの確認
         const sellingResult = await sellingContract?.({
