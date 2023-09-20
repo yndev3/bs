@@ -1,21 +1,23 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { useHistory } from 'react-router-dom';
-import { makeStyles, ThemeProvider, createTheme } from '@material-ui/core/styles';
-import Grid from '@material-ui/core/Grid';
-import Paper from '@material-ui/core/Paper';
-import Table from '@material-ui/core/Table';
-import TableBody from '@material-ui/core/TableBody';
-import TableCell from '@material-ui/core/TableCell';
-import TableContainer from '@material-ui/core/TableContainer';
-import TableHead from '@material-ui/core/TableHead';
-import TablePagination from '@material-ui/core/TablePagination';
-import TableRow from '@material-ui/core/TableRow';
-import SearchIcon from '@material-ui/icons/Search';
-import Input from '@material-ui/core/Input';
-import InputAdornment from '@material-ui/core/InputAdornment';
-import FormControlLabel from '@material-ui/core/FormControlLabel';
-import Checkbox from '@material-ui/core/Checkbox';
+import { makeStyles } from '@mui/styles';
+import { ThemeProvider } from '@mui/material/styles';
+import { createTheme } from '@mui/material';
+import Grid from '@mui/material/Grid';
+import Paper from '@mui/material/Paper';
+import Table from '@mui/material/Table';
+import TableBody from '@mui/material/TableBody';
+import TableCell from '@mui/material/TableCell';
+import TableContainer from '@mui/material/TableContainer';
+import TableHead from '@mui/material/TableHead';
+import TablePagination from '@mui/material/TablePagination';
+import TableRow from '@mui/material/TableRow';
+import SearchIcon from '@mui/icons-material/Search';
+import Input from '@mui/material/Input';
+import InputAdornment from '@mui/material/InputAdornment';
+import FormControlLabel from '@mui/material/FormControlLabel';
+import Checkbox from '@mui/material/Checkbox';
 import '../../../../public/assets/css/admin.css';
 
 import { fetchFromApi } from '../../utils/fetchFromApi';
@@ -86,7 +88,7 @@ const useStyles = makeStyles((theme) => ({
   },
   tableCell: {
     padding: '4px', // セル内のパディングを調整
-    fontSize: '0.85rem !inportant', // フォントサイズを調整
+    fontSize: '0.85rem !important', // フォントサイズを調整
     height: '35px',
   },
 
@@ -109,7 +111,7 @@ export default function StickyHeadTable() {
 
   const darkTheme = createTheme({
     palette: {
-      type: 'dark',
+      mode: 'dark',
     },
   });
 
@@ -330,7 +332,7 @@ export default function StickyHeadTable() {
                         <TableCell key={column.id} align={column.id !== 'name' ? 'center' : column.align} className={classes.tableCell}>
                           {column.id === 'name' && (
                             <Link
-                              to={`itemDetails/${row.token_id}`} // 実際のリンクに置き換える
+                              to={`itemDetails/${row.token_id}`} 
                               rel="noopener noreferrer"
                             >
                               {row[column.id]}
@@ -342,7 +344,7 @@ export default function StickyHeadTable() {
                           <span>
                             {row[column.id] === mint_address ? 'BrandSwap' : (
                               <a
-                                href={`${scan_url}address/${row[column.id]}`} // Owner Addressのリンクを生成
+                                href={`${scan_url}address/${row[column.id]}`} 
                                 target="_blank"
                                 rel="noopener noreferrer"
                               >

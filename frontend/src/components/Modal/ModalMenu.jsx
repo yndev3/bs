@@ -69,7 +69,7 @@ const ModalMenu = () => {
                 {isConnected && (
                 <ul className="navbar-nav items mx-auto">
                   <li className="nav-item dropdown">
-                    <a className="nav-link" href="#" onClick={toggleUserDropdown}>
+                    <Link className="nav-link" href="#" onClick={toggleUserDropdown}>
                     Dashboard
                     <svg
                     className="svg-inline--fa fa-angle-down fa-w-10 ml-1"
