@@ -3,6 +3,7 @@
 namespace app\Http\Api;
 
 use App\Mail\CreateBooking;
+use App\Models\Booking;
 use App\Models\Product;
 use App\Models\Purchase;
 use App\Models\Store;
@@ -13,6 +14,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Str;
 
 final class UserController
 {
@@ -60,39 +62,79 @@ final class UserController
 
     public function createBooking(Request $request): JsonResponse
     {
-        // create booking
-        $user = Auth::user();
-        $name = $request->input('name');
-        $email = $user->email ?? $request->input('email');
-        $tg = $request->input('tg') ?? ''; // telegram
-        $tokenId = $request->input('token_id'); // NFTのID
-        $storeId = $request->input('store_id');
-        // 店舗
-        $store = Store::findOrFail($storeId);
-        $dateThreshold = Carbon::now()->subDays(90);
+        try {
+            // create booking
+            $user = Auth::user();
+            $name = $request->input('name');
+            $email = $user->email ?? $request->input('email');
+            $tg = $request->input('tg') ?? ''; // telegram
+            $tokenId = $request->input('token_id'); // NFTのID
+            $storeId = $request->input('store_id');
 
-        // fetch product by token_id with user
-        $product = Product::query()
-            ->where('token_id', $tokenId)
-            ->first();
-        // 商品の取得した日付をどうやって保持するか
-        $updatedAt = new Carbon($product->last_hold_at);
-        if ($updatedAt->lt($dateThreshold)) {
-            // 商品は所有から30日以上経過している必要がある
+            // 店舗
+            $store = Store::findOrFail($storeId);
+            $dateThreshold = Carbon::now()->subDays(90);
+
+            // fetch product by token_id with user
+            $product = Product::query()
+                ->where('token_id', $tokenId)
+                ->firstOrFail();  // Productが見つからなかった場合のエラーハンドリング
+
+            // 商品の取得した日付をどうやって保持するか
+            $updatedAt = new Carbon($product->last_hold_at);
+            if ($updatedAt->lt($dateThreshold)) {
+                // 商品は所有から90日以上経過している必要がある
+                return response()->json([
+                    'error' => 'You need to have owned the NFT for more than 90 days in order to exchange it.'
+                ], 403);
+            }
+
+            // create booking
+            $booking = Booking::create([
+                'booking_number' => Str::random(13),
+                'name' => $name,
+                'email' => $email,
+                'tg' => $tg,
+                'product_id' => $product->id,
+                'store_id' => $store->id,
+                'user_id' => $user->id
+            ]);
+
+            // 予約内容をメールで送信
+            Mail::to($email)
+                ->bcc(config('mail.from.address')
+                ->send(new CreateBooking($user, $store, $product, $name, $tg)));
+
             return response()->json([
-                'error' => 'ou need to have owned the NFT for more than 90 days in order to exchange it.'
-            ], 403);
+                'message' => 'Booking created successfully'
+            ]);
+        } catch (\Exception $e) {
+            Log::error($e->getMessage());
+            // 例外がキャッチされた場合の処理
+            return response()->json([
+                'error' => 'An error occurred while processing your request.',
+            ], 500);
+        }
+    }
+
+    public function fetchBooking(): JsonResponse
+    {
+        $user = Auth::user();
+        // get booking from booking table
+        $bookings = Booking::with(['product', 'user', 'store'])
+            ->where('user_id', $user->id)
+            ->orderBy('id', 'desc')
+            ->get();
+
+        if (!$bookings) {
+            Log::info('bookings not found');
+            return response()->json([
+                'error' => 'bookings not found'
+            ], 404);
         }
 
-        // 予約内容をメールで送信
-        Mail::to($email)
-            ->cc($email)
-            ->send(new CreateBooking($user, $store, $product, $name, $tg));
+        return response()->json($bookings);
 
-        return response()->json([
-            'product' => $product,
-            'message' => 'Booking created successfully'
-        ]);
     }
 
     public function createPurchase(Request $request): JsonResponse

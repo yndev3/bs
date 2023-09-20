@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Api\AdminController;
 use App\Http\Api\AuthController;
 use App\Http\Api\ItemController;
 use App\Http\Api\ItemRegistrationController;
@@ -37,6 +38,7 @@ Route::middleware('auth:sanctum')
     ->group(function (){
         Route::get('items', [ItemListController::class, 'items']);
         Route::get('purchase', [PurchaseController::class, 'fetchPurchase']);
+        Route::get('booking', [AdminController::class, 'fetchBooking']);
 });
 Route::post('/exists-sku', UniqueCheckController::class);
 Route::post('/creat-item', ItemRegistrationController::class);
