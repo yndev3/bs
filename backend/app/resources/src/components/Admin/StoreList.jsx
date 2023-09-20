@@ -12,7 +12,6 @@ const columns = [
 
 export default function DataGridDemo() {
   const [rows, setRows] = useState([]);
-  const [storeOptions, setStoreOptions] = useState([]);
 
   useEffect(() => {
     fetchFromApi({
@@ -24,7 +23,7 @@ export default function DataGridDemo() {
         name: store.name,
         countryName: store.country.name,
         zip_code: store.zip_code,
-        fullAddress: `${store.zip_code} ${store.state} ${store.city} ${store.street_address}`, 
+        fullAddress:  `${store.street_address} ${store.city} ${store.state} ${store.zip_code}`, 
       }));
       setRows(transformedData);  
     })
