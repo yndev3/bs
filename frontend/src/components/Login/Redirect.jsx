@@ -1,12 +1,22 @@
-import { useEffect } from 'react';
-import { useHistory } from 'react-router-dom';
-import { useAccount } from 'wagmi'
+import React from 'react';
+import { Route, Redirect } from 'react-router-dom';
+import { useAccount } from 'wagmi';
 
-export const useRedirectIfNotConnected = () => {
+const PrivateRoute = ({ component: Component, ...rest }) => {
   const { isConnected } = useAccount();
-  const history = useHistory();
 
-  if (!isConnected) {
-    history.push('/wallet-connect');
-  }
+    return (
+        <Route 
+            {...rest} 
+            render={props => 
+              isConnected ? (
+                    <Component {...props} />
+                ) : (
+                    <Redirect to="/wallet-connect" /> 
+                )
+            }
+        />
+    );
 };
+
+export default PrivateRoute;
