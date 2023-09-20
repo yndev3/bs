@@ -4,6 +4,7 @@ namespace app\Http\Api;
 
 use App\Mail\CreateBooking;
 use App\Models\Product;
+use App\Models\Purchase;
 use App\Models\Store;
 use Carbon\Carbon;
 use Illuminate\Http\JsonResponse;
@@ -38,9 +39,10 @@ final class UserController
             "contractAddresses[]" => config("services.contract.contract_address"),
         ]);
 
+        // todo エラーステータスを返す
         $tokenIds = [];
         if ($response->failed()) {
-            echo "HTTPリクエストエラー: " . $response->status();
+            echo "HTTPリクエストエラー: ".$response->status();
         } else {
             $data = $response->json();
             foreach ($data['ownedNfts'] as $nft) {
@@ -49,7 +51,7 @@ final class UserController
             }
         }
 
-        $nftList =  Product::query()
+        $nftList = Product::query()
             ->whereIn('token_id', $tokenIds)
             ->get();
 
@@ -62,7 +64,7 @@ final class UserController
         $user = Auth::user();
         $name = $request->input('name');
         $email = $user->email ?? $request->input('email');
-        $tg = $request->input('tg') ?? '' ; // telegram
+        $tg = $request->input('tg') ?? ''; // telegram
         $tokenId = $request->input('token_id'); // NFTのID
         $storeId = $request->input('store_id');
         // 店舗
@@ -73,7 +75,7 @@ final class UserController
         $product = Product::query()
             ->where('token_id', $tokenId)
             ->first();
-         // 商品の取得した日付をどうやって保持するか
+        // 商品の取得した日付をどうやって保持するか
         $updatedAt = new Carbon($product->last_hold_at);
         if ($updatedAt->lt($dateThreshold)) {
             // 商品は所有から30日以上経過している必要がある
@@ -91,5 +93,42 @@ final class UserController
             'product' => $product,
             'message' => 'Booking created successfully'
         ]);
+    }
+
+    public function createPurchase(Request $request): JsonResponse
+    {
+        $user = Auth::user();
+        $tokenId = $request->input('token_id');
+        $buyer = $request->input('buyer');
+        $price = $request->input('price');
+        $transactionHash = $request->input('hash');
+
+        $product = Product::firstWhere('token_id', $tokenId);
+        if (!$product) {
+            return response()->json([
+                'error' => 'Product not found'
+            ], 404);
+        }
+
+        try {
+            $purchase = Purchase::create([
+                'user_id' => $user->id,
+                'product_id' => $product->id,
+                'buyer' => $buyer,
+                'price' => $price,
+                'transaction_hash' => $transactionHash
+            ]);
+        } catch (\Exception $e) {
+            Log::error($e->getMessage());
+            return response()->json([
+                'error' => 'Failed to create purchase'
+            ], 500);
+        }
+
+        return response()->json([
+            'purchase' => $purchase,
+            'message' => 'purchase created successfully'
+        ]);
+
     }
 }
