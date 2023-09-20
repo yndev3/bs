@@ -105,6 +105,7 @@ final class UserController
 
         $product = Product::firstWhere('token_id', $tokenId);
         if (!$product) {
+            Log::info('Product not found');
             return response()->json([
                 'error' => 'Product not found'
             ], 404);
@@ -130,5 +131,23 @@ final class UserController
             'message' => 'purchase created successfully'
         ]);
 
+    }
+
+    public function fetchPurchase(): JsonResponse
+    {
+        $user = Auth::user();
+        $purchases = Purchase::with(['product', 'user'])
+            ->where('user_id', $user->id)
+            ->orderBy('id', 'desc')
+            ->get();
+
+        if (!$purchases) {
+            Log::info('purchases not found');
+            return response()->json([
+                'error' => 'purchases not found'
+            ], 404);
+        }
+
+        return response()->json($purchases);
     }
 }

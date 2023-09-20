@@ -3,6 +3,7 @@
 use App\Http\Api\AuthController;
 use App\Http\Api\ItemController;
 use App\Http\Api\ItemRegistrationController;
+use App\Http\Api\PurchaseController;
 use App\Http\Api\StoreController;
 use App\Http\Api\TransferController;
 use App\Http\Api\UniqueCheckController;
@@ -25,7 +26,9 @@ use Illuminate\Support\Facades\Route;
 // user only
 Route::middleware('auth:sanctum')->group(function () {
     Route::get('/user-nft-list', [UserController::class, 'fetchUserNFTList']);
+    Route::get('/booking', [UserController::class, 'fetchBooking']);
     Route::post('/create-booking', [UserController::class, 'createBooking']);
+    Route::get('/purchase', [UserController::class, 'fetchPurchase']);
     Route::post('/purchase', [UserController::class, 'createPurchase']);
 });
 // Admin only
@@ -33,6 +36,7 @@ Route::middleware('auth:sanctum')
     ->prefix('admin')
     ->group(function (){
         Route::get('items', [ItemListController::class, 'items']);
+        Route::get('purchase', [PurchaseController::class, 'fetchPurchase']);
 });
 Route::post('/exists-sku', UniqueCheckController::class);
 Route::post('/creat-item', ItemRegistrationController::class);
