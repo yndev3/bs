@@ -28,6 +28,7 @@ class BookingSeeder extends Seeder
                 'name' => Str::random(10),
                 'email' => Str::random(10) . '@example.com',
                 'tg' => '@'.Str::random(10),
+                'user_id' => 1,
                 'product_id' => $productIds[array_rand($productIds)],
                 'store_id' => $storeIds[array_rand($storeIds)],
                 'created_at' => now(),
