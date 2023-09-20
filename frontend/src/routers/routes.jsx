@@ -28,8 +28,7 @@ const MyRouts = () => {
               <Route exact path="/explore-watches" component={ ExploreWatches }/>
               <Route exact path="/explore-jewelrys" component={ ExploreJewelrys }/>
               <Route exact path="/explore-materials" component={ ExploreMaterials }/>
-              <Route exact path="/item-details/:id" component={ ItemDetails }/>
-              <Route exact path="/item-details" component={ ItemDetails }/>
+              <Route path="/item-details/:id" component={ ItemDetails }/>
               <Route exact path="/wallet-connect" component={ WalletConnect }/>
               <Route exact path="/contact" component={ Contact }/>
               <Route exact path="/error" component={ Error }/>
