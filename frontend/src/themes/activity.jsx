@@ -5,12 +5,9 @@ import Activities from '../components/Activity/Activity';
 import Footer from '../components/Footer/Footer';
 import ModalMenu from '../components/Modal/ModalMenu';
 import Scrollup from '../components/Scrollup/Scrollup';
-import { useRedirectIfNotConnected } from '../components/Login/Redirect';
 
 
 const Activity = () => {
-
-    useRedirectIfNotConnected();
 
     return (
         <div className="main">
