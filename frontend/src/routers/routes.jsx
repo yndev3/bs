@@ -13,6 +13,9 @@ import WalletConnect from '../themes/wallet-connect';
 import Contact from '../themes/contact';
 import Account from '../themes/account';
 import Error from '../themes/error';
+import Error404 from '../themes/404';
+
+import RedirectIfNotConnected from '../components/Login/Redirect';
 
 
 const MyRouts = () => {
@@ -27,17 +30,16 @@ const MyRouts = () => {
             <Route exact path="/explore-materials" component={ ExploreMaterials }/>
             <Route exact path="/item-details/:id" component={ ItemDetails }/>
             <Route exact path="/item-details" component={ ItemDetails }/>
-            <Route exact path="/activity" component={ Activity }/>
             <Route exact path="/wallet-connect" component={ WalletConnect }/>
             <Route exact path="/contact" component={ Contact }/>
-
-            <Route exact path="/account" component={ Account }/>
-
             <Route exact path="/error" component={ Error }/>
-
+            <Route exact path="/account" render={() => <RedirectIfNotConnected><Account /></RedirectIfNotConnected>} />
+            <Route exact path="/activity" render={() => <RedirectIfNotConnected><Activity /></RedirectIfNotConnected>} />
+            <Route component={ Error404 }/>
           </Switch>
         </Router>
       </>
   );
 };
+
 export default MyRouts;

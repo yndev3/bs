@@ -1,13 +1,13 @@
 import React, { Component } from 'react';
 
 const initData = {
-    pre_heading: "Error",
-    heading: "Oops! Something Went Wrong",
-    content1: "We apologize for the inconvenience, but it looks like something broke on our end.You can try refreshing the page, or come back later.",
-    content2: "Need immediate assistance? Please contact our support team."
+    pre_heading: "ERROR",
+    heading: "404: Page Not Found",
+    content1: "Oops!We're sorry, but the page you were looking for doesn't exist.",
+    content2: "You may have mistyped the address or the page may have moved."
 }
 
-class Error extends Component {
+class E404 extends Component {
     state = {
         initData: {},
         data: []
@@ -38,4 +38,4 @@ class Error extends Component {
     }
 }
 
-export default Error;
+export default E404;

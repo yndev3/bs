@@ -5,10 +5,9 @@ import Account from '../components/Account/Account';
 import Footer from '../components/Footer/Footer';
 import ModalMenu from '../components/Modal/ModalMenu';
 import Scrollup from '../components/Scrollup/Scrollup';
-import { useRedirectIfNotConnected } from '../components/Login/Redirect';
 
 function AccountApp() {
-    useRedirectIfNotConnected();
+
     return (
         <div className="main">
             <Header />

@@ -1,12 +1,22 @@
-import { useEffect } from 'react';
+import React, { useEffect } from 'react';
 import { useHistory } from 'react-router-dom';
-import { useAccount } from 'wagmi'
+import { useAccount } from 'wagmi';
 
-export const useRedirectIfNotConnected = () => {
+const RedirectIfNotConnected = ({ children }) => {
   const { isConnected } = useAccount();
   const history = useHistory();
 
+  useEffect(() => {
+    if (!isConnected) {
+      history.push('/wallet-connect');
+    }
+  }, [isConnected, history]);
+
   if (!isConnected) {
-    history.push('/wallet-connect');
+    return null; 
   }
+
+  return <>{children}</>;
 };
+
+export default RedirectIfNotConnected;
