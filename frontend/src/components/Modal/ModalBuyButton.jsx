@@ -16,6 +16,7 @@ import {
   ERC_20_TOKEN_CONTRACT,
 } from '../../helpers/constants';
 import { formatEther } from 'viem';
+import { fetchFromApi } from '../../utils/fetchFromApi';
 
 const sellingConfig = {
   address: SELLING_CONTRACT,
@@ -28,10 +29,14 @@ const erc20Config = {
 };
 
 function ModalBuyButton({id: tokenId, itemData}) {
-  const {address, isConnected} = useAccount();
+  const [loading, setLoading] = useState(false);
   const [contracts, setContracts] = useState(null);
+  const {address, isConnected} = useAccount();
   const {data: readData} = useContractReads({
     contracts,
+    onSuccess: (data) => {
+      console.log('data', data);
+    },
   });
   const {data: fetchBalanceResult} = useBalance({
     address: address,
@@ -59,9 +64,9 @@ function ModalBuyButton({id: tokenId, itemData}) {
 
   const handleBuy = async (e) => {
     e.preventDefault();
+    setLoading(true);
     try {
       const selling = readData[0].result;
-      console.log('selling', selling);
       if (!selling.isSale) {
         alert('The token is not for sale');
         return;
@@ -73,28 +78,37 @@ function ModalBuyButton({id: tokenId, itemData}) {
         return;
       }
 
-      const erc20Result = await erc20Contract?.({
-        args: [SELLING_CONTRACT, selling.price],
-      });
-
-      const receipt = await waitForTransaction(erc20Result);
-      console.log(receipt);
-      if (receipt && receipt.status === 'success') { // ステータスの確認
-        const sellingResult = await sellingContract?.({
-          args: [tokenId, selling.price, ERC_20_TOKEN_CONTRACT],
+      const allowance = readData[2].result;
+      if (allowance < selling.price) {
+        const erc20Result = await erc20Contract?.({
+          args: [SELLING_CONTRACT, selling.price],
         });
-
-        // DBに購入履歴を記録する
-        // バックエンドに購入履歴を送信する
-
-        console.log(sellingResult.hash);
-      } else {
-        alert('ERC20 transaction failed');
+        const receipt = await waitForTransaction(erc20Result);
       }
 
+      const sellingResult = await sellingContract?.({
+        args: [
+          tokenId,
+          selling.price,
+          ERC_20_TOKEN_CONTRACT,
+        ],
+      });
+      // DBに購入履歴を記録する
+      await fetchFromApi({
+        endpoint: '/api/purchase',
+        method: 'POST',
+        data: {
+          tokenId: tokenId,
+          buyer: address,
+          price: formatEther(selling.price),
+          hash: sellingResult.hash,
+        },
+      });
     } catch (Error) {
-      // エラーログを記録する為にバックエンドに送信する
+      // todo エラーログを記録する為にバックエンドに送信する
 
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -117,6 +131,11 @@ function ModalBuyButton({id: tokenId, itemData}) {
           ...erc20Config,
           functionName: 'balanceOf',
           args: [address],
+        },
+        {
+          ...erc20Config,
+          functionName: 'allowance',
+          args: [address, SELLING_CONTRACT],
         },
       ]);
     }
@@ -175,9 +194,15 @@ function ModalBuyButton({id: tokenId, itemData}) {
                           <button
                               className="d-block btn btn-bordered-white mt-4"
                               onClick={ handleBuy }
-                              disabled={ isLoading }
+                              disabled={ loading }
                           >
-                            <i className="icon-handbag mr-2"/>Complete purchase
+                            { loading ? (
+                                <><i
+                                    className="fas fa-spinner fa-spin mr-2"/> Loading...</>
+                            ) : (
+                                <><i className="icon-handbag mr-2"/> Complete
+                                  purchase</>
+                            ) }
                           </button>
                         </div>
                     ) : (
@@ -187,7 +212,7 @@ function ModalBuyButton({id: tokenId, itemData}) {
                               to="/wallet-connect"
                               onClick={ removeModalBackdrop }
                           >
-                            <i className="icon-wallet mr-md-2"/>Wallet Connect
+                            <i className="icon-wallet mr-md-2"/> Wallet Connect
                           </Link>
                         </div>
                     ) }
