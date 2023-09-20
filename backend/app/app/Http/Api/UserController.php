@@ -3,6 +3,7 @@
 namespace app\Http\Api;
 
 use App\Mail\CreateBooking;
+use App\Models\Booking;
 use App\Models\Product;
 use App\Models\Purchase;
 use App\Models\Store;
@@ -93,6 +94,26 @@ final class UserController
             'product' => $product,
             'message' => 'Booking created successfully'
         ]);
+    }
+
+    public function fetchBooking(): JsonResponse
+    {
+        $user = Auth::user();
+        // get booking from booking table
+        $bookings = Booking::with(['product', 'user', 'store'])
+            ->where('user_id', $user->id)
+            ->orderBy('id', 'desc')
+            ->get();
+
+        if (!$bookings) {
+            Log::info('bookings not found');
+            return response()->json([
+                'error' => 'bookings not found'
+            ], 404);
+        }
+
+        return response()->json($bookings);
+
     }
 
     public function createPurchase(Request $request): JsonResponse
