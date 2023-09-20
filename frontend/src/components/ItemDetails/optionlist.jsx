@@ -34,7 +34,7 @@ export const OptionList = ({ itemData }) => {
                             <li className="price d-flex justify-content-between">
                               <span className="mr-3 text-white">Token ID</span>
                               <span className="word-break">
-                                <Link to={itemData.meta_url} target='blank'>{itemData.token_id}</Link>
+                                <a href={itemData.meta_url} target='blank'>{itemData.token_id}</a>
                               </span>
                             </li>
                             <li className="price d-flex justify-content-between">
