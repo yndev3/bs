@@ -26,7 +26,6 @@ export default function DataGridDemo() {
         zip_code: store.zip_code,
         fullAddress: `${store.zip_code} ${store.state} ${store.city} ${store.street_address}`, 
       }));
-      setStoreOptions(transformedData);
       setRows(transformedData);  
     })
     .catch(error => {
@@ -55,7 +54,7 @@ export default function DataGridDemo() {
         <div className="col-11 intro mt-2 mt-lg-0 mb-4 mb-lg-2">
           <div className="intro-content">
             <span>Dashboard</span>
-            <h3 className="mt-3 mb-0">Reservation List</h3>
+            <h3 className="mt-3 mb-0">Store List</h3>
           </div>
         </div>
       </div>
@@ -64,7 +63,7 @@ export default function DataGridDemo() {
           <div className="col-11 col-md-11 col-lg-11 mt-5 mb-5">
             <div style={{ minHeight: '500px', width: '100%' }}>
               <DataGrid 
-                rows={storeOptions} 
+                rows={rows} 
                 columns={columns} 
                 initialState={{
                   pagination: { paginationModel: { pageSize: 10 } },
