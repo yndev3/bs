@@ -18,6 +18,7 @@ class DatabaseSeeder extends Seeder
             UserProductSeeder::class,
             CountrySeeder::class,
             StoreSeeder::class,
+            PurchaseSeeder::class,
         ]);
     }
 }

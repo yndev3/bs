@@ -72,14 +72,18 @@ function ModalBuyButton({id: tokenId, itemData}) {
         return;
       }
 
-      const balance = readData[1].result;
-      if (balance < selling.price) {
+      const balance = Number(formatEther(readData[1].result));
+      const price = Number(formatEther(selling.price));
+      if (balance < price){
         alert('Insufficient balance for the purchase');
         return;
       }
 
-      const allowance = readData[2].result;
-      if (allowance < selling.price) {
+      const allowance = Number(formatEther(readData[2].result));
+      console.log('balance', balance);
+      console.log('allowance', allowance);
+      console.log('price', price);
+      if (allowance < price) {
         const erc20Result = await erc20Contract?.({
           args: [SELLING_CONTRACT, selling.price],
         });
