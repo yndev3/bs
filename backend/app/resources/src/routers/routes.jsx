@@ -11,7 +11,7 @@ import ReservationList from '../themes/reservation-list';
 import StoreList from '../themes/store-list';
 import Error from '../themes/error';
 
-import RedirectIfNotConnected from '../components/Admin/Redirect';
+import RedirectIfNotConnected from './Redirect';
 
 const MyRouts = () => {
   return (

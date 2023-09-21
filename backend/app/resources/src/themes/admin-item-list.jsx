@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 
 import Header from '../components/Header/Header';
-import ItemList from '../components/Admin/ItemList';
+import ItemList from '../components/ItemList/ItemList';
 import Footer from '../components/Footer/Footer';
 import Scrollup from '../components/Scrollup/Scrollup';
 

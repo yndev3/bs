@@ -1,7 +1,7 @@
 import React from 'react';
 
 import Header from '../components/Header/Header';
-import ReservationList from '../components/Admin/ReservationList';
+import ReservationList from '../components/Reserve/ReservationList';
 import Footer from '../components/Footer/Footer';
 import Scrollup from '../components/Scrollup/Scrollup';
 
