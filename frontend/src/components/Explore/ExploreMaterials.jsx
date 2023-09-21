@@ -22,7 +22,7 @@ const ExploreWatches = (props) => {
     };
 
     fetchFromApi({
-      endpoint: '/api/item-limit',
+      endpoint: '/api/items',
       params: params
     }).then((data) => {
       setProducts(data);
