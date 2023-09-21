@@ -15,7 +15,7 @@ class EnsureRoleIsAdmin
      */
     public function handle(Request $request, Closure $next): Response
     {
-        if (auth()->user() && auth()->user()->role == 'Admin') {
+        if (auth()->user() && auth()->user()->role == 'admin') {
             return $next($request);
         }
         return response()->json(['error' => 'Authentication error: Admin privileges required'], 403);
