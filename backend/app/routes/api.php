@@ -10,8 +10,6 @@ use App\Http\Api\TransferController;
 use App\Http\Api\UniqueCheckController;
 use App\Http\Api\ItemListController;
 use App\Http\Api\UserController;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -53,6 +51,7 @@ Route::get('/stores', StoreController::class);
 Route::post('/transfer', TransferController::class);
 
 
+Route::get('/isAdmin/{address}', [AuthController::class, 'isAdmin']);
 Route::get('/statement', [AuthController::class, 'getStatement']);
 Route::post('/login'   , [AuthController::class, 'login']);
 Route::post('/logout'   , [AuthController::class, 'logout']);

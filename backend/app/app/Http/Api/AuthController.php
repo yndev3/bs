@@ -5,6 +5,7 @@ namespace app\Http\Api;
 use App\Models\User;
 use Illuminate\Auth\AuthenticationException;
 use Illuminate\Auth\AuthManager;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
@@ -142,6 +143,20 @@ final class AuthController
         }
 
         return true;
+    }
+
+    public function isAdmin(Request $request, string $address): JsonResponse
+    {
+        try {
+            $user = $this->user->where('address', strtolower($address))->firstOrFail();
+            return response()->json([
+                'isAdmin' => strtolower($user->role) === 'admin',
+            ]);
+        } catch (ModelNotFoundException $e) {
+            return response()->json([
+                'error' => 'User not found。'
+            ], 404);
+        }
     }
 
 }
