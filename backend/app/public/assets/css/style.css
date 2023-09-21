@@ -413,7 +413,12 @@ img {
 ::placeholder {
   color: var(--primary-p-color) !important;
 }
-
+.inline-block {
+  display: inline-block;
+}
+.width150 {
+  width: 150px !important;
+}
 table {
   border-collapse: separate;
   border-spacing: 10px;
