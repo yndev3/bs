@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import WalletCard from './WalletCard';
 import { useAccount, useConnect, useDisconnect, useSignMessage } from 'wagmi';
 import { toMessage } from '../SignIn/toMessage';
@@ -61,7 +61,7 @@ export default function Wallet() {
         issuedAt,
       };
 
-      const responseData = await fetchFromApi({
+      await fetchFromApi({
         endpoint: '/api/login',
         method: 'POST',
         data: payload,
