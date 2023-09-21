@@ -24,7 +24,7 @@ class Product extends Model
     {
         parent::boot();
         static::addGlobalScope('is_sale', function ($query) {
-            $query->where('is_sale', 1);
+            $query->whereIn('is_sale', [1, 2]);
         });
         static::addGlobalScope('is_burn', function ($query) {
             $query->where('is_burn', false);
