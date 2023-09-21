@@ -34,7 +34,7 @@ Route::middleware('auth:sanctum')->group(function () {
 Route::middleware(['auth:sanctum', 'admin'])
     ->prefix('admin')
     ->group(function (){
-        Route::get('items', [ItemListController::class, 'items']);
+        Route::get('items', [AdminController::class, 'items']);
         Route::get('purchase', [PurchaseController::class, 'fetchPurchase']);
         Route::get('booking', [AdminController::class, 'fetchBooking']);
         Route::post('exists-sku', UniqueCheckController::class);
@@ -42,8 +42,7 @@ Route::middleware(['auth:sanctum', 'admin'])
 });
 
 // All
-Route::get('/item-page', [ItemListController::class, 'withPagination']);
-Route::get('/item-limit', [ItemListController::class, 'withLimit']);
+Route::get('/items', [ItemController::class, 'getProducts']);
 Route::get('/item', [ItemController::class, 'getProductByTokenId']);
 Route::get('/stores', StoreController::class);
 

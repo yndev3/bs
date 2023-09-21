@@ -18,7 +18,6 @@ final class ItemRegistrationController
 
     public function __invoke(Request $request): \Illuminate\Http\JsonResponse
     {
-        // todo 管理者認証
         try {
             DB::beginTransaction();
             if (!$request->isMethod('post')) {
