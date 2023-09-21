@@ -16,7 +16,7 @@ final class ItemController
         $category = $request->get('category');
         $brand = $request->get('brand');
         $pageSize = $request->get('pageSize', 1000);
-        $limit = $request->get('limit', 1000);
+        $limit = $request->get('limit');
 
         // validate sort parameters
         $validSortKeys = $this->getValidSortKeys();
