@@ -10,8 +10,6 @@ use App\Http\Api\TransferController;
 use App\Http\Api\UniqueCheckController;
 use App\Http\Api\ItemListController;
 use App\Http\Api\UserController;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -33,25 +31,27 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/purchase', [UserController::class, 'createPurchase']);
 });
 // Admin only
-Route::middleware('auth:sanctum')
+Route::middleware(['auth:sanctum', 'admin'])
     ->prefix('admin')
     ->group(function (){
         Route::get('items', [ItemListController::class, 'items']);
         Route::get('purchase', [PurchaseController::class, 'fetchPurchase']);
         Route::get('booking', [AdminController::class, 'fetchBooking']);
+        Route::post('exists-sku', UniqueCheckController::class);
+        Route::post('creat-item', ItemRegistrationController::class);
 });
-Route::post('/exists-sku', UniqueCheckController::class);
-Route::post('/creat-item', ItemRegistrationController::class);
+
 // All
 Route::get('/item-page', [ItemListController::class, 'withPagination']);
 Route::get('/item-limit', [ItemListController::class, 'withLimit']);
 Route::get('/item', [ItemController::class, 'getProductByTokenId']);
-// fetchRegisteredStores
 Route::get('/stores', StoreController::class);
 
+// webhooks
 Route::post('/transfer', TransferController::class);
 
 
+Route::get('/isAdmin/{address}', [AuthController::class, 'isAdmin']);
 Route::get('/statement', [AuthController::class, 'getStatement']);
 Route::post('/login'   , [AuthController::class, 'login']);
 Route::post('/logout'   , [AuthController::class, 'logout']);
