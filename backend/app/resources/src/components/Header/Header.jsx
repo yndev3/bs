@@ -29,10 +29,10 @@ const Header = () => {
                                 <NavLink to={'/admin/create'} className="nav-link">Create NFT</NavLink>
                             </li>   
                             <li className="nav-item dropdown">
-                                <NavLink to={'/admin/itemlist'} className="nav-link">Item LIST</NavLink>
+                                <NavLink to={'/admin/itemlist'} className="nav-link">Item List</NavLink>
                             </li>       
                             <li className="nav-item dropdown">
-                                <NavLink to={'/admin/purchase'} className="nav-link">Purchase LIST</NavLink>
+                                <NavLink to={'/admin/purchase'} className="nav-link">Purchase List</NavLink>
                             </li>  
                             <li className="nav-item dropdown">
                                 <NavLink to={'/admin/reservationlist'} className="nav-link">Reservation List</NavLink>
