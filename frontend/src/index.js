@@ -25,7 +25,7 @@ const {chains, publicClient} = configureChains(
       publicProvider(),
     ],
 );
-const wagmiConfig  = createConfig({
+const wagmiConfig = createConfig({
   autoConnect: true,
   connectors: [
     ...w3mConnectors({chains, projectId}),
@@ -35,11 +35,11 @@ const wagmiConfig  = createConfig({
   ],
   publicClient,
 });
-const ethereumClient = new EthereumClient(wagmiConfig , chains);
+const ethereumClient = new EthereumClient(wagmiConfig, chains);
 
 root.render(
     <React.StrictMode>
-      <WagmiConfig config={ wagmiConfig  }>
+      <WagmiConfig config={ wagmiConfig }>
         <AuthProvider>
           <App/>
         </AuthProvider>
