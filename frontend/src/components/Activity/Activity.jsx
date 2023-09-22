@@ -1,33 +1,32 @@
-import React, { useState } from 'react';
-import ListItem from './ListItem'; 
+import React, { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom'; 
+import { useHistory } from 'react-router-dom';
+import { fetchFromApi } from '../../utils/fetchFromApi';
+import ActivityList from './ListItem'; 
 
 const ActivityArea = () => {
 
+  const history = useHistory();
+  const [activity, setActivity] = useState(null);
   const scan_address = process.env.REACT_APP_POLYGON_SCAN_ADDRESS;
 
-  const [tabData_1] = useState([
-    {
-      token_id: '1',
-      title: 'Item 1 sampleNama sampleNama sampleNama sampleNama sampleNama sampleNama',
-      img: "/img/auction_6.jpg",
-      price: '100',
-      tx_id:'XXXXXXXXXXXXXXXX'
-    },
-    {
-      token_id: '2',
-      title: 'Item 2',
-      img: "/img/auction_6.jpg",
-      price: '100',
-      tx_id:'XXXXXXXXXXXXXXXX'
-    },
-    {
-      token_id: '3',
-      title: 'Item 3',
-      img: "/img/auction_6.jpg",
-      price: '100',
-      tx_id:'XXXXXXXXXXXXXXXX'
-    }
-  ]);
+
+  const now = new Date();
+  // console.log(now.toUTCString());
+
+  useEffect(() => {
+    fetchFromApi({
+      endpoint: '/api/purchase',
+    })
+      .then((data) => {
+        // console.log('API returned data:', data);
+        setActivity(data);
+      })
+      .catch((error) => {
+        console.error('Error fetching data:', error);
+        history.push('/error');
+      });
+  }, []);
 
   return (
     <section className="activity-area load-more">
@@ -53,11 +52,11 @@ const ActivityArea = () => {
             </ul>
             <div className="tab-content" id="nav-tabContent">
               <div className="tab-pane fade show active" id="nav-home">
-                <ul className="list-unstyled">
-                  {tabData_1.map((item, idx) => (
-                    <ListItem item={item} idx={idx} scan_address={scan_address} />  
-                  ))}
-                </ul>
+                {activity && activity.length > 0 ? (
+                  <ActivityList activity={activity} scan_address={scan_address} />
+                ) : (
+                  <h5 className='mt-5'>No history available.</h5>
+                )}
               </div>
             </div>
           </div>

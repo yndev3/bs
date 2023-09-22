@@ -35,7 +35,7 @@ export default function Selling() {
         setPrevId(id);
         setItemDataApi(data);
 
-        console.log('API returned data:', data);
+        // console.log('API returned data:', data);
       } catch (err) {
         console.error('Error fetching data:', err);
         setError(err);

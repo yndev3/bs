@@ -35,7 +35,7 @@ function ModalBuyButton({id: tokenId, itemData}) {
   const {data: readData} = useContractReads({
     contracts,
     onSuccess: (data) => {
-      console.log('data', data);
+      // console.log('data', data);
     },
   });
   const {data: fetchBalanceResult} = useBalance({
