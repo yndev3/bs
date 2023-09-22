@@ -18,7 +18,7 @@ const origin = window.location.origin;
 export default function Wallet() {
   const [statementData, setStatementData] = useState(null);
   const {isAuthenticated, setIsAuthenticated, setIsLoading} = useAuth();
-  const { connectAsync, connectors, error} = useConnect();
+  const {connectAsync, connectors, error} = useConnect();
   const {address, isConnected} = useAccount();
   const {chain, chains} = useNetwork();
   const {disconnect} = useDisconnect();
@@ -45,17 +45,15 @@ export default function Wallet() {
   }
 
   const handleConnect = async (connector) => {
-    console.log('handleConnect');
-    setIsLoading(true);
     if (connector.id === 'walletConnect') {
       await open();
     } else {
       await connectAsync({connector});
     }
     const data = await fetchFromApi({endpoint: '/api/statement'});
-    console.log('data', data);
-    setStatementData(data)
+    setStatementData(data);
   };
+
   async function connectWallet() {
     const {statement, nonce, issuedAt} = statementData || await fetchData();
     const message = createSiweMessage(
@@ -78,12 +76,12 @@ export default function Wallet() {
     }
 
     setIsAuthenticated(true);
-    console.log('Connect Success');
     history.goBack();
   }
 
   useEffect(() => {
     if (isConnected && !isAuthenticated) {
+      setIsLoading(true);
       (async () => {
         try {
           await connectWallet();
@@ -111,22 +109,26 @@ export default function Wallet() {
           </div>
           { error && <div className={ 'text-danger' }>{ error.message }</div> }
           <div className="row justify-content-center items">
-            { connectors.map((connector) => (
-                <WalletCard
-                    key={ connector.id }
-                    title={ connector.name }
-                    img={ `/img/${ connector.id }.svg` }
-                    content=""
-                    onClick={
-                      !isConnected
-                          ? () => handleConnect(connector)
-                          : () => disconnect()
-                    }
-                    buttonText={ !isConnected
-                        ? 'Connect'
-                        : 'Disconnect' }
-                />
-            )) }
+            { connectors.map((connector) => {
+              if (connector.id !== 'injected') {
+                return (
+                    <WalletCard
+                        key={ connector.id }
+                        title={ connector.name }
+                        img={ `/img/${ connector.id }.svg` }
+                        content=""
+                        onClick={
+                          !isConnected
+                              ? () => handleConnect(connector)
+                              : () => disconnect()
+                        }
+                        buttonText={ !isConnected
+                            ? 'Connect'
+                            : 'Disconnect' }
+                    />
+                );
+              }
+            }) }
           </div>
         </div>
       </section>
