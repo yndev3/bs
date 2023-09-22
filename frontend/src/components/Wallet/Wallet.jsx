@@ -1,16 +1,26 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useHistory } from 'react-router-dom';
 import WalletCard from './WalletCard';
-import { useAccount, useConnect, useDisconnect, useSignMessage } from 'wagmi';
+import {
+  useAccount,
+  useConnect,
+  useNetwork,
+  useDisconnect,
+  useSignMessage,
+} from 'wagmi';
 import { toMessage } from '../SignIn/toMessage';
 import { useWeb3Modal } from '@web3modal/react';
 import { fetchFromApi } from '../../utils/fetchFromApi';
+import { useAuth } from '../../providers/AuthProvider';
 
 const domain = window.location.host;
 const origin = window.location.origin;
 export default function Wallet() {
-  const {connectAsync, connectors, error} = useConnect();
-  const {isConnected, isDisconnected} = useAccount();
+  const [statementData, setStatementData] = useState(null);
+  const {isAuthenticated, setIsAuthenticated, setIsLoading} = useAuth();
+  const { connectAsync, connectors, error} = useConnect();
+  const {address, isConnected} = useAccount();
+  const {chain, chains} = useNetwork();
   const {disconnect} = useDisconnect();
   const {signMessageAsync} = useSignMessage();
   const {open, close} = useWeb3Modal();
@@ -28,49 +38,64 @@ export default function Wallet() {
       issuedAt,
     });
   };
+  async function fetchData() {
+    const {statement, nonce, issuedAt} = await fetchFromApi(
+        {endpoint: '/api/statement'});
+    return {statement, nonce, issuedAt};
+  }
 
   const handleConnect = async (connector) => {
-    try {
-      const connect = await connectAsync({connector});
-      const {statement, nonce, issuedAt} = await fetchFromApi(
-          {endpoint: '/api/statement'});
-
-      const message = createSiweMessage(
-          connect.account,
-          connect.chain.id,
-          statement,
-          nonce,
-          issuedAt,
-      );
-      const signature = await signMessageAsync({message});
-      const payload = {
-        signature,
-        message,
-        address: connect.account,
+    console.log('handleConnect');
+    setIsLoading(true);
+    if (connector.id === 'walletConnect') {
+      await open();
+    } else {
+      await connectAsync({connector});
+    }
+    const data = await fetchFromApi({endpoint: '/api/statement'});
+    console.log('data', data);
+    setStatementData(data)
+  };
+  async function connectWallet() {
+    const {statement, nonce, issuedAt} = statementData || await fetchData();
+    const message = createSiweMessage(
+        address,
+        chain.id,
+        statement,
         nonce,
         issuedAt,
-      };
+    );
+    const signature = await signMessageAsync({message});
+    const payload = {signature, message, address, nonce, issuedAt};
+    const responseData = await fetchFromApi({
+      endpoint: '/api/login',
+      method: 'POST',
+      data: payload,
+    });
 
-      const responseData = await fetchFromApi({
-        endpoint: '/api/login',
-        method: 'POST',
-        data: payload,
-      });
-      console.log(responseData);
-      history.push('/');
-    } catch (error) {
-      console.error('Error during connection:', error);
-      disconnect();
+    if (responseData.status && responseData.status !== 'success') {
+      throw new Error(responseData.message);
     }
-  };
 
-
+    setIsAuthenticated(true);
+    console.log('Connect Success');
+    history.goBack();
+  }
 
   useEffect(() => {
-    if (isConnected) {
-      console.log('Connected');
+    if (isConnected && !isAuthenticated) {
+      (async () => {
+        try {
+          await connectWallet();
+        } catch (error) {
+          console.error('Error during connection:', error);
+          disconnect();
+        } finally {
+          setIsLoading(false);
+        }
+      })();
     }
-  }, [isConnected, isDisconnected]);
+  }, [isConnected, isAuthenticated]);
 
   return (
       <section className="wallet-connect-area">
@@ -92,11 +117,11 @@ export default function Wallet() {
                     title={ connector.name }
                     img={ `/img/${ connector.id }.svg` }
                     content=""
-                    onClick={ !isConnected
-                        ? connector.id !== 'walletConnect'
-                            ? () => handleConnect(connector)
-                            : () => open()
-                        : () => disconnect() }
+                    onClick={
+                      !isConnected
+                          ? () => handleConnect(connector)
+                          : () => disconnect()
+                    }
                     buttonText={ !isConnected
                         ? 'Connect'
                         : 'Disconnect' }
