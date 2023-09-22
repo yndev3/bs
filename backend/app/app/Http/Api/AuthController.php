@@ -58,9 +58,9 @@ final class AuthController
         }
         Auth::login($user, true);
         return new JsonResponse([
-            'User registration completed',
-            ResponseAlias::HTTP_OK
-        ]);
+            'status' => 'success',
+            'message' => 'User registration completed',
+        ], ResponseAlias::HTTP_CREATED);
     }
     
     /**
@@ -99,23 +99,23 @@ final class AuthController
 
         // Check if address is a valid Ethereum address
         if (!$this->isChecksumAddress($address)) {
-            throw ValidationException::withMessages(['signature' => 'Invalid request. Please try again.']);
+            throw ValidationException::withMessages(['signature' => 'Invalid request. Please try again.'. __LINE__]);
         }
 
         // Check if nonce is present in the session
         if (!$nonce && $nonce !== $reqNonce) {
-            throw ValidationException::withMessages(['signature' => 'Invalid request. Please try again.']);
+            throw ValidationException::withMessages(['signature' => 'Invalid request. Please try again.'. __LINE__]);
         }
 
         $dateTime = Carbon::parse($iso8601String);
         // Check if the issuedAt timestamp is within the last 5 minutes
         $isWithinFiveMinutes = $dateTime->gt(Carbon::now()->subMinutes(5)) && $dateTime->lte(Carbon::now());
         if (!$isWithinFiveMinutes) {
-            throw ValidationException::withMessages(['signature' => 'Invalid request. Please try again.']);
+            throw ValidationException::withMessages(['signature' => 'Invalid request. Please try again.'. __LINE__]);
         }
 
         if (!$this->verifySignature($message, $signature, $address)) {
-            throw ValidationException::withMessages(['signature' => 'Invalid request. Please try again.']);
+            throw ValidationException::withMessages(['signature' => 'Invalid request. Please try again.'. __LINE__]);
         }
     }
 
