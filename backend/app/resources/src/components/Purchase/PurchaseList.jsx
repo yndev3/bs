@@ -71,6 +71,7 @@ export default function DataGridDemo() {
   const rows = booking
   ? booking.map((item) => ({
       id: item.id,
+      tokenId:item.product.token_id,
       created_at: formatDate(item.created_at),
       itemName:item.product.name,
       buyer: item.buyer,
