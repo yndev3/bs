@@ -66,12 +66,6 @@ export default function Selling() {
     }
   }
 
-  // Price toLocaleString
-
-  const formattedPrice = itemData && itemData.price
-      ? itemData.price.toLocaleString()
-      : 'Price not available';
-
   // Item States
 
   const saleStatus = itemData.is_sale === 1 ? 'For Sale' : 'Not for Sale';
@@ -112,7 +106,7 @@ export default function Selling() {
                           <img className="mr-3"
                                src="../img/tether-usdt-logo.png" alt="usdtlogo"
                                width="30px"/>
-                          { formattedPrice }<span className="h6"> USDT</span>
+                          {Number(itemData.price).toLocaleString()}<span className="h6"> USDT</span>
                         </h4>
                         <span>1 of 1</span>
                       </div>
