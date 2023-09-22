@@ -5,8 +5,9 @@ import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 
 import WalletConnect from '../themes/wallet-connect';
 import Create from '../themes/create';
-import AdminItemDetails from '../themes/admin-item-details';
-import AdminItemList from '../themes/admin-item-list';
+import AdminItemDetails from '../themes/item-details';
+import AdminItemList from '../themes/item-list';
+import PurchaseList from '../themes/purchase-list';
 import ReservationList from '../themes/reservation-list';
 import StoreList from '../themes/store-list';
 import Error from '../themes/error';
@@ -25,6 +26,7 @@ const MyRouts = () => {
               <Route exact path="/admin/create" component={ Create }/>
               <Route exact path="/admin/itemDetails/:id" component={ AdminItemDetails }/>
               <Route exact path="/admin/itemlist" component={ AdminItemList }/>
+              <Route exact path="/admin/purchase" component={ PurchaseList}/>
               <Route exact path="/admin/reservationlist" component={ ReservationList }/>
               <Route exact path="/admin/storelist" component={ StoreList}/>
               <Route exact path="/error" component={ Error }/>

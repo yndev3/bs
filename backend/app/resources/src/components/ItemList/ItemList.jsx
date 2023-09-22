@@ -314,7 +314,6 @@ export default function StickyHeadTable() {
                       {columns.map((column) => (
                         <TableCell
                           key={column.id}
-                          align={column.align}
                           style={{ minWidth: column.minWidth }}
                           align={column.id !== 'name' ? 'center' : column.align}
                         >
