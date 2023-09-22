@@ -281,7 +281,7 @@ a:not([href]),
 a:not([href]):hover,
 a:not([href]) i,
 a:not([href]) i:hover {
-    color: #0000ff;
+    color: var(--primary-b-color);
 }
 
 p {
