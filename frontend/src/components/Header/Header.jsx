@@ -49,7 +49,7 @@ const Header = () => {
                 </li>
               </ul>
               {/* User Info */ }
-              { isConnected && <Profile/> }
+              { isAuthenticated && <Profile/> }
               {/* Navbar Toggler */ }
               <ul className="navbar-nav toggle">
                 <li className="nav-item">
