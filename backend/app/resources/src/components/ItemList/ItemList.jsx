@@ -111,7 +111,7 @@ export default function StickyHeadTable() {
 
   const darkTheme = createTheme({
     palette: {
-      type: 'dark',
+      mode: 'dark',
     },
   });
 
