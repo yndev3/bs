@@ -54,7 +54,9 @@ const ActivityArea = () => {
                 {activity && activity.length > 0 ? (
                   <ActivityList activity={activity} scan_address={scan_address} />
                 ) : (
-                  <h5 className='mt-5'>No history available.</h5>
+                  <div className="col-12 text-center mt-5">
+                    <p>No items found in your collection.</p>
+                  </div>
                 )}
               </div>
             </div>

@@ -35,7 +35,7 @@ export const fetchFromApi = async ({
       alert('You are not logged in. Please log in and try again.');
       throw new Error('UnauthorizedError');
     }
-    console.error('API Error:', error);
+    // console.error('API Error:', error);
     throw error;
   }
 };
