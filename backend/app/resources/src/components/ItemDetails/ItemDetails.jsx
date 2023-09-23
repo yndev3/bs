@@ -163,10 +163,6 @@ useEffect(() => {
     }
   }
 
-  // Price toLocaleString
-
-  const formattedPrice = itemData && itemData.price ? itemData.price.toLocaleString() : "Not Sale";
-
   // Item States
 
   let saleStatus;

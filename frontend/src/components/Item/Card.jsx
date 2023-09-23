@@ -13,10 +13,6 @@ const Card = (props) => {
     }
   }
 
-  const formatPrice = (price) => {
-    return price.toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 0 });
-  };
-
   return (
       <>
         <div className="mt-3 col-12 col-sm-6 col-lg-3">
@@ -40,7 +36,7 @@ const Card = (props) => {
                     <span>1 of 1</span>
                     <span>
                       <img className="mr-2" src="../img/tether-usdt-logo.png" alt="usdtlogo" width="21px"/>
-                      <span className="card-price">{formatPrice(item.price)}</span> USDT</span>
+                      <span className="card-price">{Number(item.price).toLocaleString()}</span> USDT</span>
                 </div>
                 <div className="col-12 text-center mt-3">
 

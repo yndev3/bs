@@ -35,7 +35,7 @@ function ModalBuyButton({id: tokenId, itemData}) {
   const {data: readData} = useContractReads({
     contracts,
     onSuccess: (data) => {
-      console.log('data', data);
+      // console.log('data', data);
     },
   });
   const {data: fetchBalanceResult} = useBalance({
@@ -57,10 +57,6 @@ function ModalBuyButton({id: tokenId, itemData}) {
     ...sellingConfig,
     functionName: 'buyWithERC20',
   });
-
-  const formattedPrice = itemData && itemData.price
-      ? itemData.price.toLocaleString()
-      : 'Price not available';
 
   const handleBuy = async (e) => {
     e.preventDefault();
@@ -97,7 +93,7 @@ function ModalBuyButton({id: tokenId, itemData}) {
           ERC_20_TOKEN_CONTRACT,
         ],
       });
-      // DBに購入履歴を記録する
+
       await fetchFromApi({
         endpoint: '/api/purchase',
         method: 'POST',
@@ -109,7 +105,7 @@ function ModalBuyButton({id: tokenId, itemData}) {
         },
       });
     } catch (Error) {
-      // todo エラーログを記録する為にバックエンドに送信する
+
 
     } finally {
       setLoading(false);
@@ -185,7 +181,7 @@ function ModalBuyButton({id: tokenId, itemData}) {
                                                          src="../img/tether-usdt-logo.png"
                                                          alt="usdtlogo"
                                                          width="30px"/>
-                            { formattedPrice }<span className="h6"> USDT</span>
+                            {Number(itemData.price).toLocaleString()}<span className="h6"> USDT</span>
                                                 </span>
                         </li>
                       </ul>
