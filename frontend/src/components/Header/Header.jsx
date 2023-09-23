@@ -1,14 +1,19 @@
 import React from 'react';
 import { NavLink, Link } from 'react-router-dom';
-import { useAccount } from 'wagmi';
+import { useAccount, useNetwork } from 'wagmi';
 import Profile from './Profile';
 import { useAuth } from '../../providers/AuthProvider';
 
 const Header = () => {
   const {isAuthenticated, isLoading} = useAuth();
   const {address, isConnected} = useAccount();
+  const {chain, chains} = useNetwork();
   const shortenAddress = (address, chars = 4) => {
     return `${ address.slice(0, 2) }...${ address.slice(-chars) }`;
+  };
+
+  const isPolygon = () => {
+    return isConnected && chain.id !== chains[1].id;
   };
 
   return (
@@ -73,7 +78,14 @@ const Header = () => {
                 </li>
               </ul>
             </div>
+
           </nav>
+          {
+              isPolygon() &&
+              <div className="alert alert-danger text-center" role="alert">
+                Please switch to the polygon network.
+              </div>
+          }
         </header>
       </>
   );

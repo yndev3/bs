@@ -6,7 +6,7 @@ import {
   useConnect,
   useNetwork,
   useDisconnect,
-  useSignMessage,
+  useSignMessage, useSwitchNetwork,
 } from 'wagmi';
 import { toMessage } from '../SignIn/toMessage';
 import { useWeb3Modal } from '@web3modal/react';
@@ -17,15 +17,15 @@ const domain = window.location.host;
 const origin = window.location.origin;
 export default function Wallet() {
   const [statementData, setStatementData] = useState(null);
-  const {isAuthenticated, setIsAuthenticated, setIsLoading} = useAuth();
+  const {isAuthenticated, setAuth, setIsLoading} = useAuth();
   const {connectAsync, connectors, error} = useConnect();
-  const {address, isConnected} = useAccount();
-  const {chain, chains} = useNetwork();
+  const {connector: activeConnector, address, isConnected} = useAccount();
   const {disconnect} = useDisconnect();
   const {signMessageAsync} = useSignMessage();
   const {open, close} = useWeb3Modal();
   const history = useHistory();
-
+  const {chain, chains} = useNetwork();
+  const { switchNetwork } = useSwitchNetwork();
   const createSiweMessage = (address, chainId, statement, nonce, issuedAt) => {
     return toMessage({
       domain,
@@ -74,9 +74,11 @@ export default function Wallet() {
     if (responseData.status && responseData.status !== 'success') {
       throw new Error(responseData.message);
     }
-
-    setIsAuthenticated(true);
-    history.goBack();
+    // network check
+    if (activeConnector.id !== 'walletConnect'
+        && ![chains[0].id, chains[1].id].includes(chain.id)) {
+        switchNetwork?.(chains[1].id)
+    }
   }
 
   useEffect(() => {
@@ -85,7 +87,11 @@ export default function Wallet() {
       (async () => {
         try {
           await connectWallet();
+          setAuth(true);
+          console.log('Connected');
+          history.goBack();
         } catch (error) {
+          setAuth(false);
           console.error('Error during connection:', error);
           disconnect();
         } finally {
@@ -116,7 +122,6 @@ export default function Wallet() {
                         key={ connector.id }
                         title={ connector.name }
                         img={ `/img/${ connector.id }.svg` }
-                        content=""
                         onClick={
                           !isConnected
                               ? () => handleConnect(connector)

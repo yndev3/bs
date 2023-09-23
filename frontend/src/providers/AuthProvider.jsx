@@ -4,12 +4,17 @@ export const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
   const [isAuthenticated, setIsAuthenticated] = useState(() => {
-    return !!localStorage.getItem("isAuthenticated");
+    return localStorage.getItem("isAuthenticated") === "true";
   });
   const [isLoading, setIsLoading] = useState(false);
 
+  const setAuth = (value) => {
+    setIsAuthenticated(value);
+    localStorage.setItem("isAuthenticated", value.toString());
+  };
+
   return (
-      <AuthContext.Provider value={{ isAuthenticated, setIsAuthenticated, isLoading, setIsLoading }}>
+      <AuthContext.Provider value={{ isAuthenticated, setIsAuthenticated, setAuth, isLoading, setIsLoading }}>
         {children}
       </AuthContext.Provider>
   );
