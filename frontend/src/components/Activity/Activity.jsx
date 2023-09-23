@@ -12,7 +12,6 @@ const ActivityArea = () => {
 
 
   const now = new Date();
-  // console.log(now.toUTCString());
 
   useEffect(() => {
     fetchFromApi({
