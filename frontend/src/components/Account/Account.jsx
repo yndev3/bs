@@ -65,9 +65,15 @@ const Account = () => {
                 </div>
 
                 <div className="row items explore-items">
-                    {products.map((item, idx) => (
-                        <NFTCard key={`edth_${idx}`} item={item} idx={idx} handleItemSelected={handleItemSelected} up_date={countdown} />
-                    ))}
+                    {products.length > 0 ? (
+                        products.map((item, idx) => (
+                            <NFTCard key={`edth_${idx}`} item={item} idx={idx} handleItemSelected={handleItemSelected} up_date={countdown} />
+                        ))
+                    ) : (
+                        <div className="col-12 text-center mt-5">
+                            <p>No items found in your collection.</p>
+                        </div>
+                    )}
                 </div>
             </div>
             <ModalReserve selectedItem={selectedItem} />

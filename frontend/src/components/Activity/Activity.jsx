@@ -18,7 +18,7 @@ const ActivityArea = () => {
       endpoint: '/api/purchase',
     })
       .then((data) => {
-        console.log('API returned data:', data);
+        // console.log('API returned data:', data);
         setActivity(data);
       })
       .catch((error) => {
