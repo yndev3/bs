@@ -75,7 +75,6 @@ export default function Wallet() {
       throw new Error(responseData.message);
     }
     // network check
-    console.log('walletConnect', );
     if (activeConnector.id !== 'walletConnect'
         && ![chains[0].id, chains[1].id].includes(chain.id)) {
         switchNetwork?.(chains[1].id)
@@ -83,8 +82,6 @@ export default function Wallet() {
   }
 
   useEffect(() => {
-    console.log('isConnected', isConnected);
-    console.log('isAuthenticated', isAuthenticated);
     if (isConnected && !isAuthenticated) {
       setIsLoading(true);
       (async () => {
