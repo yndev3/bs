@@ -12,14 +12,13 @@ const ActivityArea = () => {
 
 
   const now = new Date();
-  // console.log(now.toUTCString());
 
   useEffect(() => {
     fetchFromApi({
       endpoint: '/api/purchase',
     })
       .then((data) => {
-        // console.log('API returned data:', data);
+        console.log('API returned data:', data);
         setActivity(data);
       })
       .catch((error) => {

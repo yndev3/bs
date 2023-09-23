@@ -1,22 +1,25 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
+import { DateTime } from 'luxon'; // Luxonライブラリをインポート
 
 const ActivityList = ({ activity, scan_address }) => {
   return (
     <ul className="list-unstyled">
       {activity && activity.map(item => {
 
-        const createdAt = new Date(item.created_at);
-        const now = new Date();
-        const diffInMilliseconds = now - createdAt;
-        const diffInHours = Math.floor(diffInMilliseconds / (1000 * 60 * 60));
-        const diffInDays = Math.floor(diffInHours / 24);
-        let timeAgo = '';
+        const createdDate = DateTime.fromISO(item.created_at); // Luxonを使用して日付をパース
+        const now = DateTime.now(); // 現在の日時を取得
+        const diff = now.diff(createdDate, ['days', 'hours', 'minutes']).toObject(); // 日付の差を計算
 
-        if (diffInDays > 0) {
-          timeAgo = `<strong>${diffInDays}</strong> days <strong>${diffInHours % 24}</strong> hours ago`;
+        let timeAgo = '';
+        if (diff.days && diff.days > 0) {
+          timeAgo = `<strong>${Math.floor(diff.days)}</strong> days <strong>${Math.floor(diff.hours) || 0}</strong> hours ago`;
+        } else if (diff.hours && diff.hours > 0) {
+          timeAgo = `<strong>${Math.floor(diff.hours)}</strong> hours ago`;
+        } else if (diff.minutes && diff.minutes > 0) {
+          timeAgo = `<strong>${Math.floor(diff.minutes)}</strong> minutes ago`;
         } else {
-          timeAgo = `<strong>${diffInHours}</strong> hours ago`;
+          timeAgo = 'Just now';
         }
 
         return (
@@ -32,7 +35,7 @@ const ActivityList = ({ activity, scan_address }) => {
               </Link>
               <p className="m-0">Purchased for <strong>{Number(item.price).toLocaleString()}</strong> USDT</p>
               <p className="m-0">
-              <span className="m-0" dangerouslySetInnerHTML={{ __html: ` ${timeAgo}` }} /> │ by BrandSwap
+                <span className="m-0" dangerouslySetInnerHTML={{ __html: timeAgo }} /> │ by BrandSwap
                 <a 
                   href={`${scan_address}tx/${item.transaction_hash}`} 
                   className='d-inline'
