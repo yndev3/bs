@@ -1,5 +1,4 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
 
 export default function WalletCard(walletInfo) {
   return (
@@ -10,7 +9,6 @@ export default function WalletCard(walletInfo) {
             <div className="d-block text-center">
               <img className="avatar-lg" src={ walletInfo.img } alt=""/>
               <h4 className="mb-0">{ walletInfo.title }</h4>
-              <p>{ walletInfo.content }</p>
             </div>
             <button className="btn btn-bordered-white btn-smaller mt-3"
                     onClick={ walletInfo.onClick }>
