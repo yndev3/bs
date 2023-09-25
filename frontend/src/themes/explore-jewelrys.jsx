@@ -112,7 +112,7 @@ class ExploreTwo extends Component {
             <div className="main">
                 <Header />
                 <Breadcrumb title="ExploreJewelrys" subpage="Jewelrys" page="Jewelrys" />
-                <Explore initData={initData} data={data} />
+                <Explore initData={initData} category="Jewelry" />
                 <Footer />
                 <ModalMenu />
                 <Scrollup />

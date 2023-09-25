@@ -4,24 +4,22 @@ import { fetchFromApi } from '../../utils/fetchFromApi';
 import Card from '../Item/Card';
 
 const Explore = (props) => {
-    const { initData, data } = props;
+    const { initData, category } = props;
     const [products, setProducts] = useState([]);
     const [sortKey, setSortKey] = useState('id');
     const [sortOrder, setSortOrder] = useState('desc');
-    const [category, setCategory] = useState(null);
     const [visibleCount, setVisibleCount] = useState(8); 
 
     const loadMore = () => {
-        setVisibleCount(prevCount => prevCount + 8); // 8個ずつ表示数を増やす
+        setVisibleCount(prevCount => prevCount + 8); 
     };
 
     useEffect(() => {
         const params = {
             sortKey: sortKey,
             sortOrder: sortOrder,
-            category: 'Watch',
+            category: category,
         };
-
         fetchFromApi({
             endpoint: '/api/items',
             params: params

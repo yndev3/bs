@@ -44,7 +44,7 @@ class ExploreOne extends Component {
             <div className="main">
                 <Header />
                 <Breadcrumb title="ExploreWatches" subpage="Watches" page="Watches" />
-                <Explore initData={initData} />
+                <Explore initData={initData} category="Watch" />
                 <Footer />
                 <ModalMenu />
                 <Scrollup />

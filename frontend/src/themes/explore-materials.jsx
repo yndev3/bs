@@ -37,81 +37,13 @@ const initData = {
     ]
 }
 
-const data = [
-    {
-        id: "1",
-        img: "/img/Watches.jpg",
-        title: "DAYTONA PAUL NEWMANDAYTONA PAUL NEWMANDAYTONA PAUL NEWMANDAYTONA PAUL NEWMAN",
-        brand: "ROREXROREXROREXROREXROREXROREX",
-        price: "1,000",
-        group: '["art","ROREX"]',
-    },
-    {
-        id: "2",
-        img: "/img/Watches.jpg",
-        title: "DAYTONA PAUL NEWMAN",
-        brand: "ROREX",
-        price: "1,000",
-        group: '["art","sports"]',
-    },
-    {
-        id: "3",
-        img: "/img/Watches.jpg",
-        title: "DAYTONA PAUL NEWMAN",
-        brand: "ROREX",
-        price: "1,000",
-        group: '["art","sports"]',
-    },
-    {
-        id: "4",
-        img: "/img/Watches.jpg",
-        title: "DAYTONA PAUL NEWMAN",
-        brand: "ROREX",
-        price: "1,000",
-        group: '["art","sports"]',
-    },
-    {
-        id: "5",
-        img: "/img/Watches.jpg",
-        title: "DAYTONA PAUL NEWMAN",
-        brand: "ROREX",
-        price: "1,000",
-        group: '["art","sports"]',
-    },
-    {
-        id: "6",
-        img: "/img/Watches.jpg",
-        title: "DAYTONA PAUL NEWMAN",
-        brand: "ROREX",
-        price: "1,000",
-        group: '["art","sports"]',
-    },
-    {
-        id: "7",
-        img: "/img/Watches.jpg",
-        title: "DAYTONA PAUL NEWMAN",
-        brand: "ROREX",
-        price: "1,000",
-        group: '["art","sports"]',
-    },
-    {
-        id: "8",
-        img: "/img/Watches.jpg",
-        title: "DAYTONA PAUL NEWMAN",
-        brand: "ROREX",
-        price: "1,000",
-        group: '["art","sports"]',
-    }
-    
-]
-
 class ExploreTwo extends Component {
     render() {
         return (
             <div className="main">
                 <Header />
                 <Breadcrumb title="Explore" subpage="Explore" page="Explore Style 3" />
-                <Explore initData={initData} data={data} />
+                <Explore initData={initData} category="Material" />
                 <Footer />
                 <ModalMenu />
                 <Scrollup />
