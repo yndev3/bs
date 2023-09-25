@@ -1,11 +1,15 @@
 import React, { useState } from 'react';
-import BrandSwap from '../../contracts/BrandSwap.json';
 import { WatchForm, JewelryForm, MaterialForm } from './CategoryForm';
 import useMintSubmit from '../../hooks/useMintSubmit';
 import { useAccount, useContractEvent } from 'wagmi';
 import axios  from 'axios';
 import _ from 'lodash';
 import { Splide, SplideSlide } from '@splidejs/react-splide';
+import {
+  BRAND_SWAP_ABI,
+  BRAND_SWAP_CONTRACT
+} from '../../helpers/constants';
+
 
 const initialJsonInput = {
   name: '',
@@ -44,13 +48,12 @@ const initialMaterialFormInput = {
 }
 
 const Create = () => {
-  const BrandSwapAddress = import.meta.env.VITE_BRANDSWAP_ADDRESS;
   const {address, isConnected} = useAccount();
   const [loading, setLoading] = useState(false);
   const [selectedFile, setSelectedFile] = useState('');
   useContractEvent({
-    address: BrandSwapAddress,
-    abi: BrandSwap.abi,
+    address: BRAND_SWAP_CONTRACT,
+    abi: BRAND_SWAP_ABI,
     eventName: 'nftMinted',
     listener(log) {
       const {uri, tokenId, sender} = log[0].args;
@@ -68,7 +71,7 @@ const Create = () => {
       setLoading(false);
     },
   });
-  const {executeMint} = useMintSubmit(BrandSwapAddress, address);
+  const {executeMint} = useMintSubmit(BRAND_SWAP_CONTRACT, address);
   const [jsonInput, setJsonInput] = useState(initialJsonInput);
   const [watchFormInput, setWatchFormInput] = useState(initialWatchFormInput);
   const [jewelryFormInput, setJewelryFormInput] = useState(initialJewelryFormInput);
