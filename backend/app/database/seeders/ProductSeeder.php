@@ -25,6 +25,30 @@ class ProductSeeder extends Seeder
             '0xF5255246E7BDEBA1CfAE3710Fd0d0a0e6f6FE3AC',
         ];
 
+        $brands = [
+            "ROREX",
+            "PATEK PHILIPPE",
+            "AUDEMARS PIGUET",
+            "Richard Mille",
+            "Harry Winston",
+            "Cartier",
+            "CHANEL",
+            "OMEGA",
+            "HERMES",
+            "BVLGARI",
+            "GUCCI",
+            "CHOPARD",
+            "HUBLOT",
+            "BREITLING",
+            "LOUIS VUITTON",
+            "Van Cleef & Arpels",
+            "LOUIS VUITTON",
+            "FENDI",
+            "CHAUMET",
+            "Tiffany&Co",
+            "PANERAI"
+           ];
+
         for ($i = 0; $i < 1000; $i++) {
             $product = Product::create([
                 'token_id' => $i + 1,
@@ -38,7 +62,7 @@ class ProductSeeder extends Seeder
                 'price' => (string)$faker->numberBetween(100, 10000),
                 'sku' => 'SKU' . str_pad($i + 1, 5, '0', STR_PAD_LEFT),
                 'category' => $faker->randomElement(['Watch', 'Jewelry', 'Material']),
-                'brand' => $faker->company,
+                'brand' =>  $faker->randomElement($brands),
                 'color' => $faker->colorName,
                 'material' => $faker->randomElement(['Metal', 'Leather', 'Plastic']),
                 'size' => $faker->randomElement(['Small', 'Medium', 'Large']),
