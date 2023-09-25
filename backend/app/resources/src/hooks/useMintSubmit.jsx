@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { pinFolderToIPFS } from '../helpers/pinFolderToIPFS';
 import { pinJSONToIPFS } from '../helpers/pinJSONToIPFS';
 import BrandSwap from '../contracts/BrandSwap.json';

@@ -35,6 +35,48 @@ final class AdminController
         return response()->json($products);
     }
 
+
+    public function getProductByTokenId(Request $request, string $tokenId): JsonResponse
+    {
+        $product = Product::withoutGlobalScopes()
+            ->where('token_id', $tokenId)->first();
+
+        if (!$product) {
+            return response()->json(['message' => 'Product not found'], 404);
+        }
+
+        $options = match ($product->category) {
+            'Watch' => $product->watchOptions->toArray(),
+            'Material' => $product->materialOptions->toArray(),
+            'Jewelry' => $product->jewelryOptions->toArray(),
+            default =>  [],
+        };
+
+        $product = $product->toArray();
+        $product['option'] = $options;
+
+        return response()->json($product);
+    }
+
+    public function setSaleStatus(Request $request, string $tokenId): JsonResponse
+    {
+        $product = Product::withoutGlobalScopes()
+            ->where('token_id', $tokenId)
+            ->first();
+
+        if (!$product) {
+            return response()->json(['message' => 'Product not found'], 404);
+        }
+
+        // update product
+        $product->update([
+            'price' => $request->input('price'),
+            'is_sale' =>(int)$request->input('saleStatus')
+        ]);
+
+        return response()->json($product);
+    }
+
     public function fetchBooking(): JsonResponse
     {
         // get booking from booking table
