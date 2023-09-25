@@ -61,13 +61,15 @@ const Explore = (props) => {
                         </div>
                     </div>
                     <div className="row">
-                        <div className="col-12 d-flex justify-content-end align-items-center">
-                            {/* Accordion Trigger */}
-                            <div className="accordion-trigger" onClick={() => setIsAccordionOpen(!isAccordionOpen)}>
-                                <span>Brands</span>
-                            </div>
-                            
-                            {/* Sort Select Box */}
+                    <div className="col-12 d-flex justify-content-end align-items-center">
+                        {/* Accordion Trigger */}
+                        <div className="accordion-trigger" onClick={() => setIsAccordionOpen(!isAccordionOpen)}>
+                            <span>Brands</span>
+                        </div>
+                        
+                        {/* Sort Select Box */}
+                        <div className="d-flex align-items-center">
+                            <SortIcon color="secondary" />
                             <select 
                                 className="form-select" 
                                 onChange={(e) => {
@@ -79,16 +81,19 @@ const Explore = (props) => {
                                     width: '135px', 
                                     borderRadius: '5px', 
                                     borderColor: 'grey', 
-                                    boxShadow: '0px 0px 5px 0px rgba(0,0,0,0.1)' 
+                                    boxShadow: '0px 0px 5px 0px rgba(0,0,0,0.1)',
+                                    marginLeft: '5px' // アイコンとの間隔を調整
                                 }}
                             >
-                                <option value="" disabled selected>Sort...<SortIcon /></option>
+                                <option value="" disabled selected>Sort...</option>
                                 <option value="id-desc">Newest First</option>
                                 <option value="id-asc">Oldest First</option>
                                 <option value="price-asc">Cheapest First</option>
                                 <option value="price-desc">Most Expensive First</option>
                             </select>
                         </div>
+                    </div>
+
                         {/* Explore Menu */}
                         {isAccordionOpen && (
                             <div className="col-12">
