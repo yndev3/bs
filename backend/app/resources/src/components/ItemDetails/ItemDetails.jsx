@@ -4,17 +4,13 @@ import { OptionList } from './optionlist';
 import { Splide, SplideSlide } from '@splidejs/react-splide';
 import '@splidejs/react-splide/css';
 import { fetchFromApi } from '../../utils/fetchFromApi';
-import { useParams, useHistory } from 'react-router-dom';
-import {
-  OWNER_ADDRESS,
-  POLYGON_SCAN_ADDRESS
-} from '../../helpers/constants';
+import { useHistory, useParams } from 'react-router-dom';
+import { OWNER_ADDRESS, POLYGON_SCAN_ADDRESS } from '../../helpers/constants';
 import ItemForm from './form.jsx';
 
 export default function Selling() {
   const [itemData, setItemData] = useState({});
   const [itemOwner, setItemOwner] = useState('Address not available');
-  const [itemDataApi, setItemDataApi] = useState(null); // 状態追加
   const {id} = useParams();
   const [prevId, setPrevId] = useState(null);
   const [splideImages, setSplideImages] = useState([]);
@@ -42,12 +38,8 @@ export default function Selling() {
   const fetchData = async () => {
     console.log('Fetching data from API...');
     try {
-      const data = await fetchFromApi({endpoint: '/api/admin/item/' + id});
-      console.log('API returned data:', data);
-      return data;
+      return await fetchFromApi({endpoint: '/api/admin/item/' + id});
     } catch (err) {
-      console.log('Error fetching data:',
-          err.response ? err.response : err.message);
       if (err.response && err.response.status === 404) {
         history.push('/error');
       }
@@ -61,7 +53,7 @@ export default function Selling() {
         const data = await fetchData();
         if (data) { // fetchDataがエラーでnullを返した場合は更新しない
           setPrevId(id);
-          setItemDataApi(data);
+          setItemData(data);
           setItemOwner(getItemOwner(data.owner_address));
           setSplideImages(JSON.parse(data.image_list));
         }
@@ -70,12 +62,6 @@ export default function Selling() {
 
     fetchDataAndUpdateState();
   }, [id, prevId, history]);
-
-  useEffect(() => {
-    if (itemDataApi) {
-      setItemData(itemDataApi);
-    }
-  }, [itemDataApi]);
 
   return (
 
