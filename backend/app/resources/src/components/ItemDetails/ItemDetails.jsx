@@ -40,6 +40,7 @@ export default function Selling() {
     try {
       return await fetchFromApi({endpoint: '/api/admin/item/' + id});
     } catch (err) {
+      console.error(err);
       if (err.response && err.response.status === 404) {
         history.push('/error');
       }

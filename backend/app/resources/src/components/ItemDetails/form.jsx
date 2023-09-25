@@ -38,7 +38,6 @@ const ItemForm = ({price, tokenId, isSale}) => {
           saleStatus,
         ],
       });
-      console.log('sellingResult', sellingResult);
       const updateResult = await fetchFromApi({
         endpoint: '/api/admin/item/' + tokenId,
         method: 'POST',
@@ -48,9 +47,8 @@ const ItemForm = ({price, tokenId, isSale}) => {
           saleStatus
         },
       });
-      console.log('updateResult', updateResult);
     } catch (error) {
-      console.log(error);
+      console.error(error);
     } finally {
       setLoading(false);
     }
