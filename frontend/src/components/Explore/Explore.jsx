@@ -1,9 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
 import { fetchFromApi } from '../../utils/fetchFromApi';
 import Card from '../Item/Card';
-import SortIcon from '@mui/icons-material/Sort';
-
+import AccordionAndSort from './AccordionAndSort';
 
 const Explore = (props) => {
     const { initData, category } = props;
@@ -61,38 +59,15 @@ const Explore = (props) => {
                         </div>
                     </div>
                     <div className="row">
-                    <div className="col-12 d-flex justify-content-end align-items-center">
-                        {/* Accordion Trigger */}
-                        <div className="accordion-trigger" onClick={() => setIsAccordionOpen(!isAccordionOpen)}>
-                            <span>Brands</span>
-                        </div>
-                        
-                        {/* Sort Select Box */}
-                        <div className="d-flex align-items-center">
-                            <SortIcon color="secondary" />
-                            <select 
-                                className="form-select" 
-                                onChange={(e) => {
-                                    const [key, order] = e.target.value.split('-');
-                                    setSortKey(key);
-                                    setSortOrder(order);
-                                }}
-                                style={{ 
-                                    width: '135px', 
-                                    borderRadius: '5px', 
-                                    borderColor: 'grey', 
-                                    boxShadow: '0px 0px 5px 0px rgba(0,0,0,0.1)',
-                                    marginLeft: '5px' // アイコンとの間隔を調整
-                                }}
-                            >
-                                <option value="" disabled selected>Sort...</option>
-                                <option value="id-desc">Newest First</option>
-                                <option value="id-asc">Oldest First</option>
-                                <option value="price-asc">Cheapest First</option>
-                                <option value="price-desc">Most Expensive First</option>
-                            </select>
-                        </div>
-                    </div>
+
+                        <AccordionAndSort 
+                            isAccordionOpen={isAccordionOpen} 
+                            setIsAccordionOpen={setIsAccordionOpen} 
+                            setSortKey={setSortKey} 
+                            setSortOrder={setSortOrder} 
+                            sortKey={sortKey}
+                            sortOrder={sortOrder} 
+                        />
 
                         {/* Explore Menu */}
                         {isAccordionOpen && (

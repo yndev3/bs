@@ -2045,6 +2045,8 @@ padding: 100px 0 140px !important;
   flex-grow: 0 !important;
 }
 
+
+
 .explore-area .explore-menu .btn::after {
   position: absolute;
   content: '';

@@ -2076,6 +2076,15 @@ padding: 100px 0 140px !important;
   -webkit-box-shadow: none;
           box-shadow: none;
 }
+.explore-area .sort-select {
+  width: 140px !important;
+  border-radius: 5px;
+  border-color: rgb(65, 64, 64);
+  margin-left: 5px;
+  padding: 5px;
+  height: 35px;
+  color: gray !important; 
+}
 
 .explore-area .explore-menu .btn::after {
   position: absolute;
