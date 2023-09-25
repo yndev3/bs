@@ -11,30 +11,6 @@ const initData = {
     heading: "Watches",
     content: "Explore a curated selection of exquisite NFT watches, each a digital representation of finely crafted timepieces. Own these unique digital collectibles while embracing the legacy of horology's finest creations.",
     btn_2: "Load More",
-    filter: [
-        "All",
-        "ROREX",
-        "PATEK PHILIPPE",
-        "AUDEMARS PIGUET",
-        "Richard Mille",
-        "Harry Winston",
-        "Cartier",
-        "CHANEL",
-        "OMEGA",
-         "HERMES",
-         "BVLGARI",
-         "GUCCI",
-         "CHOPARD",
-         "HUBLOT",
-         "BREITLING",
-         "LOUIS VUITTON",
-         "Van Cleef & Arpels",
-         "LOUIS VUITTON",
-         "FENDI",
-         "CHAUMET",
-         "Tiffany&Co",
-         "PANERAI"
-    ]
 }
 
 

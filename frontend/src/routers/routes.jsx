@@ -5,7 +5,7 @@ import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 import Home from '../themes/home';
 import ScrollToTop from '../components/Scrollup/ScrollTop';
 import ExploreWatches from '../themes/explore-watches';
-import ExploreJewelrys from '../themes/explore-jewelrys';
+import Explorejewelries from '../themes/explore-jewelries';
 import ExploreMaterials from '../themes/explore-materials';
 import ItemDetails from '../themes/item-details';
 import Activity from '../themes/activity';
@@ -26,7 +26,7 @@ const MyRouts = () => {
           <Switch>
               <Route exact path="/" component={ Home }/>
               <Route exact path="/explore-watches" component={ ExploreWatches }/>
-              <Route exact path="/explore-jewelrys" component={ ExploreJewelrys }/>
+              <Route exact path="/explore-jewelries" component={ Explorejewelries }/>
               <Route exact path="/explore-materials" component={ ExploreMaterials }/>
               <Route path="/item-details/:id" component={ ItemDetails }/>
               <Route exact path="/wallet-connect" component={ WalletConnect }/>
