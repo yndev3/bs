@@ -13,9 +13,12 @@ const sellingConfig = {
   abi: SELLING_ABI,
 };
 
+const ON_SALE = 'On Sale' ;
+const STOP_SALE = 'Stop Sale' ;
+
 const ItemForm = ({price, tokenId, isSale}) => {
   const [loading, setLoading] = useState(false);
-  const [status, setStatus] = useState(isSale === 1 ? 'On Sale' : 'Stop Sale');
+  const [status, setStatus] = useState(isSale === 1 ? ON_SALE : STOP_SALE);
   const {
     writeAsync: sellingContract,
     isLoading,
@@ -28,7 +31,7 @@ const ItemForm = ({price, tokenId, isSale}) => {
     e.preventDefault();
     setLoading(true);
     const price = parseEther(e.target.price.value);
-    const saleStatus = e.target.status.value === 'On Sale';
+    const saleStatus = e.target.status.value === ON_SALE;
 
     try {
       const sellingResult = await sellingContract?.({
@@ -59,6 +62,8 @@ const ItemForm = ({price, tokenId, isSale}) => {
     setStatus(statusValue);
   };
 
+  const disableCheck = () => isSale === 2 ;
+
   return (
       <>
         <div className="card no-hover mb-2 p-4">
@@ -75,7 +80,7 @@ const ItemForm = ({price, tokenId, isSale}) => {
                     className="form-control"
                     id="priceInput"
                     name="price"
-                    disabled={ isSale === 2 }
+                    disabled={ disableCheck() }
                 />
                 <span className="input-group-text">USDT</span>
               </div>
@@ -89,13 +94,13 @@ const ItemForm = ({price, tokenId, isSale}) => {
                     type="radio"
                     name="status"
                     id="flexRadioDefault1"
-                    value="On Sale"
-                    checked={ status === 'On Sale' }
+                    value={ ON_SALE }
+                    checked={ status === ON_SALE }
                     onChange={ handleStatusChange }
                 />
                 <label className="form-check-label text-white"
                        htmlFor="flexRadioDefault1">
-                  On Sale
+                  { ON_SALE }
                 </label>
               </div>
               <div className="form-check">
@@ -104,19 +109,19 @@ const ItemForm = ({price, tokenId, isSale}) => {
                     type="radio"
                     name="status"
                     id="flexRadioDefault2"
-                    value="Stop Sale"
-                    checked={ status === 'Stop Sale' }
+                    value={ STOP_SALE }
+                    checked={ status === STOP_SALE  }
                     onChange={ handleStatusChange }
                 />
                 <label className="form-check-label text-white"
                        htmlFor="flexRadioDefault2">
-                  Stop Sale
+                  { STOP_SALE }
                 </label>
               </div>
             </fieldset>
 
             <button className="btn btn-primary mt-2" type="submit"
-                    disabled={ isSale === 2 }>
+                    disabled={ disableCheck() }>
               {
                 loading ? (
                     <div className="spinner-border"
