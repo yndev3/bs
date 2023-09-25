@@ -4,9 +4,9 @@ import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 // importing all the themes
 import Home from '../themes/home';
 import ScrollToTop from '../components/Scrollup/ScrollTop';
-import ExploreWatches from '../themes/explore-one';
-import ExploreJewelrys from '../themes/explore-two';
-import ExploreMaterials from '../themes/explore-three';
+import ExploreWatches from '../themes/explore-watches';
+import ExploreJewelrys from '../themes/explore-jewelrys';
+import ExploreMaterials from '../themes/explore-materials';
 import ItemDetails from '../themes/item-details';
 import Activity from '../themes/activity';
 import WalletConnect from '../themes/wallet-connect';

@@ -1,9 +1,37 @@
-import React, { Component } from 'react';
+import React, { useState, useEffect } from 'react';
+import { fetchFromApi } from '../../utils/fetchFromApi';
 
-class Explore extends Component {
-    render() {
-        const { initData, data } = this.props;
-        
+const Explore = (props) => {
+    const { initData, data } = props;
+    const [products, setProducts] = useState([]);
+    const [sortKey, setSortKey] = useState('id');
+    const [sortOrder, setSortOrder] = useState('desc');
+    const [category, setCategory] = useState(null);
+    const [brand, setBrand] = useState(null);
+    const [currentPage, setCurrentPage] = useState(null);
+
+    useEffect(() => {
+        const params = {
+            sortKey: sortKey,
+            sortOrder: sortOrder,
+            category: 'Watch',
+            brand: brand,
+            page: currentPage,
+            limit: 1000,
+        };
+
+        fetchFromApi({
+            endpoint: '/api/items',
+            params: params
+        }).then((data) => {
+            setProducts(data);
+            console.log('API returned data:', data);
+        }).catch(error => {
+            console.error('Error fetching data:', error);
+        });
+
+    }, [currentPage, sortKey, sortOrder, category, brand]);
+
         return (
             <section className="explore-area">
                 <div className="container">
@@ -81,6 +109,6 @@ class Explore extends Component {
             </section>
         );
     }
-}
+
 
 export default Explore;
