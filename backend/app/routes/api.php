@@ -35,6 +35,8 @@ Route::middleware(['auth:sanctum', 'admin'])
     ->prefix('admin')
     ->group(function (){
         Route::get('items', [AdminController::class, 'items']);
+        Route::get('item/{id}', [AdminController::class, 'getProductByTokenId']);
+        Route::post('item/{id}', [AdminController::class, 'setSaleStatus']);
         Route::get('purchase', [PurchaseController::class, 'fetchPurchase']);
         Route::get('booking', [AdminController::class, 'fetchBooking']);
         Route::post('exists-sku', UniqueCheckController::class);
