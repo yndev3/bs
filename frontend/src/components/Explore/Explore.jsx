@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import { fetchFromApi } from '../../utils/fetchFromApi';
+import Card from '../Item/Card';
 
 const Explore = (props) => {
     const { initData, data } = props;
@@ -7,30 +9,28 @@ const Explore = (props) => {
     const [sortKey, setSortKey] = useState('id');
     const [sortOrder, setSortOrder] = useState('desc');
     const [category, setCategory] = useState(null);
-    const [brand, setBrand] = useState(null);
-    const [currentPage, setCurrentPage] = useState(null);
+    const [visibleCount, setVisibleCount] = useState(8); 
+
+    const loadMore = () => {
+        setVisibleCount(prevCount => prevCount + 8); // 8個ずつ表示数を増やす
+    };
 
     useEffect(() => {
         const params = {
             sortKey: sortKey,
             sortOrder: sortOrder,
             category: 'Watch',
-            brand: brand,
-            page: currentPage,
-            limit: 1000,
         };
 
         fetchFromApi({
             endpoint: '/api/items',
             params: params
-        }).then((data) => {
-            setProducts(data);
-            console.log('API returned data:', data);
+        }).then((res) => {
+            setProducts(res.data);
         }).catch(error => {
             console.error('Error fetching data:', error);
         });
-
-    }, [currentPage, sortKey, sortOrder, category, brand]);
+    }, [sortKey, sortOrder, category]);
 
         return (
             <section className="explore-area">
@@ -64,45 +64,17 @@ const Explore = (props) => {
                     </div>
 
                     <div className="row items explore-items">
-                        {data.map((item, idx) => {
-                            return (
-                                <div key={`edth_${idx}`} className="col-12 col-sm-6 col-lg-3 item explore-item" data-groups={item.group}>
-                                    <div className="card">
-                                        <div className="image-over">
-                                            <a href="/item-details">
-                                                <img className="card-img-top" src={item.img} alt="" />
-                                            </a>
-                                        </div>
-                                        {/* Card Caption */}
-                                        <div className="card-caption col-12 p-0">
-                                            {/* Card Body */}
-                                            <div className="card-body">
-                                                <a href="/item-details">
-                                                    <h5 className="mb-0">{item.title}</h5>
-                                                </a>
-                                                <div className="seller align-items-center my-3">
-                                                    <span>Brand by</span>
-                                                    <a href="/author">
-                                                        <h6 className="mb-0">{item.brand}</h6>
-                                                    </a>
-                                                </div>
-                                                <div className="card-bottom d-flex justify-content-between">
-                                                    <span>{item.price} USDT</span>
-                                                    <span>1 of 1</span>
-                                                </div>
-                                                <div className="col-12 text-center mt-2">
-                                                    <a className="btn btn-bordered-white btn-smaller mt-3" href="/login"><i className="icon-handbag mr-2" />Place a Buy</a>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            );
-                        })}
+                        { products.slice(0, visibleCount).map((item) => {
+                            return <Card key={ item.id } item={ item }/>;
+                        }) }
                     </div>
                     <div className="row">
                         <div className="col-12 text-center">
-                            <a id="load-btn-watch" className="btn btn-bordered-white mt-5" href="#">{initData.btn_2}</a>
+                            { visibleCount < products.length && (
+                                <button id="load-btn-watch" className="btn btn-bordered-white mt-5" onClick={loadMore}>
+                                    {initData.btn_2}
+                                </button>
+                            )}
                         </div>
                     </div>
                 </div>
