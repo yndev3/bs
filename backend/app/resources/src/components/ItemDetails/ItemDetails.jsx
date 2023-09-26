@@ -10,20 +10,21 @@ import ItemForm from './form.jsx';
 
 export default function Selling() {
   const [itemData, setItemData] = useState({});
+  const [status, setStatus] = useState('Unknown Status');
   const [itemOwner, setItemOwner] = useState('Address not available');
   const {id} = useParams();
-  const [prevId, setPrevId] = useState(null);
   const [splideImages, setSplideImages] = useState([]);
   const history = useHistory();
 
   const getItemOwner = (owner) => {
     return owner === OWNER_ADDRESS
         ? 'BrandSwap'
-        : `${ owner.substring(0, 8) }...${ owner.substring(owner.length - 10) }`;
+        : `${ owner.substring(0, 8) }...${ owner.substring(
+            owner.length - 10) }`;
   };
 
   // Item States
-  const setStatus = (isSale) => {
+  const setSaleStatus = (isSale) => {
     const statusMap = {
       0: 'Not for Sale',
       1: 'On Sale',
@@ -36,9 +37,10 @@ export default function Selling() {
   const burnStatus = itemData.is_burn ? 'Burned' : 'Unburned';
 
   const fetchData = async () => {
-    console.log('Fetching data from API...');
     try {
-      return await fetchFromApi({endpoint: '/api/admin/item/' + id});
+      return await fetchFromApi({
+        endpoint: '/api/admin/item/' + id,
+      });
     } catch (err) {
       console.error(err);
       if (err.response && err.response.status === 404) {
@@ -50,19 +52,17 @@ export default function Selling() {
 
   useEffect(() => {
     const fetchDataAndUpdateState = async () => {
-      if (id !== prevId) {
-        const data = await fetchData();
-        if (data) { // fetchDataがエラーでnullを返した場合は更新しない
-          setPrevId(id);
-          setItemData(data);
-          setItemOwner(getItemOwner(data.owner_address));
-          setSplideImages(JSON.parse(data.image_list));
-        }
+      const data = await fetchData();
+      if (data) { // fetchDataがエラーでnullを返した場合は更新しない
+        setItemData(data);
+        setStatus(setSaleStatus(data.is_sale));
+        setItemOwner(getItemOwner(data.owner_address));
+        setSplideImages(JSON.parse(data.image_list));
       }
     };
 
     fetchDataAndUpdateState();
-  }, [id, prevId, history]);
+  }, [id, history]);
 
   return (
 
@@ -119,15 +119,15 @@ export default function Selling() {
                   </li>
                   <li className="price d-flex justify-content-between">
                     <span className="mr-3 text-white">Sale</span>
-                    <span className="word-break">{ setStatus(
-                        itemData.is_sale) }</span>
+                    <span className="word-break">{ status }</span>
                   </li>
                 </div>
 
                 {/* Item Price Change */ }
                 { !itemData.is_burn && (
-                    <ItemForm tokenId={ id } price={ itemData.price }
-                              isSale={ itemData.is_sale }/>
+                    <ItemForm tokenId={ id }
+                              price={ itemData.price }
+                              saleStatus={ itemData.is_sale }/>
                 ) }
               </div>
             </div>

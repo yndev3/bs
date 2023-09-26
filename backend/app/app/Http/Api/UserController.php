@@ -154,6 +154,11 @@ final class UserController
         }
 
         try {
+            // product status update
+            $product->update([
+                'is_sale' => 2,
+            ]);
+
             $purchase = Purchase::create([
                 'user_id' => $user->id,
                 'product_id' => $product->id,
