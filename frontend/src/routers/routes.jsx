@@ -13,6 +13,7 @@ import WalletConnect from '../themes/wallet-connect';
 import Contact from '../themes/contact';
 import Account from '../themes/account';
 import Rreservation from '../themes/reservation';
+import StoreList from '../themes/store-list';
 import Error from '../themes/error';
 import Error404 from '../themes/404';
 
@@ -31,6 +32,7 @@ const MyRouts = () => {
               <Route exact path="/explore-materials" component={ ExploreMaterials }/>
               <Route path="/item-details/:id" component={ ItemDetails }/>
               <Route exact path="/wallet-connect" component={ WalletConnect }/>
+              <Route exact path="/store-list" component={ StoreList }/>
               <Route exact path="/contact" component={ Contact }/>
               <Route exact path="/error" component={ Error }/>
               <PrivateRoute exact path="/activity" component={ Activity }/>
