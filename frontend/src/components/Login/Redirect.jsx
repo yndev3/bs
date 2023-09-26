@@ -2,11 +2,11 @@ import React from 'react';
 import { Route, Redirect } from 'react-router-dom';
 import { useAuth } from '../../providers/AuthProvider';
 import { useAccount } from 'wagmi';
+import { useAuth } from './providers/AuthProvider';
 
 const PrivateRoute = ({ component: Component, ...rest }) => {
-
-    const { isAuthenticated } = useAuth();
     const { isConnected } = useAccount();
+    const { isAuthenticated } = useAuth();
     
     return (
         <Route 
