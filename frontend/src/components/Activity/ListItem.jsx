@@ -1,15 +1,15 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { DateTime } from 'luxon'; // Luxonライブラリをインポート
+import { DateTime } from 'luxon'; 
 
 const ActivityList = ({ activity, scan_address }) => {
   return (
     <ul className="list-unstyled">
       {activity && activity.map(item => {
 
-        const createdDate = DateTime.fromISO(item.created_at); // Luxonを使用して日付をパース
-        const now = DateTime.now(); // 現在の日時を取得
-        const diff = now.diff(createdDate, ['days', 'hours', 'minutes']).toObject(); // 日付の差を計算
+        const createdDate = DateTime.fromISO(item.created_at); 
+        const now = DateTime.now(); 
+        const diff = now.diff(createdDate, ['days', 'hours', 'minutes']).toObject(); 
 
         let timeAgo = '';
         if (diff.days && diff.days > 0) {

@@ -12,6 +12,7 @@ import Activity from '../themes/activity';
 import WalletConnect from '../themes/wallet-connect';
 import Contact from '../themes/contact';
 import Account from '../themes/account';
+import Rreservation from '../themes/reservation';
 import Error from '../themes/error';
 import Error404 from '../themes/404';
 
@@ -34,6 +35,7 @@ const MyRouts = () => {
               <Route exact path="/error" component={ Error }/>
               <PrivateRoute exact path="/activity" component={ Activity }/>
               <PrivateRoute exact path="/account" component={ Account }/>
+              <PrivateRoute exact path="/exchange-reservation" component={ Rreservation }/>
               <Route component={ Error404 }/>
           </Switch>
       </Router>
