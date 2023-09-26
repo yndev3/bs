@@ -2,9 +2,7 @@ import React from 'react';
 
 import Header from '../components/Header/Header';
 import Hero from '../components/Hero/Hero';
-import ExploreWatches from '../components/Explore/ExploreWatches';
-import ExploreJewelrys from '../components/Explore/ExploreJewelrys';
-import ExploreMaterials from '../components/Explore/ExploreMaterials';
+import ExploreHome from '../components/Explore/ExploreHome';
 import Work from '../components/Work/Work';
 import Footer from '../components/Footer/Footer';
 import ModalMenu from '../components/Modal/ModalMenu';
@@ -16,9 +14,9 @@ const ThemeOne = () => {
         <Header/>
         <Hero/>
         <Work/>
-        <ExploreWatches heading='Watches'/>
-        <ExploreJewelrys heading='Jewelrys'/>
-        <ExploreMaterials heading='Materials'/>
+        <ExploreHome heading='Watches' category="Watch" />
+        <ExploreHome heading='Jewelries' category="Jewelry" />
+        <ExploreHome heading='Material' category="Material" />
         <Footer/>
         <ModalMenu/>
         <Scrollup/>
