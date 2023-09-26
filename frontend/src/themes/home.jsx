@@ -14,9 +14,9 @@ const ThemeOne = () => {
         <Header/>
         <Hero/>
         <Work/>
-        <ExploreHome heading='Watches' category="Watch" />
-        <ExploreHome heading='Jewelries' category="Jewelry" />
-        <ExploreHome heading='Material' category="Material" />
+        <ExploreHome heading='Watches' category="Watch" linkTo="/explore-watches"/>
+        <ExploreHome heading='Jewelries' category="Jewelry" linkTo="/explore-jewelries"/>
+        <ExploreHome heading='Material' category="Material" linkTo="/explore-materials"/>
         <Footer/>
         <ModalMenu/>
         <Scrollup/>

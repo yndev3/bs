@@ -40,7 +40,7 @@ const ExploreHome = (props) => {
                   <h3 className="mt-3 mb-0">{ props.heading }</h3>
                 </div>
                 <div className="intro-btn">
-                  {products.length > 0 && <Link className="btn content-btn" to="/explore-jewelrys">View All</Link>}
+                  {products.length > 0 && <Link className="btn content-btn" to={props.linkTo} >View All</Link>}
                 </div>
               </div>
             </div>
@@ -59,7 +59,7 @@ const ExploreHome = (props) => {
           <div className="row">
             <div className="col-12 text-center">
               {products.length > 0 && (
-                <Link to="/explore-jewelrys" className="btn btn-bordered-white mt-5">
+                <Link to={props.linkTo} className="btn btn-bordered-white mt-5">
                   View All
                   <i className="fa fa-arrow-circle-right ml-2" />
                 </Link>
