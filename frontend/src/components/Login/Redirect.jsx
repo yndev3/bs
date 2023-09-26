@@ -1,18 +1,24 @@
 import React from 'react';
 import { Route, Redirect } from 'react-router-dom';
-import { useAccount } from 'wagmi';
+import { useAuth } from '../../providers/AuthProvider';
+import { useDisconnect } from 'wagmi';
 
 const PrivateRoute = ({ component: Component, ...rest }) => {
-  const { isConnected } = useAccount();
 
+    const { isAuthenticated } = useAuth();
+    const { disconnect } = useDisconnect();
+    
     return (
         <Route 
             {...rest} 
             render={props => 
-              isConnected ? (
+                isAuthenticated ? (
                     <Component {...props} />
                 ) : (
-                    <Redirect to="/wallet-connect" /> 
+                    <>
+                        {disconnect()}
+                        <Redirect to="/wallet-connect" /> 
+                    </>
                 )
             }
         />
