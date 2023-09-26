@@ -77,6 +77,25 @@ final class AdminController
         return response()->json($product);
     }
 
+    public function setBurn(Request $request, string $tokenId): JsonResponse
+    {
+        $product = Product::withoutGlobalScopes()
+            ->where('token_id', $tokenId)
+            ->first();
+
+        if (!$product) {
+            return response()->json(['message' => 'Product not found'], 404);
+        }
+
+        // update product
+        $product->update([
+            'is_burn' => $request->input('is_burn'),
+        ]);
+
+        return response()->json($product);
+    }
+
+
     public function fetchBooking(): JsonResponse
     {
         // get booking from booking table
