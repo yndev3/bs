@@ -8,6 +8,7 @@ use App\Models\Product;
 use App\Models\Purchase;
 use App\Models\Store;
 use Carbon\Carbon;
+use Illuminate\Database\QueryException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -103,7 +104,9 @@ final class UserController
             // 予約内容をメールで送信
             Mail::to($email)
                 ->bcc(config('mail.from.address'))
-                ->send(new CreateBooking($user, $store, $product, $name, $tg));
+                ->send(new CreateBooking(
+                    $booking
+                ));
 
             return response()->json([
                 'message' => 'Booking created successfully'

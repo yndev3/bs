@@ -46,16 +46,16 @@
             <h1>BrandSwap</h1>
         </div>
         <div class="content">
-            <p>Dear {{ $name }},</p>
+            <p>Dear {{ $booking->name }},</p>
             <p>We have received your exchange application. Thank you for using BrandSwap.</p>
             <div class="details">
-                <strong>Reservation Number:</strong> {{ $product->booking_number }}<br>
-                <strong>Token ID:</strong> {{ $product->token_id }}<br>
-                <strong>Owner Address:</strong> {{ $product->owner_address }}<br>
-                <strong>Item Name:</strong> {{ $product->name }}<br>
-                <strong>Accepting Store:</strong> {{ $store->name }}<br>
+                <strong>Reservation Number:</strong> {{ $booking->booking_number }}<br>
+                <strong>Token ID:</strong> {{ $booking->product->token_id }}<br>
+                <strong>Owner Address:</strong> {{ $booking->product->owner_address }}<br>
+                <strong>Item Name:</strong> {{ $booking->product->name }}<br>
+                <strong>Accepting Store:</strong> {{ $booking->store->name }}<br>
             </div>
-            <p>Our staff will contact you via Telegram at 「{{ $tg }}」 within 3 business days.</p>
+            <p>Our staff will contact you via Telegram at 「{{ $booking->tg }}」 within 3 business days.</p>
             <p>■Notes:<br>
             ・If any sale or transfer between wallets is conducted before the exchange, the application will be invalid.<br>
             ・Only exchanges from the applied wallet address will be accepted at the exchange store.<br>

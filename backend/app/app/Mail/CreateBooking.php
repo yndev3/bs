@@ -2,10 +2,8 @@
 
 namespace App\Mail;
 
-use App\Models\Product;
-use App\Models\Store;
+use App\Models\Booking;
 use Illuminate\Bus\Queueable;
-use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Mail\Mailable;
 use Illuminate\Mail\Mailables\Content;
 use Illuminate\Mail\Mailables\Envelope;
@@ -20,19 +18,9 @@ class CreateBooking extends Mailable
      * Create a new message instance.
      */
     public function __construct(
-        public readonly Authenticatable $user,
-        public readonly Store $store,
-        public readonly Product $product,
-        public readonly string $name,
-        public readonly string $tg,
+        public readonly Booking $booking,
     )
     {
-        Log::debug('CreateBooking::__construct');
-        Log::debug($user);
-        Log::debug($store);
-        Log::debug($product);
-        Log::debug($name);
-        Log::debug($tg);
     }
 
     /**
