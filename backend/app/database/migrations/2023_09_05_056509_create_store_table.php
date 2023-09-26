@@ -18,6 +18,7 @@ return new class extends Migration
             $table->string('city')->nullable();
             $table->string('state')->nullable();
             $table->string('zip_code')->nullable();
+            $table->string('image')->nullable();
             // relationship with countries table
             $table->foreignId('country_id')
                 ->constrained('countries')

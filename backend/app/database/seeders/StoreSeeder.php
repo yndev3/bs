@@ -23,6 +23,7 @@ class StoreSeeder extends Seeder
                 'city' => Str::random(10),
                 'state' => Str::random(2),
                 'zip_code' => mt_rand(10000, 99999),
+                'image' => 'https://picsum.photos/200/300',
                 'country_id' => $countryIds[array_rand($countryIds)], // ランダムなcountry_idを設定
                 'created_at' => now(),
                 'updated_at' => now(),
