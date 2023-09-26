@@ -42,17 +42,19 @@
 </head>
 <body>
     <div class="container">
-        <div class="header">
-            <h1>BrandSwap</h1>
-        </div>
+
         <div class="content">
             <p>Dear {{ $booking->name }},</p>
             <p>We have received your exchange application. Thank you for using BrandSwap.</p>
             <div class="details">
-                <strong>Reservation Number:</strong> {{ $booking->booking_number }}<br>
+                <strong>Reservation Number: {{ $booking->booking_number }}</strong><br>
+                <br>
+                ■Item Information:<br>
                 <strong>Token ID:</strong> {{ $booking->product->token_id }}<br>
                 <strong>Owner Address:</strong> {{ $booking->product->owner_address }}<br>
                 <strong>Item Name:</strong> {{ $booking->product->name }}<br>
+                <br>
+                ■Accepting Store:<br>
                 <strong>Accepting Store:</strong> {{ $booking->store->name }}<br>
             </div>
             <p>Our staff will contact you via Telegram at 「{{ $booking->tg }}」 within 3 business days.</p>
