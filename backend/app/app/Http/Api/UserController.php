@@ -105,12 +105,7 @@ final class UserController
             Mail::to($email)
                 ->bcc(config('mail.from.address'))
                 ->send(new CreateBooking(
-                    $user,
-                    $store,
-                    $product,
-                    $name,
-                    $tg,
-                    $booking->booking_number
+                    $booking
                 ));
 
             return response()->json([
