@@ -41,7 +41,7 @@ const ItemForm = ({price, tokenId, saleStatus}) => {
         ],
       });
       const updateResult = await fetchFromApi({
-        endpoint: '/api/admin/item/' + tokenId,
+        endpoint: '/api/admin/item/' + tokenId + '/sales',
         method: 'POST',
         data: {
           tokenId,
@@ -125,7 +125,7 @@ const ItemForm = ({price, tokenId, saleStatus}) => {
               </div>
             </fieldset>
 
-            <button className="btn btn-primary mt-2" type="submit"
+            <button className="btn btn-primary mt-2 btn-block" type="submit"
                     disabled={ disableCheck() }>
               {
                 loading ? (

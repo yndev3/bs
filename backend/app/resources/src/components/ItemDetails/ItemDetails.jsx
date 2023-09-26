@@ -6,7 +6,8 @@ import '@splidejs/react-splide/css';
 import { fetchFromApi } from '../../utils/fetchFromApi';
 import { useHistory, useParams } from 'react-router-dom';
 import { OWNER_ADDRESS, POLYGON_SCAN_ADDRESS } from '../../helpers/constants';
-import ItemForm from './form.jsx';
+import ItemForm from './ItemForm.jsx';
+import BurnForm from './BurnForm.jsx';
 
 export default function Selling() {
   const [itemData, setItemData] = useState({});
@@ -125,9 +126,12 @@ export default function Selling() {
 
                 {/* Item Price Change */ }
                 { !itemData.is_burn && (
-                    <ItemForm tokenId={ id }
-                              price={ itemData.price }
-                              saleStatus={ itemData.is_sale }/>
+                    <>
+                      <ItemForm tokenId={ id }
+                                price={ itemData.price }
+                                saleStatus={ itemData.is_sale }/>
+                      <BurnForm tokenId={ id }/>
+                    </>
                 ) }
               </div>
             </div>
