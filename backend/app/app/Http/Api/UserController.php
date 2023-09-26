@@ -102,17 +102,21 @@ final class UserController
 
             // 予約内容をメールで送信
             Mail::to($email)
-                ->bcc(config('mail.from.address')
-                ->send(new CreateBooking($user, $store, $product, $name, $tg)));
+                ->bcc(config('mail.from.address'))
+                ->send(new CreateBooking($user, $store, $product, $name, $tg));
 
             return response()->json([
                 'message' => 'Booking created successfully'
             ]);
-        } catch (\Exception $e) {
+        } catch (QueryException $e) { // QueryExceptionをキャッチ
             Log::error($e->getMessage());
-            // 例外がキャッチされた場合の処理
             return response()->json([
-                'error' => 'An error occurred while processing your request.',
+                'error' => 'Database error occurred while processing your request.',
+            ], 500);
+        } catch (\Exception $e) { // その他の例外
+            Log::error($e->getMessage());
+            return response()->json([
+                'error' => 'An unexpected error occurred while processing your request.',
             ], 500);
         }
     }
