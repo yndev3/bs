@@ -161,7 +161,7 @@ const ModalReserve = ({ selectedItem }) => {
                                                 required
                                                 value={name}
                                                 onChange={handleNameChange}
-                                                pattern="[A-Za-z0-9-_,.]+"
+                                                pattern="[A-Za-z ]+"
                                             />
                                         </label>
                                         <label className='pb-3'>E-Mail:
@@ -173,6 +173,7 @@ const ModalReserve = ({ selectedItem }) => {
                                                 required
                                                 value={email}
                                                 onChange={handleEmailChange}
+                                                pattern="[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}"
                                             />
                                         </label>
                                         <label>Telegram:
@@ -184,7 +185,7 @@ const ModalReserve = ({ selectedItem }) => {
                                                 required
                                                 value={telegram}
                                                 onChange={handleTelegramChange}
-                                                pattern="[A-Za-z0-9-_,.]+"
+                                                pattern="@[A-Za-z0-9-_]+"
                                             />
                                         </label>
                                     </div>

@@ -1,11 +1,13 @@
 import React, { useState, useEffect } from 'react';
+import { useHistory } from 'react-router-dom';
 import { fetchFromApi } from '../../utils/fetchFromApi';
 import ModalReserve from '../Modal/ModalReserves';
 import NFTCard from './Card';
 
 const Account = () => {
     const [selectedItem, setSelectedItem] = useState({ id: "", title: "" });
-
+    const history = useHistory();
+    
     const handleItemSelected = (id, title) => {
         setSelectedItem({ id, title });
     };
@@ -21,7 +23,8 @@ const Account = () => {
             setProducts(data); 
         })
         .catch(error => {
-            //console.error('Error fetching data:', error);
+            console.error('Error fetching data:', error);
+            history.push('/error');
         });
     }, []);
 
