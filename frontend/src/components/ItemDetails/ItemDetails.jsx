@@ -68,7 +68,16 @@ export default function Selling() {
 
   // Item States
 
-  const saleStatus = itemData.is_sale === 1 ? 'For Sale' : 'Not for Sale';
+  const saleStatus = (isSale) => {
+    console.log('isSale', isSale);
+    const statusMap = {
+      0: 'Not for Sale',
+      1: 'On Sale',
+      2: 'SOLD OUT',
+    };
+    return statusMap[isSale] || 'Unknown Status';
+  };
+
 
   return (
 
@@ -122,7 +131,7 @@ export default function Selling() {
                   </li>
                   <li className="price d-flex justify-content-between">
                     <span className="mr-3 text-white">Status</span>
-                    <span className="word-break">{ saleStatus }</span>
+                    <span className="word-break">{ saleStatus(itemData.is_sale) }</span>
                   </li>
 
 
