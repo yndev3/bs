@@ -69,7 +69,6 @@ export default function Selling() {
   // Item States
 
   const saleStatus = (isSale) => {
-    console.log('isSale', isSale);
     const statusMap = {
       0: 'Not for Sale',
       1: 'On Sale',
