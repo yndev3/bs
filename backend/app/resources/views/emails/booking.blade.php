@@ -1,4 +1,5 @@
 Thanks,<br>
+{{ $bookingNumber }}<br>
 {{ $name }}<br>
 {{ $tg }}<br>
 {{ $product->owner_name }}<br>

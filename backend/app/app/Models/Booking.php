@@ -16,6 +16,7 @@ class Booking extends Model
         'tg',
         'product_id',
         'store_id',
+        'user_id'
     ];
 
     public function product()

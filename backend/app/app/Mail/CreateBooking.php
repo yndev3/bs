@@ -25,14 +25,9 @@ class CreateBooking extends Mailable
         public readonly Product $product,
         public readonly string $name,
         public readonly string $tg,
+        public readonly string $bookingNumber,
     )
     {
-        Log::debug('CreateBooking::__construct');
-        Log::debug($user);
-        Log::debug($store);
-        Log::debug($product);
-        Log::debug($name);
-        Log::debug($tg);
     }
 
     /**
