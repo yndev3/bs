@@ -1,12 +1,11 @@
-import React, { useState } from 'react';
-import { useAccount, useContractWrite } from 'wagmi';
+import React, { useEffect, useState } from 'react';
+import { useContractWrite } from 'wagmi';
 import { parseEther, formatEther } from 'viem';
 import {
   SELLING_ABI,
   SELLING_CONTRACT,
 } from '../../helpers/constants';
 import { fetchFromApi } from '../../utils/fetchFromApi.jsx';
-import { Link } from 'react-router-dom';
 
 const sellingConfig = {
   address: SELLING_CONTRACT,
@@ -16,9 +15,9 @@ const sellingConfig = {
 const ON_SALE = 'On Sale' ;
 const STOP_SALE = 'Stop Sale' ;
 
-const ItemForm = ({price, tokenId, isSale}) => {
+const ItemForm = ({price, tokenId, saleStatus}) => {
   const [loading, setLoading] = useState(false);
-  const [status, setStatus] = useState(isSale === 1 ? ON_SALE : STOP_SALE);
+  const [status, setStatus] = useState('');
   const {
     writeAsync: sellingContract,
     isLoading,
@@ -62,7 +61,13 @@ const ItemForm = ({price, tokenId, isSale}) => {
     setStatus(statusValue);
   };
 
-  const disableCheck = () => isSale === 2 ;
+  const disableCheck = () => saleStatus === 2 ;
+
+  useEffect(() => {
+    if (saleStatus !== undefined) {
+      setStatus(saleStatus === 1 ? ON_SALE : STOP_SALE);
+    }
+  }, [saleStatus]);
 
   return (
       <>
