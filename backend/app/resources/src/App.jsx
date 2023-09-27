@@ -2,7 +2,7 @@
 import MyRouts from './routers/routes';
 import { useAccount, useDisconnect } from 'wagmi';
 import { useEffect } from 'react';
-import { useLogout } from './hooks/fetchFromApi.jsx';
+import { useLogout } from './hooks/fetchFromApi';
 
 const App = () => {
   const {disconnect} = useDisconnect();
