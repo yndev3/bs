@@ -35,31 +35,42 @@ final class UserController
 
         $alchemyBaseUrl = config('services.alchemy.base_url');
         $alchemyApiKey = config('services.alchemy.api_key');
-        $response = Http::withHeaders([
-            "accept" => "application/json"
-        ])->get("$alchemyBaseUrl$alchemyApiKey/getNFTs", [
-            "owner" => $user->address,
-            "contractAddresses[]" => config("services.contract.contract_address"),
-        ]);
 
-        // todo エラーステータスを返す
-        $tokenIds = [];
-        if ($response->failed()) {
-            echo "HTTPリクエストエラー: ".$response->status();
-        } else {
-            $data = $response->json();
-            foreach ($data['ownedNfts'] as $nft) {
-                $integerTokenId = hexdec($nft['id']['tokenId']);
-                $tokenIds[] = $integerTokenId;
+        try {
+            $response = Http::withHeaders([
+                "accept" => "application/json"
+            ])->get("$alchemyBaseUrl$alchemyApiKey/getNFTs", [
+                "owner" => $user->address,
+                "contractAddresses[]" => config("services.contract.contract_address"),
+            ]);
+
+            if ($response->failed()) {
+                Log::info($response->json());
+                return response()->json(['error' => 'HTTPリクエストエラー: ' . $response->status()], 500);
             }
+
+        } catch (\Exception $e) {
+            return response()->json(['error' => '外部サービスとの通信に失敗しました。'], 500);
         }
 
-        $nftList = Product::query()
-            ->whereIn('token_id', $tokenIds)
-            ->get();
+        $tokenIds = [];
+        $data = $response->json();
+        foreach ($data['ownedNfts'] as $nft) {
+            $integerTokenId = hexdec($nft['id']['tokenId']);
+            $tokenIds[] = $integerTokenId;
+        }
+
+        try {
+            $nftList = Product::query()
+                ->whereIn('token_id', $tokenIds)
+                ->get();
+        } catch (\Exception $e) {
+            return response()->json(['error' => 'データベースクエリに失敗しました。'], 500);
+        }
 
         return response()->json($nftList);
     }
+
 
     public function createBooking(Request $request): JsonResponse
     {
