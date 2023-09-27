@@ -11,10 +11,11 @@ import {
   OWNER_ADDRESS,
   POLYGON_SCAN_ADDRESS
 } from '../../helpers/constants';
-import { fetchFromApi } from '../../utils/fetchFromApi';
+import { useFetchFromApi } from '../../hooks/fetchFromApi';
 import { useParams } from 'react-router-dom';
 
 export default function Selling() {
+  const { fetchFromApi, error:apiError, loading:isApiLoading} = useFetchFromApi();
   const [itemData, setItemData] = useState({});
   const {isConnected} = useAccount();
   const history = useHistory();

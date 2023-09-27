@@ -2,12 +2,13 @@
 import MyRouts from './routers/routes';
 import { useAccount, useDisconnect } from 'wagmi';
 import { useEffect } from 'react';
-import { logout } from './utils/fetchFromApi';
+import { useLogout } from './hooks/fetchFromApi';
 import { useAuth } from './providers/AuthProvider';
 
 const App = () => {
   const { setAuth } = useAuth();
   const {disconnect} = useDisconnect();
+  const {logout} = useLogout();
   const {connector: activeConnector} = useAccount({
     onDisconnect() {
       logout().then(() => {

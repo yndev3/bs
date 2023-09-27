@@ -16,7 +16,7 @@ import {
   ERC_20_TOKEN_CONTRACT,
 } from '../../helpers/constants';
 import { formatEther } from 'viem';
-import { fetchFromApi } from '../../utils/fetchFromApi';
+import { useFetchFromApi } from '../../hooks/fetchFromApi';
 
 const sellingConfig = {
   address: SELLING_CONTRACT,
@@ -29,6 +29,7 @@ const erc20Config = {
 };
 
 function ModalBuyButton({id: tokenId, itemData}) {
+  const { fetchFromApi, error:apiError, loading:isApiLoading} = useFetchFromApi();
   const [loading, setLoading] = useState(false);
   const [contracts, setContracts] = useState(null);
   const {address, isConnected} = useAccount();
