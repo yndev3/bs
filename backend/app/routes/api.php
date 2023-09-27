@@ -2,6 +2,7 @@
 
 use App\Http\Api\AdminController;
 use App\Http\Api\AuthController;
+use App\Http\Api\ErrorLogController;
 use App\Http\Api\ItemController;
 use App\Http\Api\ItemRegistrationController;
 use App\Http\Api\PurchaseController;
@@ -28,6 +29,8 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/create-booking', [UserController::class, 'createBooking']);
     Route::get('/purchase', [UserController::class, 'fetchPurchase']);
     Route::post('/purchase', [UserController::class, 'createPurchase']);
+    // error log
+    Route::post('/log-error', ErrorLogController::class);
 });
 // Admin only
 Route::middleware(['auth:sanctum', 'admin'])
