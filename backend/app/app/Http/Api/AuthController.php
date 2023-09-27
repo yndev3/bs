@@ -39,7 +39,6 @@ final class AuthController
     public function login(Request $request): JsonResponse
     {
         try {
-//            abort(500);
             $this->checkSignature($request);
             $user = $this->user->firstOrCreate(['address' => strtolower($request->input('address'))]);
             Auth::login($user, true);
