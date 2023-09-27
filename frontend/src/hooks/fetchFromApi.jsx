@@ -45,7 +45,6 @@ export const useFetchFromApi = () => {
         // ウォレット接続を解除
         disconnect();
       }
-
       setError(err);
       throw err;
     }

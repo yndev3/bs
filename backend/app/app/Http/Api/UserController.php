@@ -45,12 +45,16 @@ final class UserController
             ]);
 
             if ($response->failed()) {
-                Log::info($response->json());
-                return response()->json(['error' => 'HTTPリクエストエラー: ' . $response->status()], 500);
+                Log::info(__FILE__.':'. __LINE__.'=>' . $response->status());
+                return response()->json([
+                    'error' => 'HTTP request error: ' . $response->status()
+                ], 500);
             }
-
         } catch (\Exception $e) {
-            return response()->json(['error' => '外部サービスとの通信に失敗しました。'], 500);
+            Log::info(__FILE__.':'. __LINE__.'=>'.$e->getMessage());
+            return response()->json([
+                'error' => 'Communication with external service failed.'
+            ], 500);
         }
 
         $tokenIds = [];
@@ -65,7 +69,8 @@ final class UserController
                 ->whereIn('token_id', $tokenIds)
                 ->get();
         } catch (\Exception $e) {
-            return response()->json(['error' => 'データベースクエリに失敗しました。'], 500);
+            Log::info(__FILE__.':'. __LINE__.'=>'.$e->getMessage());
+            return response()->json(['error' => 'Database query failed.'], 500);
         }
 
         return response()->json($nftList);
