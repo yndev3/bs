@@ -17,8 +17,9 @@ const domain = window.location.host;
 const origin = window.location.origin;
 export default function Wallet() {
   const [statementData, setStatementData] = useState(null);
+  const [error, setError] = useState(null);
   const {isAuthenticated, setAuth, setIsLoading} = useAuth();
-  const {connectAsync, connectors, error} = useConnect();
+  const {connectAsync, connectors} = useConnect();
   const {connector: activeConnector, address, isConnected} = useAccount();
   const {disconnect} = useDisconnect();
   const {signMessageAsync} = useSignMessage();
@@ -38,24 +39,23 @@ export default function Wallet() {
       issuedAt,
     });
   };
-  async function fetchData() {
-    const {statement, nonce, issuedAt} = await fetchFromApi(
-        {endpoint: '/api/statement'});
-    return {statement, nonce, issuedAt};
-  }
 
   const handleConnect = async (connector) => {
-    if (connector.id === 'walletConnect') {
-      await open();
-    } else {
-      await connectAsync({connector});
+    try {
+      const data = await fetchFromApi({endpoint: '/api/statement'});
+      setStatementData(data);
+      if (connector.id === 'walletConnect') {
+        await open();
+      } else {
+        await connectAsync({connector});
+      }
+    } catch (error) {
+      setError(error);
     }
-    const data = await fetchFromApi({endpoint: '/api/statement'});
-    setStatementData(data);
   };
 
   async function connectWallet() {
-    const {statement, nonce, issuedAt} = statementData || await fetchData();
+    const {statement, nonce, issuedAt} = statementData;
     const message = createSiweMessage(
         address,
         chain.id,
@@ -71,35 +71,36 @@ export default function Wallet() {
       data: payload,
     });
 
-    if (responseData.status && responseData.status !== 'success') {
-      throw new Error(responseData.message);
-    }
     // network check
     if (activeConnector.id !== 'walletConnect'
         && ![chains[0].id, chains[1].id].includes(chain.id)) {
-        switchNetwork?.(chains[1].id)
+      switchNetwork?.(chains[1].id)
     }
   }
 
   useEffect(() => {
-    if (isConnected && !isAuthenticated) {
-      setIsLoading(true);
-      (async () => {
-        try {
-          await connectWallet();
-          setAuth(true);
-          console.log('Connected');
-          history.goBack();
-        } catch (error) {
-          setAuth(false);
-          console.error('Error during connection:', error);
-          disconnect();
-        } finally {
-          setIsLoading(false);
-        }
-      })();
+    if(statementData){
+      if (isConnected && !isAuthenticated) {
+        setIsLoading(true);
+        (async () => {
+          try {
+            await connectWallet();
+            setAuth(true);
+            console.log('Connected');
+            history.push('/');
+          } catch (error) {
+            setError(error);
+            console.error('Error during connection:', error);
+            setAuth(false);
+            disconnect();
+          } finally {
+            setIsLoading(false);
+            setStatementData(null);
+          }
+        })();
+      }
     }
-  }, [isConnected, isAuthenticated]);
+  }, [isConnected, isAuthenticated, statementData]);
 
   return (
       <section className="wallet-connect-area">
@@ -113,7 +114,7 @@ export default function Wallet() {
               </div>
             </div>
           </div>
-          { error && <div className={ 'text-danger' }>{ error.message }</div> }
+          { error && <div className="alert alert-danger text-center" role="alert">{ error.message }</div> }
           <div className="row justify-content-center items">
             { connectors.map((connector) => {
               if (connector.id !== 'injected') {
@@ -123,7 +124,7 @@ export default function Wallet() {
                         title={ connector.name }
                         img={ `/img/${ connector.id }.svg` }
                         onClick={
-                          !isConnected
+                          !isConnected && !isAuthenticated
                               ? () => handleConnect(connector)
                               : () => disconnect()
                         }
