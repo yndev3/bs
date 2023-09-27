@@ -10,12 +10,13 @@ import {
 } from 'wagmi';
 import { toMessage } from '../SignIn/toMessage';
 import { useWeb3Modal } from '@web3modal/react';
-import { fetchFromApi } from '../../utils/fetchFromApi';
+import { useFetchFromApi } from '../../hooks/fetchFromApi';
 import { useAuth } from '../../providers/AuthProvider';
 
 const domain = window.location.host;
 const origin = window.location.origin;
 export default function Wallet() {
+  const { fetchFromApi, error:apiError, loading:isApiLoading} = useFetchFromApi();
   const [statementData, setStatementData] = useState(null);
   const [error, setError] = useState(null);
   const {isAuthenticated, setAuth, setIsLoading} = useAuth();

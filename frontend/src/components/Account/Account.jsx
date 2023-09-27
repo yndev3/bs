@@ -1,18 +1,17 @@
 import React, { useState, useEffect } from 'react';
 import { useHistory } from 'react-router-dom';
-import { fetchFromApi } from '../../utils/fetchFromApi';
+import { useFetchFromApi } from '../../hooks/fetchFromApi';
 import ModalReserve from '../Modal/ModalReserves';
 import NFTCard from './Card';
 
 const Account = () => {
     const [selectedItem, setSelectedItem] = useState({ id: "", title: "" });
     const history = useHistory();
-    
+    const { fetchFromApi, error:apiError, loading:isApiLoading} = useFetchFromApi();
+    const [products, setProducts] = useState([]);
     const handleItemSelected = (id, title) => {
         setSelectedItem({ id, title });
     };
-
-    const [products, setProducts] = useState([]); 
 
     useEffect(() => {
         fetchFromApi({

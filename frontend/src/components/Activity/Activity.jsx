@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { useHistory } from 'react-router-dom';
-import { fetchFromApi } from '../../utils/fetchFromApi';
+import { useFetchFromApi } from '../../hooks/fetchFromApi';
 import ActivityList from './ListItem'; 
 
 const ActivityArea = () => {
-
+  const { fetchFromApi, error:apiError, loading:isApiLoading} = useFetchFromApi();
   const history = useHistory();
   const [activity, setActivity] = useState(null);
   const scan_address = process.env.REACT_APP_POLYGON_SCAN_ADDRESS;

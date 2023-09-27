@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from 'react';
-import { fetchFromApi } from '../../utils/fetchFromApi';
+import { useFetchFromApi } from '../../hooks/fetchFromApi';
 import Card from '../Item/Card';
 import { Link } from 'react-router-dom';
 
 const ExploreHome = (props) => {
+  const { fetchFromApi, error:apiError, loading:isApiLoading} = useFetchFromApi();
   const { category } = props;
   const [products, setProducts] = useState([]);
   const [sortKey, setSortKey] = useState('id');
