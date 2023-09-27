@@ -3,7 +3,7 @@ import WalletCard from './WalletCard';
 import { useAccount, useConnect, useDisconnect, useSignMessage } from 'wagmi';
 import { toMessage } from '../SignIn/toMessage';
 import { useWeb3Modal } from '@web3modal/react';
-import { fetchFromApi } from '../../utils/fetchFromApi';
+import { useFetchFromApi } from '../../hooks/fetchFromApi';
 
 const domain = window.location.host;
 const origin = window.location.origin;
@@ -13,7 +13,7 @@ export default function Wallet() {
   const {disconnect} = useDisconnect();
   const {signMessageAsync} = useSignMessage();
   const {open, close} = useWeb3Modal();
-
+  const {fetchFromApi} = useFetchFromApi();
   const createSiweMessage = (address, chainId, statement, nonce, issuedAt) => {
     return toMessage({
       domain,
@@ -29,12 +29,7 @@ export default function Wallet() {
 
   const handleConnect = async (connector) => {
     try {
-      const {statement, nonce, issuedAt} = await fetchFromApi({
-        endpoint: '/api/statement'
-      });
-
       const connect = await connectAsync({connector});
-
       // is admin account check from api
       const {isAdmin} = await fetchFromApi({
         endpoint: `/api/isAdmin/${connect.account}`
@@ -44,6 +39,9 @@ export default function Wallet() {
         alert('Not an admin account');
         throw new Error('Not an admin account');
       }
+      const {statement, nonce, issuedAt} = await fetchFromApi({
+        endpoint: '/api/statement'
+      });
 
       const message = createSiweMessage(
           connect.account,

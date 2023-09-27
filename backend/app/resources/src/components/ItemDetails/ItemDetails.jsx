@@ -3,13 +3,14 @@ import { Required } from './Required';
 import { OptionList } from './optionlist';
 import { Splide, SplideSlide } from '@splidejs/react-splide';
 import '@splidejs/react-splide/css';
-import { fetchFromApi } from '../../utils/fetchFromApi';
+import { useFetchFromApi } from '../../hooks/fetchFromApi';
 import { useHistory, useParams } from 'react-router-dom';
 import { OWNER_ADDRESS, POLYGON_SCAN_ADDRESS } from '../../helpers/constants';
 import ItemForm from './ItemForm.jsx';
 import BurnForm from './BurnForm.jsx';
 
 export default function Selling() {
+  const {fetchFromApi} = useFetchFromApi();
   const [itemData, setItemData] = useState({});
   const [status, setStatus] = useState('Unknown Status');
   const [itemOwner, setItemOwner] = useState('Address not available');

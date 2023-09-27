@@ -1,13 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import { useHistory } from 'react-router-dom';
 import { Link } from 'react-router-dom'; 
-import { fetchFromApi } from '../../utils/fetchFromApi';
+import { useFetchFromApi } from '../../hooks/fetchFromApi';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { DataGrid } from '@mui/x-data-grid';
 
 
 
 export default function DataGridDemo() {
+  const {fetchFromApi} = useFetchFromApi();
   const history = useHistory();
   const [booking, setBooking] = useState(null);
   const scan_url = import.meta.env.VITE_POLYGON_SCAN_ADDRESS;

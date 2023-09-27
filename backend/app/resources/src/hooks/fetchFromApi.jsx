@@ -1,20 +1,18 @@
 import { useState } from 'react';
 import axios from 'axios';
 import { useDisconnect } from 'wagmi';
-import { useAuth } from '../providers/AuthProvider';
 
 // APIリクエスト用のカスタムフック
 export const useFetchFromApi = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
-  const {isAuthenticated} = useAuth();
   const {disconnect} = useDisconnect();
   const fetchFromApi = async ({ endpoint, method = 'GET', data = null, headers = {}, params = null }) => {
     setLoading(true);
     setError(null);
 
     // CSRF cookie設定
-    if (!isAuthenticated && method === 'POST') {
+    if (method === 'POST') {
       await fetchFromApi({
         endpoint: '/sanctum/csrf-cookie',
         method: 'GET',
@@ -23,7 +21,7 @@ export const useFetchFromApi = () => {
 
     const config = {
       method,
-      url: `${ process.env.REACT_APP_BASE_URL }${ endpoint }`,
+      url: `${ import.meta.env.VITE_BASE_URL }${ endpoint }`,
       headers: {
         'Content-Type': 'application/json',
         ...headers,

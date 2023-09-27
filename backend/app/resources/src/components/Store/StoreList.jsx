@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { DataGrid } from '@mui/x-data-grid';
-import { fetchFromApi } from '../../utils/fetchFromApi';
+import { useFetchFromApi } from '../../hooks/fetchFromApi';
 
 const columns = [
   { field: 'id', headerName: 'ID', minWidth: 50 },
@@ -12,7 +12,7 @@ const columns = [
 
 export default function DataGridDemo() {
   const [rows, setRows] = useState([]);
-
+  const {fetchFromApi} = useFetchFromApi();
   useEffect(() => {
     fetchFromApi({
       endpoint: '/api/stores'
