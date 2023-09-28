@@ -2,24 +2,57 @@ import { useState } from 'react';
 import { pinFolderToIPFS } from '../helpers/pinFolderToIPFS';
 import { pinJSONToIPFS } from '../helpers/pinJSONToIPFS';
 import BrandSwap from '../contracts/BrandSwap.json';
-import { useContractWrite } from 'wagmi';
-
-const useMintSubmit = (BrandSwapAddress, account) => {
+import { useAccount, useContractWrite } from 'wagmi';
+import {
+  BRAND_SWAP_ABI,
+  BRAND_SWAP_CONTRACT,
+} from '../helpers/constants';
+const useMintSubmit = (validationErrors, setValidationErrors) => {
   const [state, setState] = useState({});
-  const [errors, setErrors] = useState({});
+  const [errors, setMintError] = useState({});
+  const {address} = useAccount();
 
   const {data, writeAsync} = useContractWrite({
-    address: BrandSwapAddress,
-    abi: BrandSwap.abi,
+    address: BRAND_SWAP_CONTRACT,
+    abi: BRAND_SWAP_ABI,
     functionName: 'nftMint',
-    account: account,
+    account: address,
   });
 
-  const validateForm = (jsonInput, setErrors) => {
+  const validateForm = (jsonInput) => {
     let isValid = true;
     let newErrors = {};
-    for (const key in jsonInput) {}
-    setErrors(newErrors);
+
+    for (const key in jsonInput) {
+      console.log(jsonInput[key]);
+      if (jsonInput[key] === '') {
+        newErrors[key] = `${key} is required`;
+        isValid = false;
+      }
+
+      if (key === 'option') {
+        newErrors[key] = newErrors[key] || {}; // 初期化しておく
+        for (const optionKey in jsonInput[key]) {
+          if (jsonInput[key][optionKey] === '') {
+            newErrors[key][optionKey] = `${optionKey} is required`;
+            isValid = false;
+          }
+        }
+      }
+    }
+
+    // 既存のエラーに新しいエラーをマージ
+    setValidationErrors(prevErrors => {
+      return {
+        ...prevErrors,
+        ...newErrors,
+        option: {
+          ...(prevErrors.option || {}),
+          ...(newErrors.option || {})
+        }
+      };
+    });
+
     return isValid;
   };
 
@@ -40,7 +73,7 @@ const useMintSubmit = (BrandSwapAddress, account) => {
     try {
       e.preventDefault();
       setState({message:'Loading...', progress: 0});
-      if (validateForm(jsonInput, setErrors)) {
+      if (validateForm(jsonInput)) {
         setState({message: 'Uploading Images to IPFS', progress: 25});
         const addSubImage = await saveToIPFS(selectedFile, jsonInput);
         setState({message: 'Uploading Metadata to IPFS', progress: 50});
@@ -57,9 +90,8 @@ const useMintSubmit = (BrandSwapAddress, account) => {
       }
     } catch (error) {
       console.error(error);
-      setErrors({message: error.message});
+      setMintError({message: error.message});
     }
-
   };
   return {executeMint, data, errors, state};
 }

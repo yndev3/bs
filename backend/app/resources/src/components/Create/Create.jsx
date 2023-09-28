@@ -10,7 +10,7 @@ import {
 } from '../../helpers/constants';
 import { LinearProgress } from '@mui/material';
 import { useFetchFromApi } from '../../hooks/fetchFromApi.jsx';
-
+import { logErrorToBackend }  from '../../utils/logErrorToBackend';
 const initialJsonInput = {
   name: '',
   description: '',
@@ -115,8 +115,10 @@ const Create = () => {
       if (await skuCheck(sku)) {
         setValidationErrors(
             {...validationErrors, sku: 'SKU already registered.'});
+        console.log(validationErrors);
       } else {
         const {sku: _, ...rest} = validationErrors; // Remove SKU error if exists
+        console.log(validationErrors);
         setValidationErrors(rest);
       }
     } catch (error) {
@@ -132,7 +134,6 @@ const Create = () => {
       method: 'POST',
       data: {sku: sku},
     });
-    console.log(response.exists);
     return response.exists;
   };
 
@@ -186,9 +187,8 @@ const Create = () => {
       setLoading(true);
       const mergedJsonInput = {...jsonInput, option: optionInput};
       await executeMint(e, selectedFile, mergedJsonInput);
-      console.log(validationErrors);
     } catch (error) {
-      alert(error.message);
+     await logErrorToBackend(error);
     } finally {
       setLoading(false);
       resetForm();
