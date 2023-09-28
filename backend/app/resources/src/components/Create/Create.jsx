@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import { WatchForm, JewelryForm, MaterialForm } from './CategoryForm';
 import useMintSubmit from '../../hooks/useMintSubmit';
 import { useAccount, useContractEvent } from 'wagmi';
-import axios from 'axios';
 import _ from 'lodash';
 import { Splide, SplideSlide } from '@splidejs/react-splide';
 import {
@@ -80,8 +79,11 @@ const Create = () => {
       });
     },
   });
-  const {executeMint, state, errors} = useMintSubmit(BRAND_SWAP_CONTRACT,
-      address);
+  const [validationErrors, setValidationErrors] = useState({});
+  const {executeMint, state, errors:mintingErrors} = useMintSubmit(
+      validationErrors,
+      setValidationErrors
+  );
   const [jsonInput, setJsonInput] = useState(initialJsonInput);
   const [watchFormInput, setWatchFormInput] = useState(initialWatchFormInput);
   const [jewelryFormInput, setJewelryFormInput] = useState(
@@ -90,7 +92,7 @@ const Create = () => {
       initialMaterialFormInput);
   const [optionInput, setOptionInput] = useState({});
   const [category, setCategory] = useState('');
-  const [validationErrors, setValidationErrors] = useState({});
+
 
   // 任意のフォームの入力値を更新する
   const updateFormInput = (formInput, setFormInput, name, value) => {
@@ -100,6 +102,7 @@ const Create = () => {
   };
 
   const handleChange = (e) => {
+    setSuccess(false);
     const {name, value} = e.target;
     if (name === 'sku' && value.length > 3) {
       debounceSkuCheck(value);
@@ -121,7 +124,7 @@ const Create = () => {
       console.error('SKU Check failed.');
       // エラーハンドリングの追加処理をここに
     }
-  }, 3000);// 3sec の遅延
+  }, 2000);// 3sec の遅延
 
   const skuCheck = async (sku) => {
     const response = await fetchFromApi({
@@ -177,24 +180,30 @@ const Create = () => {
     e.preventDefault();
     if (!isConnected) {
       alert('Please connect to wallet.');
-    } else {
-      try {
-        setLoading(true);
-        const mergedJsonInput = {...jsonInput, option: optionInput};
-        await executeMint(e, selectedFile, mergedJsonInput);
-      } catch (error) {
-        alert(error.message);
-      } finally {
-        setJsonInput(initialJsonInput);
-        setWatchFormInput(initialWatchFormInput);
-        setJewelryFormInput(initialJewelryFormInput);
-        setMaterialFormInput(initialMaterialFormInput);
-        setOptionInput({});
-        setCategory('');
-        setSelectedFile('');
-        setValidationErrors({});
-      }
     }
+
+    try {
+      setLoading(true);
+      const mergedJsonInput = {...jsonInput, option: optionInput};
+      await executeMint(e, selectedFile, mergedJsonInput);
+      console.log(validationErrors);
+    } catch (error) {
+      alert(error.message);
+    } finally {
+      setLoading(false);
+      resetForm();
+    }
+  };
+
+  const resetForm = () => {
+    setJsonInput(initialJsonInput);
+    setWatchFormInput(initialWatchFormInput);
+    setJewelryFormInput(initialJewelryFormInput);
+    setMaterialFormInput(initialMaterialFormInput);
+    setOptionInput({});
+    setCategory('');
+    setSelectedFile('');
+    setValidationErrors({});
   };
 
   return (
@@ -212,7 +221,7 @@ const Create = () => {
             <div className="row justify-content-between">
               <div className="col-12 col-md-8">
                 {/* Item Form */ }
-                <form className="item-form card no-hover"
+                <form className="item-form card no-hover needs-validation"
                       onSubmit={ (e) =>
                           handleSubmit(e, selectedFile, jsonInput) }>
                   <div className="row">
@@ -226,6 +235,7 @@ const Create = () => {
                               onChange={ (e) => {
                                 setSelectedFile(e.target.files);
                               } }
+                              required={ true }
                           />
                           <label className="custom-file-label"
                                  htmlFor="inputGroupFile01">
@@ -248,7 +258,9 @@ const Create = () => {
                                className="form-control "
                                name="name"
                                placeholder="Somthing item name"
-                               onChange={ handleChange }/>
+                               onChange={ handleChange }
+                               required={ true }
+                        />
                         { validationErrors.name &&
                             <span>{ validationErrors.name }</span> }
                       </div>
@@ -256,8 +268,8 @@ const Create = () => {
                     <div className="col-12">
                       <div className="form-group">
                         <label htmlFor="description"
-                               className="mb-1">Description<span
-                            className="text-danger">*</span></label>
+                               className="mb-1">Description<span className="text-danger">*</span>
+                        </label>
                         <textarea id="description"
                                   className="form-control"
                                   name="description"
@@ -265,7 +277,9 @@ const Create = () => {
                                   cols="30"
                                   rows="3"
                                   defaultValue=""
-                                  onChange={ handleChange }/>
+                                  onChange={ handleChange }
+                                  required={ true }
+                        />
                         { validationErrors.description &&
                             <span>{ validationErrors.description }</span> }
                       </div>
@@ -280,9 +294,10 @@ const Create = () => {
                                name="sku"
                                placeholder="xxxx-xxxx-xxxx"
                                onChange={ handleChange }
+                               required={ true }
                         />
                         { validationErrors.sku &&
-                            <span>{ validationErrors.sku }</span> }
+                            <span className="text-danger mt-2">{ validationErrors.sku }</span> }
                       </div>
                     </div>
                     <div className="col-12">
@@ -295,9 +310,10 @@ const Create = () => {
                                name="color"
                                placeholder="red, blue, green"
                                onChange={ handleChange }
+                               required={ true }
                         />
                         { validationErrors.color &&
-                            <span>{ validationErrors.color }</span> }
+                            <span className="text-danger mt-2">{ validationErrors.color }</span> }
                       </div>
                     </div>
                     <div className="col-12">
@@ -310,9 +326,10 @@ const Create = () => {
                                name="material"
                                placeholder="silver, gold, diamond"
                                onChange={ handleChange }
+                               required={ true }
                         />
                         { validationErrors.material &&
-                            <span>{ validationErrors.material }</span> }
+                            <span className="text-danger mt-2">{ validationErrors.material }</span> }
                       </div>
                     </div>
                     <div className="col-12">
@@ -323,9 +340,11 @@ const Create = () => {
                                className="form-control"
                                name="size"
                                placeholder="Item Size"
-                               onChange={ handleChange }/>
+                               onChange={ handleChange }
+                               required={ true }
+                        />
                         { validationErrors.size &&
-                            <span>{ validationErrors.size }</span> }
+                            <span className="text-danger mt-2">{ validationErrors.size }</span> }
                       </div>
                     </div>
                     <div className="col-12">
@@ -338,9 +357,11 @@ const Create = () => {
                                className="form-control"
                                name="accessories"
                                placeholder="Item Accessories"
-                               onChange={ handleChange }/>
+                               onChange={ handleChange }
+                               required={ true }
+                        />
                         { validationErrors.accessories &&
-                            <span>{ validationErrors.accessories }</span> }
+                            <span className="text-danger mt-2">{ validationErrors.accessories }</span> }
                       </div>
                     </div>
                     <div className="col-12">
@@ -350,14 +371,16 @@ const Create = () => {
                         <select id="category"
                                 className="form-select"
                                 name="category"
-                                onChange={ handleCategoryChange }>
+                                onChange={ handleCategoryChange }
+                                required={ true }
+                        >
                           <option value="">Select Category</option>
                           <option value="Watch">Watch</option>
                           <option value="Jewelry">Jewelry</option>
                           <option value="Material">Material</option>
                         </select>
                         { validationErrors.category &&
-                            <span>{ validationErrors.category }</span> }
+                            <span className="text-danger mt-2">{ validationErrors.category }</span> }
                       </div>
                     </div>
                     { category === 'Watch' &&
@@ -380,8 +403,6 @@ const Create = () => {
                                   rows="3"
                                   defaultValue=""
                                   onChange={ handleChange }/>
-                        { validationErrors.note &&
-                            <span>{ validationErrors.note }</span> }
                       </div>
                     </div>
                     <div className="col-12">

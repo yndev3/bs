@@ -11,7 +11,9 @@ export const WatchForm = ({handleChange, errors}) => {
             <select id="brand"
                     className="form-select"
                     name="brand"
-                    onChange={ handleChange }>
+                    onChange={ handleChange }
+                    required={ true }
+            >
               <option value="">Select a brand</option>
               { Object.values(WatchBrand).map((brand) => (
                   <option key={ brand } value={ brand }>
@@ -33,8 +35,9 @@ export const WatchForm = ({handleChange, errors}) => {
                    name="movement"
                    placeholder="silver, gold, diamond"
                    onChange={ handleChange }
+                   required={ true }
             />
-            { errors.movement && <span>{ errors.movement }</span> }
+            { errors.movement && <span className="text-danger mt-2">{ errors.movement }</span> }
           </div>
         </div>
         <div className="col-12">
@@ -44,13 +47,15 @@ export const WatchForm = ({handleChange, errors}) => {
             <select id="gender"
                     className="form-select"
                     name="gender"
-                    onChange={ handleChange }>
+                    onChange={ handleChange }
+                    required={ true }
+            >
               <option value="">Select Gender</option>
               <option value="Men">Men</option>
               <option value="Women">Women</option>
               <option value="Unisex">Unisex</option>
             </select>
-            { errors.gender && <span>{ errors.gender }</span> }
+            { errors.gender && <span className="text-danger mt-2">{ errors.gender }</span> }
           </div>
         </div>
         <div className="col-12">
@@ -63,8 +68,9 @@ export const WatchForm = ({handleChange, errors}) => {
                    name="features"
                    placeholder="1000m throw"
                    onChange={ handleChange }
+                   required={ true }
             />
-            { errors.features && <span>{ errors.features }</span> }
+            { errors.features && <span className="text-danger mt-2">{ errors.features }</span> }
           </div>
         </div>
         <div className="col-12">
@@ -77,8 +83,9 @@ export const WatchForm = ({handleChange, errors}) => {
                    name="edition"
                    placeholder="made in 1992"
                    onChange={ handleChange }
+                   required={ true }
             />
-            { errors.edition && <span>{ errors.edition }</span> }
+            { errors.edition && <span className="text-danger mt-2">{ errors.edition }</span> }
           </div>
         </div>
         <div className="col-12">
@@ -91,8 +98,9 @@ export const WatchForm = ({handleChange, errors}) => {
                    name="waterproof"
                    placeholder="IPX-8"
                    onChange={ handleChange }
+                   required={ true }
             />
-            { errors.waterproof && <span>{ errors.waterproof }</span> }
+            { errors.waterproof && <span className="text-danger mt-2">{ errors.waterproof }</span> }
           </div>
         </div>
         <div className="col-12">
@@ -105,8 +113,9 @@ export const WatchForm = ({handleChange, errors}) => {
                    name="serialNumber"
                    placeholder="1234567890"
                    onChange={ handleChange }
+                   required={ true }
             />
-            { errors.serialNumber && <span>{ errors.serial }</span> }
+            { errors.serialNumber && <span className="text-danger mt-2">{ errors.serial }</span> }
           </div>
         </div>
         <div className="col-12">
@@ -116,7 +125,9 @@ export const WatchForm = ({handleChange, errors}) => {
             <select id="state"
                     className="form-select"
                     name="state"
-                    onChange={ handleChange }>
+                    onChange={ handleChange }
+                    required={ true }
+            >
               <option value="">Select State</option>
               <option value="N">N</option>
               <option value="S">S</option>
@@ -126,7 +137,7 @@ export const WatchForm = ({handleChange, errors}) => {
               <option value="BC">BC</option>
               <option value="C">C</option>
             </select>
-            { errors.state && <span>{ errors.state }</span> }
+            { errors.state && <span className="text-danger mt-2">{ errors.state }</span> }
           </div>
         </div>
       </>
@@ -143,7 +154,9 @@ export const JewelryForm = ({handleChange, errors}) => {
             <select id="brand"
                     className="form-select"
                     name="brand"
-                    onChange={ handleChange }>
+                    onChange={ handleChange }
+                    required={ true }
+            >
               <option value="">Select a brand</option>
               { Object.values(JewelryBrand).map((brand) => (
                   <option key={ brand } value={ brand }>
@@ -161,13 +174,15 @@ export const JewelryForm = ({handleChange, errors}) => {
             <select id="gender"
                     className="form-select"
                     name="gender"
-                    onChange={ handleChange }>
+                    onChange={ handleChange }
+                    required={ true }
+            >
               <option value="">Select Gender</option>
               <option value="Men">Men</option>
               <option value="Women">Women</option>
               <option value="Unisex">Unisex</option>
             </select>
-            { errors.gender && <span>{ errors.gender }</span> }
+            { errors.gender && <span className="text-danger mt-2">{ errors.gender }</span> }
           </div>
         </div>
 
@@ -180,7 +195,9 @@ export const JewelryForm = ({handleChange, errors}) => {
             <select id="state"
                     className="form-select"
                     name="state"
-                    onChange={ handleChange }>
+                    onChange={ handleChange }
+                    required={ true }
+            >
               <option value="">Select State</option>
               <option value="N">N</option>
               <option value="S">S</option>
@@ -190,7 +207,7 @@ export const JewelryForm = ({handleChange, errors}) => {
               <option value="BC">BC</option>
               <option value="C">C</option>
             </select>
-            { errors.state && <span>{ errors.state }</span> }
+            { errors.state && <span className="text-danger mt-2">{ errors.state }</span> }
           </div>
         </div>
 
@@ -198,10 +215,15 @@ export const JewelryForm = ({handleChange, errors}) => {
           <div className="form-group">
             <label htmlFor="weight" className="mb-1">Weight<span
                 className="text-danger">*</span></label>
-            <input id="weight" type="text" className="form-control"
-                   name="weight" placeholder="Weight in grams"
-                   onChange={ handleChange }/>
-            { errors.weight && <span>{ errors.weight }</span> }
+            <input id="weight"
+                   type="text"
+                   className="form-control"
+                   name="weight"
+                   placeholder="Weight in grams"
+                   onChange={ handleChange }
+                   required={ true }
+            />
+            { errors.weight && <span className="text-danger mt-2">{ errors.weight }</span> }
           </div>
         </div>
       </>
@@ -218,7 +240,9 @@ export const MaterialForm = ({handleChange, errors}) => {
             <select id="brand"
                     className="form-select"
                     name="brand"
-                    onChange={ handleChange }>
+                    onChange={ handleChange }
+                    required={ true }
+            >
               <option value="">Select a brand</option>
               { Object.values(MaterialBrand).map((material) => (
                   <option key={ material } value={ material }>
@@ -233,10 +257,15 @@ export const MaterialForm = ({handleChange, errors}) => {
           <div className="form-group">
             <label htmlFor="weight" className="mb-1">Weight<span
                 className="text-danger">*</span></label>
-            <input id="weight" type="text" className="form-control"
-                   name="weight" placeholder="Weight in grams"
-                   onChange={ handleChange }/>
-            { errors.weight && <span>{ errors.weight }</span> }
+            <input id="weight"
+                   type="text"
+                   className="form-control"
+                   name="weight"
+                   placeholder="Weight in grams"
+                   onChange={ handleChange }
+                   required={ true }
+            />
+            { errors.weight && <span className="text-danger mt-2">{ errors.weight }</span> }
           </div>
         </div>
 
@@ -244,10 +273,14 @@ export const MaterialForm = ({handleChange, errors}) => {
           <div className="form-group">
             <label htmlFor="serialNumber" className="mb-1">Serial Number<span
                 className="text-danger">*</span></label>
-            <input id="serialNumber" type="text" className="form-control"
-                   name="serialNumber" placeholder="1234567890"
-                   onChange={ handleChange }/>
-            { errors.serialNumber && <span>{ errors.serialNumber }</span> }
+            <input id="serialNumber"
+                   type="text" className="form-control"
+                   name="serialNumber"
+                   placeholder="1234567890"
+                   onChange={ handleChange }
+                   required={ true }
+            />
+            { errors.serialNumber && <span className="text-danger mt-2">{ errors.serialNumber }</span> }
           </div>
         </div>
       </>
