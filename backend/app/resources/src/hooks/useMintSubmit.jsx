@@ -5,10 +5,10 @@ import BrandSwap from '../contracts/BrandSwap.json';
 import { useContractWrite } from 'wagmi';
 
 const useMintSubmit = (BrandSwapAddress, account) => {
-
+  const [state, setState] = useState({});
   const [errors, setErrors] = useState({});
 
-  const {data, write} = useContractWrite({
+  const {data, writeAsync} = useContractWrite({
     address: BrandSwapAddress,
     abi: BrandSwap.abi,
     functionName: 'nftMint',
@@ -37,19 +37,30 @@ const useMintSubmit = (BrandSwapAddress, account) => {
   };
 
   const executeMint = async (e, selectedFile, jsonInput) => {
-    e.preventDefault();
-    if (validateForm(jsonInput, setErrors)) {
-      const addSubImage = await saveToIPFS(selectedFile, jsonInput);
-      const jsonRes =  await pinJSONToIPFS(addSubImage);
-      if (!jsonRes.success) {
-        throw new Error(jsonRes.message);
+    try {
+      e.preventDefault();
+      setState({message:'Loading...', progress: 0});
+      if (validateForm(jsonInput, setErrors)) {
+        setState({message: 'Uploading Images to IPFS', progress: 25});
+        const addSubImage = await saveToIPFS(selectedFile, jsonInput);
+        setState({message: 'Uploading Metadata to IPFS', progress: 50});
+        const jsonRes =  await pinJSONToIPFS(addSubImage);
+        if (!jsonRes.success) {
+          throw new Error(jsonRes.message);
+        }
+        setState({message: 'Minting NFT', progress: 75});
+        const result = await writeAsync?.({
+          args: [`${ jsonRes.metadata }/metadata.json`],
+        });
+        console.log(result);
+        setState({message: 'Minted NFT', progress: 100});
       }
-      write?.({
-        args: [`${ jsonRes.metadata }/metadata.json`],
-      });
+    } catch (error) {
+      setErrors({message: error.message});
     }
+
   };
-  return {executeMint, data, errors};
+  return {executeMint, data, errors, state};
 }
 
   export default useMintSubmit;

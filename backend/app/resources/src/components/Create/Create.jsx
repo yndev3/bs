@@ -9,6 +9,8 @@ import {
   BRAND_SWAP_ABI,
   BRAND_SWAP_CONTRACT
 } from '../../helpers/constants';
+import { LinearProgress } from '@mui/material';
+import { useFetchFromApi } from '../../hooks/fetchFromApi.jsx';
 
 
 const initialJsonInput = {
@@ -48,6 +50,7 @@ const initialMaterialFormInput = {
 }
 
 const Create = () => {
+  const { fetchFromApi } = useFetchFromApi();
   const {address, isConnected} = useAccount();
   const [loading, setLoading] = useState(false);
   const [selectedFile, setSelectedFile] = useState('');
@@ -71,7 +74,7 @@ const Create = () => {
       setLoading(false);
     },
   });
-  const {executeMint} = useMintSubmit(BRAND_SWAP_CONTRACT, address);
+  const {executeMint, state, errors} = useMintSubmit(BRAND_SWAP_CONTRACT, address);
   const [jsonInput, setJsonInput] = useState(initialJsonInput);
   const [watchFormInput, setWatchFormInput] = useState(initialWatchFormInput);
   const [jewelryFormInput, setJewelryFormInput] = useState(initialJewelryFormInput);
@@ -89,23 +92,36 @@ const Create = () => {
 
   const handleChange = (e) => {
     const {name, value} = e.target;
-    if (name === 'sku') {
+    if (name === 'sku' && value.length > 3) {
       debounceSkuCheck(value);
     }
     updateFormInput(jsonInput, setJsonInput, name, value);
   };
 
   const debounceSkuCheck = _.debounce(async (sku) => {
-    if (await skuCheck(sku)) {
-      setValidationErrors(
-          {...validationErrors, sku: 'SKU already registered.'});
+    try {
+      if (await skuCheck(sku)) {
+        setValidationErrors(
+            {...validationErrors, sku: 'SKU already registered.'});
+      } else {
+        const {sku: _, ...rest} = validationErrors; // Remove SKU error if exists
+        setValidationErrors(rest);
+      }
+    } catch (error) {
+      console.error("An error occurred:", error);
+      console.error("SKU Check failed.");
+      // エラーハンドリングの追加処理をここに
     }
-  }, 1000); // 1sec の遅延
+  }, 3000);// 3sec の遅延
 
   const skuCheck = async (sku) => {
-    const response = await axios.post(`${import.meta.env.VITE_BASE_URL}/api/exists-sku`, {sku: sku});
-    console.log(response.data.exists);
-    return response.data.exists;
+    const response = await fetchFromApi({
+      endpoint: '/api/admin/exists-sku',
+      method: 'POST',
+      data: {sku: sku}
+    });
+    console.log(response.exists);
+    return response.exists;
   };
 
   const handleCategoryChange = (e) => {
@@ -363,8 +379,13 @@ const Create = () => {
                       <button className="btn w-100 mt-3 mt-sm-4" type="submit">
                         {
                           loading
-                              ? <div className="spinner-border"
-                                     role="status"></div>
+                              ? <div>
+                                <div className="spinner-border" role="status">
+                                  <span className="visually-hidden">{state.message}</span>
+                                </div>
+                                <LinearProgress variant="determinate" value={state.progress} />
+                              </div>
+
                               : 'Create Item'
                         }
                       </button>
