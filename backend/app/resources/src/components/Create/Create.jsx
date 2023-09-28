@@ -2,16 +2,15 @@ import React, { useState } from 'react';
 import { WatchForm, JewelryForm, MaterialForm } from './CategoryForm';
 import useMintSubmit from '../../hooks/useMintSubmit';
 import { useAccount, useContractEvent } from 'wagmi';
-import axios  from 'axios';
+import axios from 'axios';
 import _ from 'lodash';
 import { Splide, SplideSlide } from '@splidejs/react-splide';
 import {
   BRAND_SWAP_ABI,
-  BRAND_SWAP_CONTRACT
+  BRAND_SWAP_CONTRACT,
 } from '../../helpers/constants';
 import { LinearProgress } from '@mui/material';
 import { useFetchFromApi } from '../../hooks/fetchFromApi.jsx';
-
 
 const initialJsonInput = {
   name: '',
@@ -26,7 +25,7 @@ const initialJsonInput = {
   sku: '',
   note: '',
   option: {},
-}
+};
 const initialWatchFormInput = {
   brand: '',
   movement: '',
@@ -36,21 +35,23 @@ const initialWatchFormInput = {
   waterproof: '',
   serialNumber: '',
   state: '',
-}
+};
 const initialJewelryFormInput = {
   brand: '',
   gender: '',
   state: '',
   weight: '',
-}
+};
 const initialMaterialFormInput = {
   brand: '',
   weight: '',
   serialNumber: '',
-}
+};
 
 const Create = () => {
-  const { fetchFromApi } = useFetchFromApi();
+  const {fetchFromApi} = useFetchFromApi();
+  const [success, setSuccess] = useState(false);
+  const [error, setError ] = useState(false);
   const {address, isConnected} = useAccount();
   const [loading, setLoading] = useState(false);
   const [selectedFile, setSelectedFile] = useState('');
@@ -60,25 +61,33 @@ const Create = () => {
     eventName: 'nftMinted',
     listener(log) {
       const {uri, tokenId, sender} = log[0].args;
-      axios.post(`${import.meta.env.VITE_BASE_URL}/api/creat-item`, {
-        uri: uri,
-        tokenId: tokenId.toString(),
-        owner: sender,
-      })
-      .then(function (response) {
+      fetchFromApi({
+        endpoint: '/api/admin/item',
+        method: 'POST',
+        data: {
+          uri: uri,
+          tokenId: tokenId.toString(),
+          owner: sender,
+        }
+      }).then(function(response) {
         console.log(response);
-      })
-      .catch(function (error) {
+        setSuccess(true);
+      }).catch(function(error) {
         console.error('Error sending data:', error); // エラーハンドリング
+        setError(true);
+      }).finally(function() {
+        setLoading(false);
       });
-      setLoading(false);
     },
   });
-  const {executeMint, state, errors} = useMintSubmit(BRAND_SWAP_CONTRACT, address);
+  const {executeMint, state, errors} = useMintSubmit(BRAND_SWAP_CONTRACT,
+      address);
   const [jsonInput, setJsonInput] = useState(initialJsonInput);
   const [watchFormInput, setWatchFormInput] = useState(initialWatchFormInput);
-  const [jewelryFormInput, setJewelryFormInput] = useState(initialJewelryFormInput);
-  const [materialFormInput, setMaterialFormInput] = useState(initialMaterialFormInput);
+  const [jewelryFormInput, setJewelryFormInput] = useState(
+      initialJewelryFormInput);
+  const [materialFormInput, setMaterialFormInput] = useState(
+      initialMaterialFormInput);
   const [optionInput, setOptionInput] = useState({});
   const [category, setCategory] = useState('');
   const [validationErrors, setValidationErrors] = useState({});
@@ -108,8 +117,8 @@ const Create = () => {
         setValidationErrors(rest);
       }
     } catch (error) {
-      console.error("An error occurred:", error);
-      console.error("SKU Check failed.");
+      console.error('An error occurred:', error);
+      console.error('SKU Check failed.');
       // エラーハンドリングの追加処理をここに
     }
   }, 3000);// 3sec の遅延
@@ -118,7 +127,7 @@ const Create = () => {
     const response = await fetchFromApi({
       endpoint: '/api/admin/exists-sku',
       method: 'POST',
-      data: {sku: sku}
+      data: {sku: sku},
     });
     console.log(response.exists);
     return response.exists;
@@ -211,17 +220,17 @@ const Create = () => {
                       <div className="input-group form-group">
                         <div className="custom-files">
                           <input
-                            type="file"
-                            id="inputGroupFile01"
-                            multiple={true}
-                            onChange={(e) => {
-                              setSelectedFile(e.target.files);
-                            }}
+                              type="file"
+                              id="inputGroupFile01"
+                              multiple={ true }
+                              onChange={ (e) => {
+                                setSelectedFile(e.target.files);
+                              } }
                           />
                           <label className="custom-file-label"
                                  htmlFor="inputGroupFile01">
                             Choose file<span
-                            className="text-danger">*</span>
+                              className="text-danger">*</span>
                           </label>
                         </div>
 
@@ -379,16 +388,22 @@ const Create = () => {
                       <button className="btn w-100 mt-3 mt-sm-4" type="submit">
                         {
                           loading
-                              ? <div>
-                                <div className="spinner-border" role="status">
-                                  <span className="visually-hidden">{state.message}</span>
-                                </div>
-                                <LinearProgress variant="determinate" value={state.progress} />
-                              </div>
-
+                              ? (
+                                  <div>
+                                    <div className="mb-2">
+                                        <span className="spinner-border mr-2"
+                                              role="status"></span>
+                                      { state.message }
+                                    </div>
+                                    <LinearProgress variant="determinate"
+                                                    value={ state.progress }/>
+                                  </div>
+                              )
                               : 'Create Item'
                         }
                       </button>
+                      { success && <div className="alert alert-success mt-3 text-center">Completed!</div>}
+                      { error && <div className="alert alert-danger mt-3 text-center">Something Error Occurred.</div>}
                     </div>
                   </div>
                 </form>
@@ -397,19 +412,21 @@ const Create = () => {
               <div className="col-12 col-md-4">
                 <div className="card no-hover">
                   <div className="form-group">
-                    <label htmlFor="size" className="mb-1">Preview<span className="text-danger"> *</span></label>
+                    <label htmlFor="size" className="mb-1">Preview<span
+                        className="text-danger"> *</span></label>
                   </div>
                   <div id="image-preview" className="text-center">
-                  {
-                  selectedFile && selectedFile.length > 0 ? (
-                      <Splide aria-label="itemImg">
-                        { Array.from(selectedFile).map((image, key) => (
-                            <SplideSlide key={ key }>
-                              <img src={ URL.createObjectURL(image) } alt={ `item_${ key }_image` }/>
-                            </SplideSlide>
-                        ))}
-                      </Splide>
-                    ) : <img src="../img/item_images.jpg" />
+                    {
+                      selectedFile && selectedFile.length > 0 ? (
+                          <Splide aria-label="itemImg">
+                            { Array.from(selectedFile).map((image, key) => (
+                                <SplideSlide key={ key }>
+                                  <img src={ URL.createObjectURL(image) }
+                                       alt={ `item_${ key }_image` }/>
+                                </SplideSlide>
+                            )) }
+                          </Splide>
+                      ) : <img src="../img/item_images.jpg"/>
                     }
                   </div>
                 </div>

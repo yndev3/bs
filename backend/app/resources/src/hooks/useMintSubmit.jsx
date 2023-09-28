@@ -56,6 +56,7 @@ const useMintSubmit = (BrandSwapAddress, account) => {
         setState({message: 'Minted NFT', progress: 100});
       }
     } catch (error) {
+      console.error(error);
       setErrors({message: error.message});
     }
 
