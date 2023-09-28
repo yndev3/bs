@@ -73,7 +73,7 @@ const ModalReserve = ({ selectedItem }) => {
 
     useEffect(() => {
         fetchFromApi({
-          endpoint: '/api/storesa'
+          endpoint: '/api/stores'
         })
         .then((data) => {
           setStoreOptions(data);
