@@ -29,7 +29,7 @@ class CreateBooking extends Mailable
     public function envelope(): Envelope
     {
         return new Envelope(
-            subject: 'Create Booking',
+            subject: 'Confirmation of Exchange Application - BrandSwap',
         );
     }
 

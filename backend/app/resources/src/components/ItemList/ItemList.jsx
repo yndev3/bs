@@ -20,7 +20,7 @@ import FormControlLabel from '@mui/material/FormControlLabel';
 import Checkbox from '@mui/material/Checkbox';
 import '../../../../public/assets/css/admin.css';
 
-import { fetchFromApi } from '../../utils/fetchFromApi';
+import { useFetchFromApi } from '../../hooks/fetchFromApi';
 
 const columns = [
   { id: 'token_id', label: 'Token ID', minWidth: 10 },
@@ -95,6 +95,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export default function StickyHeadTable() {
+  const {fetchFromApi} = useFetchFromApi();
   const classes = useStyles();
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(25);

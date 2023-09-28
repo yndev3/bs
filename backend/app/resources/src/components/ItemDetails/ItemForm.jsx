@@ -5,7 +5,7 @@ import {
   SELLING_ABI,
   SELLING_CONTRACT,
 } from '../../helpers/constants';
-import { fetchFromApi } from '../../utils/fetchFromApi.jsx';
+import { useFetchFromApi } from '../../hooks/fetchFromApi';
 
 const sellingConfig = {
   address: SELLING_CONTRACT,
@@ -16,6 +16,7 @@ const ON_SALE = 'On Sale' ;
 const STOP_SALE = 'Stop Sale' ;
 
 const ItemForm = ({price, tokenId, saleStatus}) => {
+  const {fetchFromApi} = useFetchFromApi();
   const [loading, setLoading] = useState(false);
   const [status, setStatus] = useState('');
   const {

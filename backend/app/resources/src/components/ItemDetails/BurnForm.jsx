@@ -1,10 +1,10 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { useContractWrite } from 'wagmi'; // 仮定: wagmi ライブラリがインポートされている
 import {
   BRAND_SWAP_ABI,
   BRAND_SWAP_CONTRACT,
 } from '../../helpers/constants';
-import { fetchFromApi } from '../../utils/fetchFromApi.jsx';
+import { useFetchFromApi } from '../../hooks/fetchFromApi';
 import { waitForTransaction } from '@wagmi/core';
 
 const BrandSwapConfig = {
@@ -12,6 +12,7 @@ const BrandSwapConfig = {
   abi: BRAND_SWAP_ABI,
 };
 const BurnForm = ({tokenId}) => {
+  const {fetchFromApi} = useFetchFromApi();
   const [errorMessage, setErrorMessage] = useState(null);
   const [successMessage, setSuccessMessage] = useState(null);
   const [isLoading, setLoading] = useState(false);

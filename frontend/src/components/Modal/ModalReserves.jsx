@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { fetchFromApi } from '../../utils/fetchFromApi';
+import { useFetchFromApi } from '../../hooks/fetchFromApi';
 import { useAccount } from 'wagmi';
 import { useHistory } from 'react-router-dom';
 
@@ -15,7 +15,7 @@ const initData = {
 };
 
 const ModalReserve = ({ selectedItem }) => {
-
+    const { fetchFromApi, error:apiError, loading:isApiLoading} = useFetchFromApi();
     const {isConnected} = useAccount();
     const history = useHistory();
 

@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import { fetchFromApi } from '../../utils/fetchFromApi';
+import { useFetchFromApi } from '../../hooks/fetchFromApi';
 import Card from '../Item/Card';
 import AccordionAndSort from './AccordionAndSort';
 
 const Explore = (props) => {
+    const { fetchFromApi, error:apiError, loading:isApiLoading} = useFetchFromApi();
     const { initData, category } = props;
     const [products, setProducts] = useState([]);
     const [sortKey, setSortKey] = useState('id');

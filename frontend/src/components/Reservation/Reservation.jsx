@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { useHistory } from 'react-router-dom';
-import { fetchFromApi } from '../../utils/fetchFromApi';
+import { useFetchFromApi } from '../../hooks/fetchFromApi';
 import ReservationList from './List'; 
 
 const ReservationArea = () => {
-
+  const { fetchFromApi, error:apiError, loading:isApiLoading} = useFetchFromApi();
   const history = useHistory();
   const [reservation, setReservation] = useState(null);
 

@@ -40,49 +40,26 @@ final class AuthController
     {
         try {
             $this->checkSignature($request);
-        } catch (ValidationException $e) {
+            $user = $this->user->firstOrCreate(['address' => strtolower($request->input('address'))]);
+            Auth::login($user, true);
+            $request->session()->regenerate();
+
+            return new JsonResponse([
+                'status' => true,
+                'message' => 'User registration completed',
+            ], ResponseAlias::HTTP_CREATED);
+
+        } catch (\Exception $e) {
             Log::info($e->getMessage());
             return new JsonResponse([
+                'error' => true,
                 'message' => $e->getMessage(),
-                ResponseAlias::HTTP_BAD_REQUEST
-            ]);
+            ], ResponseAlias::HTTP_BAD_REQUEST);
+        } finally {
+            // delete nonce from session
+            $request->session()->forget('nonce');
         }
-
-        $user = $this->user->firstOrCreate(['address' => strtolower($request->input('address'))]);
-
-        if (!$user) {
-            return new JsonResponse([
-                'User registration failed',
-                ResponseAlias::HTTP_BAD_REQUEST
-            ]);
-        }
-        Auth::login($user, true);
-        return new JsonResponse([
-            'status' => 'success',
-            'message' => 'User registration completed',
-        ], ResponseAlias::HTTP_CREATED);
     }
-    
-    /**
-     * @throws AuthenticationException
-     */
-    public function logout(Request $request): JsonResponse
-    {
-        if ($this->auth->guard()->guest()) {
-            return new JsonResponse([
-                'message' => 'Already Unauthenticated.',
-            ]);
-        }
-
-        $this->auth->guard()->logout();
-        $request->session()->invalidate();
-        $request->session()->regenerateToken();
-
-        return new JsonResponse([
-            'message' => 'Unauthenticated.',
-        ]);
-    }
-
 
     /**
      * @throws ValidationException
@@ -99,34 +76,28 @@ final class AuthController
 
         // Check if address is a valid Ethereum address
         if (!$this->isChecksumAddress($address)) {
-            throw ValidationException::withMessages(['signature' => 'Invalid request. Please try again.'. __LINE__]);
+            throw ValidationException::withMessages(['signature' => 'Invalid request. Please try again.'.__LINE__]);
         }
 
         // Check if nonce is present in the session
         if (!$nonce && $nonce !== $reqNonce) {
-            throw ValidationException::withMessages(['signature' => 'Invalid request. Please try again.'. __LINE__]);
+            throw ValidationException::withMessages(['signature' => 'Invalid request. Please try again.'.__LINE__]);
         }
 
         $dateTime = Carbon::parse($iso8601String);
         // Check if the issuedAt timestamp is within the last 5 minutes
         $isWithinFiveMinutes = $dateTime->gt(Carbon::now()->subMinutes(5)) && $dateTime->lte(Carbon::now());
         if (!$isWithinFiveMinutes) {
-            throw ValidationException::withMessages(['signature' => 'Invalid request. Please try again.'. __LINE__]);
+            throw ValidationException::withMessages(['signature' => 'Invalid request. Please try again.'.__LINE__]);
         }
 
         if (!$this->verifySignature($message, $signature, $address)) {
-            throw ValidationException::withMessages(['signature' => 'Invalid request. Please try again.'. __LINE__]);
+            throw ValidationException::withMessages(['signature' => 'Invalid request. Please try again.'.__LINE__]);
         }
     }
 
-    private function verifySignature($message, $signature, $address): bool
+    function isChecksumAddress(string $address): bool
     {
-        $web3 = new EthSigRecover();
-        $result = $web3->personal_ecRecover($message, $signature);
-        return strtolower($address) === strtolower($result);
-    }
-
-    function isChecksumAddress(string $address): bool {
         if (strlen($address) !== 42) {
             return false;
         }
@@ -143,6 +114,32 @@ final class AuthController
         }
 
         return true;
+    }
+
+    private function verifySignature($message, $signature, $address): bool
+    {
+        $web3 = new EthSigRecover();
+        $result = $web3->personal_ecRecover($message, $signature);
+        return strtolower($address) === strtolower($result);
+    }
+
+    /**
+     */
+    public function logout(Request $request): JsonResponse
+    {
+        if ($this->auth->guard()->guest()) {
+            return new JsonResponse([
+                'message' => 'Already Unauthenticated.',
+            ]);
+        }
+
+        $this->auth->guard()->logout();
+        $request->session()->invalidate();
+        $request->session()->regenerateToken();
+        $request->session()->forget('nonce');
+        return new JsonResponse([
+            'message' => 'Unauthenticated.',
+        ]);
     }
 
     public function isAdmin(Request $request, string $address): JsonResponse
