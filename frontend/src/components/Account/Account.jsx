@@ -59,6 +59,8 @@ const Account = () => {
 
   return (
       <section className="profile-area">
+                  { error && <div className="alert alert-danger text-center"
+                          role="alert">{ error.message }</div> }
         <div className="container">
           <div className="row justify-content-center">
             <div className="col-12">
@@ -71,8 +73,6 @@ const Account = () => {
               </div>
             </div>
           </div>
-          { error && <div className="alert alert-danger text-center"
-                          role="alert">{ error.message }</div> }
           <div className="row items explore-items">
 
             { products.length > 0 ? (
@@ -84,6 +84,9 @@ const Account = () => {
             ) : (
                 <div className="col-12 text-center mt-5">
                   <p>No items found in your collection.</p>
+                  { error && 
+                  <p>{ error.message }</p>
+                  }
                 </div>
             ) }
           </div>

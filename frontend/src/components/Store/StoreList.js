@@ -1,12 +1,13 @@
 import React, { useEffect, useState } from 'react';
-import { Link, useHistory } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { useFetchFromApi } from '../../hooks/fetchFromApi';
 import Logo from '../../import_img/logo_80.png';
 
 const ExploreStore = () => {
     const [store, setStore] = useState([]);
     const {fetchFromApi} = useFetchFromApi();
-    const history = useHistory();
+    const [error, setError] = useState(null);
+
 
     useEffect(() => {
         fetchFromApi({ endpoint: '/api/stores' })
@@ -16,12 +17,17 @@ const ExploreStore = () => {
             })
             .catch((error) => {
                 console.error('Error fetching data:', error);
-                history.push('/error');
+                setError(error);
             });
-    }, [history]);
+    }, []);
 
     return (
+
+
         <section className="store-area author-area explore-area popular-collections-area">
+
+        { error && <div className="alert alert-danger text-center" role="alert">{ error.message }</div> }
+        
             <div className="container">
                 <div className="row justify-content-between">
                     <div className="col-12 col-md-12">
@@ -37,6 +43,7 @@ const ExploreStore = () => {
                                                 </div>
                                             </Link>
                                         </div>
+
                                         <div className="card-caption col-12 p-0">
                                             <div className="card-body mt-4">
                                                 <span>Official Store</span>
