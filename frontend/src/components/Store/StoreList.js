@@ -8,14 +8,13 @@ const ExploreStore = () => {
     const {fetchFromApi} = useFetchFromApi();
     const [error, setError] = useState(null);
 
-
     useEffect(() => {
         fetchFromApi({ endpoint: '/api/stores' })
             .then((data) => {
-                console.log('API returned data:', data);
+                // console.log('API returned data:', data);
                 setStore(data);
             })
-            .catch((error) => {
+            .catch(error => {
                 console.error('Error fetching data:', error);
                 setError(error);
             });
@@ -24,13 +23,20 @@ const ExploreStore = () => {
     return (
 
 
-        <section className="store-area author-area explore-area popular-collections-area">
-
-        { error && <div className="alert alert-danger text-center" role="alert">{ error.message }</div> }
-        
+        <section className="store-area author-area explore-area popular-collections-area">        
             <div className="container">
                 <div className="row justify-content-between">
                     <div className="col-12 col-md-12">
+                        {/* ERROR */ }
+                        { error && 
+                        <ul className="mb-5 post-holder">
+                            <li className="post-meta-item">
+                                <div className="date">
+                                    <span className="posted-on">ERROR ALERT : { error.message }</span>
+                                </div>
+                            </li>
+                        </ul>
+                        }
                         <div className="row items explore-items">
                             {store && store.map((item, idx) => (
                                 <div key={`eds_${idx}`} className="col-12 col-md-4 item explore-item">

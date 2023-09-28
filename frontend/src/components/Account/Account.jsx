@@ -1,12 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import { useHistory } from 'react-router-dom';
 import { useFetchFromApi } from '../../hooks/fetchFromApi';
 import ModalReserve from '../Modal/ModalReserves';
 import NFTCard from './Card';
 
 const Account = () => {
   const [selectedItem, setSelectedItem] = useState({id: '', title: ''});
-  const history = useHistory();
   const {
     fetchFromApi,
     error: apiError,
@@ -22,13 +20,12 @@ const Account = () => {
     fetchFromApi({
       endpoint: '/api/user-nft-list',
     }).then((data) => {
-      // データが正常に返された場合
       setProducts(data);
     }).catch((error) => {
-      // ネットワークエラー、タイムアウト、またはその他の問題が発生した場合
       setProducts([]);
       setError(error);
     });
+    
   }, []);
 
 
@@ -59,11 +56,19 @@ const Account = () => {
 
   return (
       <section className="profile-area">
-                  { error && <div className="alert alert-danger text-center"
-                          role="alert">{ error.message }</div> }
         <div className="container">
           <div className="row justify-content-center">
             <div className="col-12">
+              {/* ERROR */ }
+              { error && 
+                <ul className="mb-5 post-holder">
+                  <li className="post-meta-item">
+                      <div className="date">
+                          <span className="posted-on">ERROR ALERT : { error.message }</span>
+                      </div>
+                  </li>
+                </ul>
+              }
               {/* Intro */ }
               <div className="intro mb-4">
                 <div className="intro-content">
@@ -84,9 +89,6 @@ const Account = () => {
             ) : (
                 <div className="col-12 text-center mt-5">
                   <p>No items found in your collection.</p>
-                  { error && 
-                  <p>{ error.message }</p>
-                  }
                 </div>
             ) }
           </div>

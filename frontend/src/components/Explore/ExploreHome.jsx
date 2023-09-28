@@ -9,6 +9,7 @@ const ExploreHome = (props) => {
   const [products, setProducts] = useState([]);
   const [sortKey, setSortKey] = useState('id');
   const [sortOrder, setSortOrder] = useState('desc');
+  const [error, setError] = useState(null);
 
   useEffect(() => {
     const params = {
@@ -23,8 +24,10 @@ const ExploreHome = (props) => {
       params: params
     }).then((data) => {
       setProducts(data);
+      // console.log('API returned data:', data);
     }).catch(error => {
       console.error('Error fetching data:', error);
+      setError(error);
     });
 
   }, [sortKey, sortOrder, category]);
@@ -45,6 +48,16 @@ const ExploreHome = (props) => {
                 </div>
               </div>
             </div>
+            {/* ERROR */ }
+            { error && 
+            <ul className="mb-5 post-holder">
+                <li className="post-meta-item">
+                    <div className="date">
+                        <span className="posted-on">ERROR ALERT : { error.message }</span>
+                    </div>
+                </li>
+            </ul>
+            }
           </div>
           <div className="row items">
             { products.length > 0 ? (
