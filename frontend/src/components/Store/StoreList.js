@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import { Link, useHistory } from 'react-router-dom';
-import { fetchFromApi } from '../../utils/fetchFromApi';
+import { useFetchFromApi } from '../../hooks/fetchFromApi';
 import Logo from '../../import_img/logo_80.png';
 
 const ExploreStore = () => {
     const [store, setStore] = useState([]);
+    const {fetchFromApi} = useFetchFromApi();
     const history = useHistory();
 
     useEffect(() => {
