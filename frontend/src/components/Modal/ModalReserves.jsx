@@ -80,6 +80,7 @@ const ModalReserve = ({ selectedItem }) => {
         })
         .catch(error => {
           console.error('Error fetching data:', error);
+
         });
     }, []);
 
@@ -96,7 +97,6 @@ const ModalReserve = ({ selectedItem }) => {
                     store_id: selectedOption,
                 }
             });
-            console.log(res);
         } catch (e) {
             console.log(e);
         };
@@ -111,6 +111,7 @@ const ModalReserve = ({ selectedItem }) => {
                         {data.menuName} <i className={data.menuIcon} />
                     </div>
                     <div className="modal-body reserves-form">
+                        
                         {isFormSubmitted ? (
                             isCompleted ? (
                                 <div>

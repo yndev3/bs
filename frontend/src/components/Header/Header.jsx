@@ -23,15 +23,17 @@ const Header = () => {
           <nav data-aos="zoom-out" data-aos-delay={ 800 }
                className="navbar navbar-expand">
             <div className="container header">
+
               {/* Navbar Brand*/ }
               <Link className="navbar-brand" to="/">
                 <img className="navbar-brand-sticky" src="/img/logo.png"
                      alt="sticky brand-logo"/>
               </Link>
               <div className="ml-auto"/>
+
               {/* Navbar */ }
               <ul className="navbar-nav items mx-auto">
-                <li className="nav-item dropdown">
+                <li className="nav-item">
                   <NavLink to={ '/' } className="nav-link">Home</NavLink>
                 </li>
                 <li className="nav-item dropdown">
@@ -52,9 +54,14 @@ const Header = () => {
                     </li>
                   </ul>
                 </li>
+                <li className="nav-item">
+                  <NavLink to={ '/store-list' } className="nav-link">Store</NavLink>
+                </li>
               </ul>
+
               {/* User Info */ }
               { isAuthenticated && <Profile/> }
+              
               {/* Navbar Toggler */ }
               <ul className="navbar-nav toggle">
                 <li className="nav-item">
@@ -83,7 +90,7 @@ const Header = () => {
           {
               isPolygon() &&
               <div className="alert alert-danger text-center" role="alert">
-                Please switch to the polygon network.
+                Please switch to the Polygon network.
               </div>
           }
         </header>

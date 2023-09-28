@@ -106,16 +106,7 @@ export default function Wallet() {
   return (
       <section className="wallet-connect-area">
         <div className="container">
-          <div className="row justify-content-center">
-            <div className="col-12 col-md-8 col-lg-7">
-              {/* Intro */ }
-              <div className="intro text-center">
-                <span>WALLET CONNECT</span>
-                <h3 className="mt-3 mb-0">Connect your Wallet</h3>
-              </div>
-            </div>
-          </div>
-          { error && <div className="alert alert-danger text-center" role="alert">{ error.message }</div> }
+          { error && <div className={ 'text-danger' }>{ error.message }</div> }
           <div className="row justify-content-center items">
             { connectors.map((connector) => {
               if (connector.id !== 'injected') {

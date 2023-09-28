@@ -13,6 +13,7 @@ const Explore = (props) => {
     const [brands, setBrands] = useState([]);
     const [selectedBrand, setSelectedBrand] = useState('ALL');
     const [isAccordionOpen, setIsAccordionOpen] = useState(false);
+    const [error, setError] = useState(null);
 
     const loadMore = () => {
         setVisibleCount(prevCount => prevCount + 8); 
@@ -43,6 +44,7 @@ const Explore = (props) => {
             setBrands(brandCounts);
         }).catch(error => {
             console.error('Error fetching data:', error);
+            setError(error);
         });
     }, [sortKey, sortOrder, category]);
 
@@ -58,6 +60,16 @@ const Explore = (props) => {
                                 <p>{initData.content}</p>
                             </div>
                         </div>
+                            {/* ERROR */ }
+                            { error && 
+                            <ul className="mb-5 post-holder">
+                                <li className="post-meta-item">
+                                    <div className="date">
+                                        <span className="posted-on">ERROR ALERT : { error.message }</span>
+                                    </div>
+                                </li>
+                            </ul>
+                            }
                     </div>
                     <div className="row">
 

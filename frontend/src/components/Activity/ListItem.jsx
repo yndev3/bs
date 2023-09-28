@@ -25,7 +25,7 @@ const ActivityList = ({ activity, scan_address }) => {
         return (
           <li key={item.product.token_id} className="single-tab-list d-flex align-items-center w100 mb-2">
             <Link to={`/item-details/${item.product.token_id}`}>
-              <img className="avatar-lg" src={item.product.image} alt="" />
+              <img className="avatar-lg square-image" src={item.product.image} alt="" />
             </Link>
             <div className="activity-content ml-4">
               <Link to={`/item-details/${item.product.token_id}`} className='d-inline h5'>
