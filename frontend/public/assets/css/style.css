@@ -220,6 +220,11 @@ table {
 word-break: break-all;
 }
 
+.disable-link {
+  pointer-events: none;
+  cursor: default;
+  text-decoration: none;
+}
 
 /* #endregion Reset */
 /*----------------------------------------------
@@ -3273,6 +3278,7 @@ padding: 100px 0 140px !important;
 .square-image {
   aspect-ratio: 1 / 1 !important;
 }
+
 /* #endregion All Media Queries */
 /*# sourceMappingURL=style.css.map */
 
