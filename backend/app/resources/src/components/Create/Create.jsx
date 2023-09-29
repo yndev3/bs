@@ -439,7 +439,7 @@ const Create = () => {
                                         </button>
                                         { success &&
                                             <div className="alert alert-success mt-3 text-center">Completed!</div> }
-                                        { error && <div className="alert alert-danger mt-3 text-center">Something Error
+                                        { errorMessage && <div className="alert alert-danger mt-3 text-center">Something Error
                                             Occurred.Please try again.</div> }
                                     </div>
                                 </div>
