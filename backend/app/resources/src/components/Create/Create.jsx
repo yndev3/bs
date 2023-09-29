@@ -51,7 +51,7 @@ const initialMaterialFormInput = {
 const Create = () => {
     const {fetchFromApi} = useFetchFromApi();
     const [success, setSuccess] = useState(false);
-    const [error, setError] = useState(null);
+    const [errorMessage, setErrorMessage] = useState(null);
     const {isConnected} = useAccount();
     const [loading, setLoading] = useState(false);
     const [selectedFile, setSelectedFile] = useState('');
@@ -166,7 +166,7 @@ const Create = () => {
             const mergedJsonInput = {...jsonInput, option: optionInput};
             await executeMint(selectedFile, mergedJsonInput);
         } catch (error) {
-            setError(error.message);
+            setErrorMessage(error.message);
             // 例外発生時はローディングを解除
             setLoading(false);
         } finally {
@@ -202,7 +202,7 @@ const Create = () => {
             }).then(function(response) {
                 setSuccess(true);
             }).catch(function(error) {
-                setError(error.message);
+                setErrorMessage(error.message);
             }).finally(function() {
                 setLoading(false);
             });
@@ -210,12 +210,12 @@ const Create = () => {
     });
 
     useEffect(() => {
-        if (error) {
+        if (errorMessage) {
             (async () => {
-                await logErrorToBackend(error);
+                await logErrorToBackend(errorMessage);
             })();
         }
-    }, [error]);
+    }, [errorMessage]);
 
     return (
         <>
