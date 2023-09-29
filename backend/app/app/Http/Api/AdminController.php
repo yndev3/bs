@@ -60,6 +60,13 @@ final class AdminController
 
     public function setSaleStatus(Request $request, string $tokenId): JsonResponse
     {
+        // 入力検証
+        $validated = $request->validate([
+            'price' => 'required|numeric',
+            'saleStatus' => 'required|boolean',
+        ]);
+
+        // 商品の取得
         $product = Product::withoutGlobalScopes()
             ->where('token_id', $tokenId)
             ->first();
@@ -68,14 +75,23 @@ final class AdminController
             return response()->json(['message' => 'Product not found'], 404);
         }
 
-        // update product
-        $product->update([
-            'price' => $request->input('price'),
-            'is_sale' =>(int)$request->input('saleStatus')
-        ]);
+        try {
+            // update product
+            $product->update([
+                'price' => $validated['price'],
+                'is_sale' => (int)$validated['saleStatus'],
+            ]);
+        } catch (\Exception $e) {
+            Log::info($e->getMessage());
+            return response()->json(['message' => 'Failed to update product', 'error' => $e->getMessage()], 500);
+        }
 
-        return response()->json($product);
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Product updated successfully'
+        ]);
     }
+
 
     public function setBurn(Request $request, string $tokenId): JsonResponse
     {
