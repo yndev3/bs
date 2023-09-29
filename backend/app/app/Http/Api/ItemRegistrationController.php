@@ -42,12 +42,13 @@ final class ItemRegistrationController
             DB::rollBack();
             Log::error($e->getMessage());
             return response()->json([
-                'message' => 'error',
-                'error' => $e->getMessage(),
+                'error' => true,
+                'message' => $e->getMessage(),
             ], 500);
         }
 
         return response()->json([
+            'success' => true,
             'message' => 'success',
             'data' => $product
         ]);

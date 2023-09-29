@@ -37,13 +37,13 @@ Route::middleware(['auth:sanctum', 'admin'])
     ->prefix('admin')
     ->group(function (){
         Route::get('items', [AdminController::class, 'items']);
+        Route::post('item', ItemRegistrationController::class);
         Route::get('item/{id}', [AdminController::class, 'getProductByTokenId']);
         Route::post('item/{id}/sales', [AdminController::class, 'setSaleStatus']);
         Route::post('item/{id}/burn', [AdminController::class, 'setBurn']);
         Route::get('purchase', [PurchaseController::class, 'fetchPurchase']);
         Route::get('booking', [AdminController::class, 'fetchBooking']);
         Route::post('exists-sku', UniqueCheckController::class);
-        Route::post('creat-item', ItemRegistrationController::class);
 });
 
 // All
