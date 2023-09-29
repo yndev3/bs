@@ -12,15 +12,18 @@ final class ErrorLogController
     {
         $user = Auth::user();
 
-        // エラーメッセージや他の情報を取得
-        $errorData = $request->get('error');
+        // ユーザーとエラーメッセージが存在するか確認
+        if ($user && $request->has('message')) {
+            $errorData = $request->input('message');
+            ErrorLog::create([
+                'user_address' => $user->address ?? null,
+                'error_message' => $errorData
+            ]);
 
-        Log::info($errorData);
-        ErrorLog::create([
-            'user_address' => $user->address ?? null, // ユーザーのアドレス（存在しなければnull）
-            'error_message' => $errorData['message']  // エラー内容
-        ]);
+            return response()->json(['message' => 'Error logged successfully'], 200);
+        }
 
-        return response()->json(['message' => 'Error logged successfully'], 200);
+        // エラーメッセージまたはユーザーが存在しない場合
+        return response()->json(['message' => 'Could not log error'], 400);
     }
 }

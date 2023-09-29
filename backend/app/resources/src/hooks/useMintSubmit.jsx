@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { pinFolderToIPFS } from '../helpers/pinFolderToIPFS';
 import { pinJSONToIPFS } from '../helpers/pinJSONToIPFS';
-import { useAccount, useContractEvent, useContractWrite } from 'wagmi';
+import { useAccount, useContractWrite } from 'wagmi';
 import {
     BRAND_SWAP_ABI,
     BRAND_SWAP_CONTRACT,
@@ -10,7 +10,6 @@ import { useFetchFromApi } from './fetchFromApi.jsx';
 
 const useMintSubmit = () => {
     const [state, setState] = useState({});
-    const [errors, setMintError] = useState({});
     const {address} = useAccount();
     const {data, writeAsync} = useContractWrite({
         address: BRAND_SWAP_CONTRACT,
@@ -47,14 +46,12 @@ const useMintSubmit = () => {
             const result = await writeAsync?.({
                 args: [`${ jsonRes.metadata }/metadata.json`],
             });
-            console.log(result);
             setState({message: 'Minted NFT', progress: 100});
         } catch (error) {
-            console.error(error);
-            setMintError({message: error.message});
+            throw new Error(error.message);
         }
     };
-    return {executeMint, data, errors, state};
+    return {executeMint, data, state};
 };
 
 export default useMintSubmit;

@@ -166,7 +166,9 @@ const Create = () => {
             const mergedJsonInput = {...jsonInput, option: optionInput};
             await executeMint(selectedFile, mergedJsonInput);
         } catch (error) {
-            setError(error);
+            setError(error.message);
+            // 例外発生時はローディングを解除
+            setLoading(false);
         } finally {
             resetForm();
         }
@@ -200,7 +202,7 @@ const Create = () => {
             }).then(function(response) {
                 setSuccess(true);
             }).catch(function(error) {
-                setError(error);
+                setError(error.message);
             }).finally(function() {
                 setLoading(false);
             });
