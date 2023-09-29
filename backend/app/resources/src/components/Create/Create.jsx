@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { WatchForm, JewelryForm, MaterialForm } from './CategoryForm';
 import useMintSubmit from '../../hooks/useMintSubmit';
 import { useAccount, useContractEvent } from 'wagmi';
-import _ from 'lodash';
+import debounce from 'lodash/debounce';
 import { Splide, SplideSlide } from '@splidejs/react-splide';
 import {
     BRAND_SWAP_ABI,
@@ -77,16 +77,20 @@ const Create = () => {
     const handleChange = (e) => {
         setSuccess(false);
         const {name, value} = e.target;
+        updateFormInput(jsonInput, setJsonInput, name, value);
+    };
+
+    const handleChangeSku = debounce(async (e) => {
+        const {name, value} = e.target;
         if (name === 'sku' && value.length > 3) {
             debounceSkuCheck(value);
         }
         updateFormInput(jsonInput, setJsonInput, name, value);
-    };
+    }, 2000);// 2sec の遅延
 
-    const debounceSkuCheck = _.debounce(async (sku) => {
+    const debounceSkuCheck = async (sku) => {
         if (await skuCheck(sku)) {
-            setValidationErrors(
-                {
+            setValidationErrors({
                     ...validationErrors,
                     sku: 'SKU already registered.',
                 });
@@ -94,15 +98,22 @@ const Create = () => {
             const {sku: _, ...rest} = validationErrors; // Remove SKU error if exists
             setValidationErrors(rest);
         }
-    }, 2000);// 2sec の遅延
+    };
 
     const skuCheck = async (sku) => {
-        const response = await fetchFromApi({
-            endpoint: '/api/admin/exists-sku',
-            method: 'POST',
-            data: {sku: sku},
-        });
-        return response.exists;
+        try {
+            // SKUが存在するかどうかをチェックする
+            const response = await fetchFromApi({
+                endpoint: '/api/admin/exists-sku',
+                method: 'POST',
+                data: {sku: sku},
+            });
+            return response.exists;
+        } catch (error) {
+            alert(error.response.data.message);
+            // reload page
+            window.location.reload();
+        }
     };
 
     const handleCategoryChange = (e) => {
@@ -291,7 +302,7 @@ const Create = () => {
                                                    className="form-control"
                                                    name="sku"
                                                    placeholder="xxxx-xxxx-xxxx"
-                                                   onChange={ handleChange }
+                                                   onChange={ handleChangeSku }
                                                    required={ true }
                                             />
                                             { validationErrors.sku &&
