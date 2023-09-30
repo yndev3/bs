@@ -34,8 +34,10 @@ const Explore = (props) => {
         };
         fetchFromApi({
             endpoint: '/api/items',
-            params: params
+            params: params,
+            
         }).then((res) => {
+            console.log('API Data:', res.data);
             setProducts(res.data);
             const brandCounts = res.data.reduce((acc, item) => {
                 acc[item.brand] = (acc[item.brand] || 0) + 1;
@@ -111,7 +113,7 @@ const Explore = (props) => {
 
                     <div className="row items explore-items">
                         { filteredProducts.slice(0, visibleCount).map((item) => {
-                            return <Card key={ item.id } item={ item }/>;
+                            return <Card key={ item.token_id } item={ item }/>;
                         }) }
                     </div>
                     <div className="row">
