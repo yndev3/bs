@@ -119,7 +119,7 @@ export default function Selling() {
                     <div className="col-12 text-center mt-2">
                       <Link className="btn btn-bordered-white btn-smaller mt-3" to="#" data-toggle="modal" data-target="#buybutton">
                         <i className="icon-handbag mr-2" />
-                        Confirm Purchase
+                        Purchase
                       </Link>
                     </div>
                   ) : (
