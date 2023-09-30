@@ -18,7 +18,7 @@ const Card = (props) => {
         <div className="mt-3 col-12 col-sm-6 col-lg-3">
           <div className="card card-min">
             <div className="image-over">
-              <Link to={ `/item-details/${ item.id }` }>
+              <Link to={ `/item-details/${ item.token_id }` }>
                 <img className="card-img-top"
                      src={ convertIpfsLink(item.image) } alt=""/>
               </Link>
@@ -41,7 +41,7 @@ const Card = (props) => {
                 <div className="col-12 text-center mt-3">
 
                   <Link className="btn btn-bordered-white btn-smaller mt-3"
-                     to={ `/item-details/${ item.id }` }>
+                     to={ `/item-details/${ item.token_id }` }>
                       <i className="icon-handbag mr-2" aria-hidden="true"></i>
                      ItemDetail
                   </Link>
