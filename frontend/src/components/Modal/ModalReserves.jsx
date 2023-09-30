@@ -37,7 +37,7 @@ const ModalReserve = ({ selectedItem }) => {
     useEffect(() => {
         const updatedInitData = {
             ...initData,
-            itemId: selectedItem.token_id,
+            itemId: selectedItem.id,
             itemName: selectedItem.title,
         };
         setData(updatedInitData);
