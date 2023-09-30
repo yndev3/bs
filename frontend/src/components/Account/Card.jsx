@@ -38,7 +38,7 @@ const NFTCard = ({ item, idx, handleItemSelected }) => {
                     <div className="card-body">
                         <div className="card-bottom d-flex justify-content-between">
                             <span>ID</span>
-                            <span>{item.id}</span>
+                            <span>{item.token_id}</span>
                         </div>
                         <div className="seller align-items-center my-3">
                             <Link to={`/item-details/${item.token_id}`}>
@@ -63,7 +63,7 @@ const NFTCard = ({ item, idx, handleItemSelected }) => {
                                     if (isButtonDisabled) {
                                         e.preventDefault();
                                     } else {
-                                        handleItemSelected(item.id, title);
+                                        handleItemSelected(item.token_id, title);
                                     }
                                 }}
                             >
