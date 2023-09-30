@@ -20,9 +20,7 @@ export default function Selling() {
   const history = useHistory();
   const { id } = useParams();
   const [itemData, setItemData] = useState({});
-  const [itemDataApi, setItemDataApi] = useState(null);
   const [error, setError] = useState(null);
-  const [prevId, setPrevId] = useState(null);
   const [splideImages, setSplideImages] = useState([]);
 
   const fetchData = async () => {
@@ -32,7 +30,6 @@ export default function Selling() {
         params: { token_id: id },
       });
       console.log('data', data);
-      setPrevId(id);
       setItemData(data);
       setSplideImages(JSON.parse(data.image_list));
     } catch (err) {
