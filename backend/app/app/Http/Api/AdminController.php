@@ -36,7 +36,7 @@ final class AdminController
     }
 
 
-    public function getProductByTokenId(Request $request, string $tokenId): JsonResponse
+    public function getProductByTokenId(string $tokenId): JsonResponse
     {
         $product = Product::withoutGlobalScopes()
             ->where('token_id', $tokenId)->first();
