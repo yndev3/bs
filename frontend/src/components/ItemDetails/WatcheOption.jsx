@@ -1,10 +1,4 @@
 import React from 'react';
-import {
-  AccordionItem,
-  AccordionItemButton,
-  AccordionItemHeading,
-  AccordionItemPanel,
-} from 'react-accessible-accordion';
 
 export const WatcheOption = ({ itemData }) => (
   <>
