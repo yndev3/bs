@@ -4,19 +4,17 @@ import { waitForTransaction } from '@wagmi/core';
 import {
   useAccount,
   useContractReads,
-  useBalance,
   useContractWrite,
-  useWaitForTransaction,
   erc20ABI,
 } from 'wagmi';
 import {
   SELLING_ABI,
-  // ERC20_ABI,
   SELLING_CONTRACT,
   ERC_20_TOKEN_CONTRACT,
 } from '../../helpers/constants';
-import { formatEther } from 'viem';
+import { formatEther, TransactionExecutionError } from 'viem';
 import { useFetchFromApi } from '../../hooks/fetchFromApi';
+import { logErrorToBackend } from '../../utils/logErrorToBackend';
 
 const sellingConfig = {
   address: SELLING_CONTRACT,
@@ -31,22 +29,16 @@ const erc20Config = {
 function ModalBuyButton({id: tokenId, itemData}) {
   const { fetchFromApi, error:apiError, loading:isApiLoading} = useFetchFromApi();
   const [loading, setLoading] = useState(false);
+  const [status, setStatus] = useState('Purchase');
   const [contracts, setContracts] = useState(null);
+  const [errorMessage, setErrorMessage] = useState(null);
   const {address, isConnected} = useAccount();
   const {data: readData} = useContractReads({
     contracts,
-    onSuccess: (data) => {
-      // console.log('data', data);
-    },
-  });
-  const {data: fetchBalanceResult} = useBalance({
-    address: address,
-    token: ERC_20_TOKEN_CONTRACT,
   });
 
   const {
     writeAsync: erc20Contract,
-    isLoading,
   } = useContractWrite({
     ...erc20Config,
     functionName: 'approve',
@@ -59,9 +51,43 @@ function ModalBuyButton({id: tokenId, itemData}) {
     functionName: 'buyWithERC20',
   });
 
+  const handleApproval = async (selling) => {
+    setStatus('waiting for approval...');
+    const erc20Result = await erc20Contract?.({
+      args: [SELLING_CONTRACT, selling.price],
+    });
+    return await waitForTransaction(erc20Result);
+  };
+
+  const handleTransfer = async (selling, tokenId) => {
+    const sellingResult = await sellingContract?.({
+      args: [
+        tokenId,
+        selling.price,
+        ERC_20_TOKEN_CONTRACT,
+      ],
+    });
+    setStatus('waiting for Transaction...');
+    return await waitForTransaction(sellingResult);
+  };
+
+  const handleSavePurchase = async (price, transferReceipt) => {
+    return await fetchFromApi({
+      endpoint: '/api/purchase',
+      method: 'POST',
+      data: {
+        tokenId: Number(tokenId),
+        buyer: address,
+        price: price,
+        hash: transferReceipt.transactionHash,  // Note: Changed from 'sellingResult.hash'
+      },
+    });
+  };
+
   const handleBuy = async (e) => {
     e.preventDefault();
     setLoading(true);
+    setStatus('Loading...');
     try {
       const selling = readData[0].result;
       if (!selling.isSale) {
@@ -71,44 +97,38 @@ function ModalBuyButton({id: tokenId, itemData}) {
 
       const balance = Number(formatEther(readData[1].result));
       const price = Number(formatEther(selling.price));
-      if (balance < price){
+
+      if (balance < price) {
         alert('Insufficient balance for the purchase');
         return;
       }
-
+      setStatus('check allowance...');
       const allowance = Number(formatEther(readData[2].result));
-      console.log('balance', balance);
-      console.log('allowance', allowance);
-      console.log('price', price);
       if (allowance < price) {
-        const erc20Result = await erc20Contract?.({
-          args: [SELLING_CONTRACT, selling.price],
-        });
-        const receipt = await waitForTransaction(erc20Result);
+        const approvalReceipt = await handleApproval(selling);
+        if (approvalReceipt.status !== 'success') {
+          throw new Error('Approval failed');
+        }
       }
 
-      const sellingResult = await sellingContract?.({
-        args: [
-          tokenId,
-          selling.price,
-          ERC_20_TOKEN_CONTRACT,
-        ],
-      });
+      const transferReceipt = await handleTransfer(selling, tokenId);
+      if (transferReceipt.status !== 'success') {
+        const error = new new Error('Transfer failed');
+        error.additionalData = transferReceipt;
+        throw error;
+      }
 
-      await fetchFromApi({
-        endpoint: '/api/purchase',
-        method: 'POST',
-        data: {
-          tokenId: tokenId,
-          buyer: address,
-          price: formatEther(selling.price),
-          hash: sellingResult.hash,
-        },
-      });
-    } catch (Error) {
+      const purchaseReceipt = await handleSavePurchase(price, transferReceipt); // assuming it's async
+      if (purchaseReceipt.status !== 'success') {
+        throw new Error('Save purchase failed');
+      }
 
-
+      setStatus('Complete!');
+    } catch (error){
+      setErrorMessage(error.message);
+      setStatus('error');
     } finally {
+      console.log('finally');
       setLoading(false);
     }
   };
@@ -141,6 +161,14 @@ function ModalBuyButton({id: tokenId, itemData}) {
       ]);
     }
   }, [address]);
+
+  useEffect(() => {
+    if (errorMessage) {
+      (async () => {
+        await logErrorToBackend(errorMessage);
+      })();
+    }
+  }, [errorMessage]);
 
   return (
       <div id="buybutton" className="modal fade p-0">
@@ -178,10 +206,10 @@ function ModalBuyButton({id: tokenId, itemData}) {
                         <li className="price d-flex justify-content-between">
                           <span className="mr-3 text-white">Total price</span>
                           <span className="word-break">
-                                                    <img className="mr-3"
-                                                         src="../img/tether-usdt-logo.png"
-                                                         alt="usdtlogo"
-                                                         width="30px"/>
+                            <img className="mr-3"
+                                 src="../img/tether-usdt-logo.png"
+                                 alt="usdtlogo"
+                                 width="30px"/>
                             {Number(itemData.price).toLocaleString()}<span className="h6"> USDT</span>
                                                 </span>
                         </li>
@@ -190,24 +218,21 @@ function ModalBuyButton({id: tokenId, itemData}) {
                   </div>
 
                   <div className="row">
-                    { isConnected ? (
-                        <div className="col-12 align-self-center">
+                    <div className="col-12 align-self-center">
+                      {isConnected ? (
                           <button
-                              className="d-block btn btn-bordered-white mt-4"
+                              className="d-block btn btn-bordered-white mt-4 w-100"
                               onClick={ handleBuy }
                               disabled={ loading }
                           >
-                            { loading ? (
+                            { loading && status !== 'Complete!' ? (
                                 <><i
-                                    className="fas fa-spinner fa-spin mr-2"/> Loading...</>
+                                    className="fas fa-spinner fa-spin mr-2"/>{ status }</>
                             ) : (
-                                <><i className="icon-handbag mr-2"/> Complete
-                                  purchase</>
+                                <><i className="icon-handbag mr-2"/>Confirm</>
                             ) }
                           </button>
-                        </div>
-                    ) : (
-                        <div className="col-12 align-self-center">
+                      ) : (
                           <Link
                               className="d-block btn btn-bordered-white mt-4"
                               to="/wallet-connect"
@@ -215,8 +240,12 @@ function ModalBuyButton({id: tokenId, itemData}) {
                           >
                             <i className="icon-wallet mr-md-2"/> Wallet Connect
                           </Link>
-                        </div>
-                    ) }
+                      )}
+                      { status === 'Complete!' && <div className="alert alert-success mt-3 text-center">Complete!</div> }
+                      { errorMessage && <div className="alert alert-danger mt-3 text-center">Something Error
+                        Occurred.Please try again.</div> }
+                    </div>
+
                   </div>
                 </div>
               </form>

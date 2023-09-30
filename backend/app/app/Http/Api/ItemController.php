@@ -6,6 +6,7 @@ use App\Models\Product;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Validator;
 
 final class ItemController
 {
@@ -60,6 +61,14 @@ final class ItemController
 
     public function getProductByTokenId(Request $request): JsonResponse
     {
+        $validator = Validator::make($request->all(), [
+            'token_id' => 'required|integer',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json(['message' => 'Product not found'], 404);
+        }
+
         $product = Product::where('token_id', $request->token_id)->first();
 
         if (!$product) {

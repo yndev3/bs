@@ -24,7 +24,6 @@ const ExploreHome = (props) => {
       params: params
     }).then((data) => {
       setProducts(data);
-      // console.log('API returned data:', data);
     }).catch(error => {
       console.error('Error fetching data:', error);
       setError(error);

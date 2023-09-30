@@ -20,36 +20,30 @@ export default function Selling() {
   const history = useHistory();
   const { id } = useParams();
   const [itemData, setItemData] = useState({});
-  const [itemDataApi, setItemDataApi] = useState(null);
   const [error, setError] = useState(null);
-  const [prevId, setPrevId] = useState(null);
   const [splideImages, setSplideImages] = useState([]);
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const data = await fetchFromApi({
-          endpoint: '/api/item',
-          params: { token_id: id },
-        });
-        setPrevId(id);
-        setItemDataApi(data);
-      } catch (err) {
-        console.error('Error fetching data:', err);
-        setError(err);
+  const fetchData = async () => {
+    try {
+      const data = await fetchFromApi({
+        endpoint: '/api/item',
+        params: { token_id: id },
+      });
+      console.log('data', data);
+      setItemData(data);
+      setSplideImages(JSON.parse(data.image_list));
+    } catch (err) {
+      console.error('Error fetching data:', err);
+      if (err.response && err.response.status === 404) {
+        history.push('/404');
       }
-    };
-
-    if (id !== prevId) {
-      fetchData();
+      setError(err);
     }
+  };
 
-    if (itemDataApi) {
-      setItemData(itemDataApi);
-      const otherImages = JSON.parse(itemDataApi.image_list);
-      setSplideImages(otherImages);
-    }
-  }, [id, itemDataApi]);
+  useEffect(() => {
+     (async () => await fetchData())();
+  }, []);
 
   let outputAddress = 'Address not available';
   if (itemData?.owner_address) {
@@ -125,7 +119,7 @@ export default function Selling() {
                     <div className="col-12 text-center mt-2">
                       <Link className="btn btn-bordered-white btn-smaller mt-3" to="#" data-toggle="modal" data-target="#buybutton">
                         <i className="icon-handbag mr-2" />
-                        Confirm Purchase
+                        Purchase
                       </Link>
                     </div>
                   ) : (
