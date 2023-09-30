@@ -25,31 +25,28 @@ export default function Selling() {
   const [prevId, setPrevId] = useState(null);
   const [splideImages, setSplideImages] = useState([]);
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const data = await fetchFromApi({
-          endpoint: '/api/item',
-          params: { token_id: id },
-        });
-        setPrevId(id);
-        setItemDataApi(data);
-      } catch (err) {
-        console.error('Error fetching data:', err);
-        setError(err);
+  const fetchData = async () => {
+    try {
+      const data = await fetchFromApi({
+        endpoint: '/api/item',
+        params: { token_id: id },
+      });
+      console.log('data', data);
+      setPrevId(id);
+      setItemData(data);
+      setSplideImages(JSON.parse(data.image_list));
+    } catch (err) {
+      console.error('Error fetching data:', err);
+      if (err.response && err.response.status === 404) {
+        history.push('/404');
       }
-    };
-
-    if (id !== prevId) {
-      fetchData();
+      setError(err);
     }
+  };
 
-    if (itemDataApi) {
-      setItemData(itemDataApi);
-      const otherImages = JSON.parse(itemDataApi.image_list);
-      setSplideImages(otherImages);
-    }
-  }, [id, itemDataApi]);
+  useEffect(() => {
+     (async () => await fetchData())();
+  }, []);
 
   let outputAddress = 'Address not available';
   if (itemData?.owner_address) {
