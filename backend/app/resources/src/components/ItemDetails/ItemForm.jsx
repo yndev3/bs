@@ -6,6 +6,8 @@ import {
   SELLING_CONTRACT,
 } from '../../helpers/constants';
 import { useFetchFromApi } from '../../hooks/fetchFromApi';
+import { waitForTransaction } from '@wagmi/core';
+import { logErrorToBackend } from '../../utils/logErrorToBackend.jsx';
 
 const sellingConfig = {
   address: SELLING_CONTRACT,
@@ -18,6 +20,8 @@ const STOP_SALE = 'Stop Sale' ;
 const ItemForm = ({price, tokenId, saleStatus}) => {
   const {fetchFromApi} = useFetchFromApi();
   const [loading, setLoading] = useState(false);
+  const [isComplete, setIsComplete] = useState(false);
+  const [errorMessage, setErrorMessage] = useState('');
   const [status, setStatus] = useState('');
   const {
     writeAsync: sellingContract,
@@ -29,10 +33,11 @@ const ItemForm = ({price, tokenId, saleStatus}) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setIsComplete(false)
+    setErrorMessage('');
     setLoading(true);
     const price = parseEther(e.target.price.value);
     const saleStatus = e.target.status.value === ON_SALE;
-
     try {
       const sellingResult = await sellingContract?.({
         args: [
@@ -41,17 +46,30 @@ const ItemForm = ({price, tokenId, saleStatus}) => {
           saleStatus,
         ],
       });
-      const updateResult = await fetchFromApi({
-        endpoint: '/api/admin/item/' + tokenId + '/sales',
-        method: 'POST',
-        data: {
-          tokenId,
-          price: formatEther(price),
-          saleStatus
-        },
-      });
+
+      const tx = await waitForTransaction(sellingResult);
+
+      if (tx.status === 'success') {
+        const updateResult = await fetchFromApi({
+          endpoint: '/api/admin/item/' + tokenId + '/sales',
+          method: 'POST',
+          data: {
+            tokenId,
+            price: formatEther(price),
+            saleStatus
+          },
+        });
+
+        if (updateResult.status !== 'success') {
+          throw new Error('DB update failed');
+        }
+        setIsComplete(true);
+      } else {
+        throw new Error('Set sale Transaction failed');
+      }
     } catch (error) {
-      console.error(error);
+      setErrorMessage(error.message);
+      await logErrorToBackend(error.message);
     } finally {
       setLoading(false);
     }
@@ -136,6 +154,9 @@ const ItemForm = ({price, tokenId, saleStatus}) => {
               }
             </button>
           </form>
+          { isComplete && <div className="alert alert-success mt-3 text-center">Completed!</div> }
+          { errorMessage && <div className="alert alert-danger mt-3 text-center">Something Error
+            Occurred.Please try again.</div> }
         </div>
       </>
 
