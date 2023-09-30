@@ -34,8 +34,10 @@ const Explore = (props) => {
         };
         fetchFromApi({
             endpoint: '/api/items',
-            params: params
+            params: params,
+            
         }).then((res) => {
+            console.log('API Data:', res.data);
             setProducts(res.data);
             const brandCounts = res.data.reduce((acc, item) => {
                 acc[item.brand] = (acc[item.brand] || 0) + 1;
@@ -51,7 +53,7 @@ const Explore = (props) => {
         return (
             <section className="explore-area">
                 <div className="container">
-                    <div className="row justify-content-center">
+                    <div className="row justify-content-center mt-3 mb-3">
                         <div className="col-12 col-md-8 col-lg-7">
                             {/* Intro */}
                             <div className="intro text-center mb-4">
@@ -71,7 +73,7 @@ const Explore = (props) => {
                             </ul>
                             }
                     </div>
-                    <div className="row">
+                    <div className="row sort-area mb-2">
 
                         <AccordionAndSort 
                             isAccordionOpen={isAccordionOpen} 
@@ -111,7 +113,7 @@ const Explore = (props) => {
 
                     <div className="row items explore-items">
                         { filteredProducts.slice(0, visibleCount).map((item) => {
-                            return <Card key={ item.id } item={ item }/>;
+                            return <Card key={ item.token_id } item={ item }/>;
                         }) }
                     </div>
                     <div className="row">

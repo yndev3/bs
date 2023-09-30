@@ -29,7 +29,7 @@ export default function Selling() {
         endpoint: '/api/item',
         params: { token_id: id },
       });
-      console.log('data', data);
+
       setItemData(data);
       setSplideImages(JSON.parse(data.image_list));
     } catch (err) {
@@ -64,7 +64,7 @@ export default function Selling() {
   };
 
   return (
-    <section className="item-details-area">
+    <section className="item-details-area mt-4">
       <div className="container">
         {error ? (
           <ul className="mb-5 post-holder">
