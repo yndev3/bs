@@ -53,7 +53,7 @@ const Explore = (props) => {
         return (
             <section className="explore-area">
                 <div className="container">
-                    <div className="row justify-content-center">
+                    <div className="row justify-content-center mt-3 mb-3">
                         <div className="col-12 col-md-8 col-lg-7">
                             {/* Intro */}
                             <div className="intro text-center mb-4">
@@ -73,7 +73,7 @@ const Explore = (props) => {
                             </ul>
                             }
                     </div>
-                    <div className="row">
+                    <div className="row sort-area mb-2">
 
                         <AccordionAndSort 
                             isAccordionOpen={isAccordionOpen} 

@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 
 import Header from '../components/Header/Header';
-import Breadcrumb from '../components/Breadcrumb/Breadcrumb';
 import Explore from '../components/Explore/Explore';
 import Footer from '../components/Footer/Footer';
 import ModalMenu from '../components/Modal/ModalMenu';
@@ -18,7 +17,6 @@ class ExploreTwo extends Component {
         return (
             <div className="main">
                 <Header />
-                <Breadcrumb title="ExploreJewelrys" subpage="Jewelrys" page="Jewelrys" />
                 <Explore initData={initData} category="Jewelry" />
                 <Footer />
                 <ModalMenu />
