@@ -29,7 +29,7 @@ export default function Selling() {
         endpoint: '/api/item',
         params: { token_id: id },
       });
-      // console.log('data', data);
+
       setItemData(data);
       setSplideImages(JSON.parse(data.image_list));
     } catch (err) {
