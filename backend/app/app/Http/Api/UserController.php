@@ -12,6 +12,7 @@ use Illuminate\Database\QueryException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Log;
@@ -162,34 +163,48 @@ final class UserController
 
     public function createPurchase(Request $request): JsonResponse
     {
+        Log::info($request->all());
+        // Validation
+        $request->validate([
+            'tokenId' => 'required',
+            'buyer' => 'required',
+            'price' => 'required',
+            'hash' => 'required'
+        ]);
+
         $user = Auth::user();
-        $tokenId = $request->input('token_id');
+        $tokenId = $request->input('tokenId');
         $buyer = $request->input('buyer');
         $price = $request->input('price');
         $transactionHash = $request->input('hash');
 
         $product = Product::firstWhere('token_id', $tokenId);
         if (!$product) {
-            Log::info('Product not found');
+            Log::error('Product not found');
             return response()->json([
                 'error' => 'Product not found'
             ], 404);
         }
 
         try {
+            DB::beginTransaction();
+
             // product status update
             $product->update([
                 'is_sale' => 2,
             ]);
 
-            $purchase = Purchase::create([
+            Purchase::create([
                 'user_id' => $user->id,
                 'product_id' => $product->id,
                 'buyer' => $buyer,
                 'price' => $price,
                 'transaction_hash' => $transactionHash
             ]);
+
+            DB::commit();
         } catch (\Exception $e) {
+            DB::rollBack();
             Log::error($e->getMessage());
             return response()->json([
                 'error' => 'Failed to create purchase'
@@ -197,11 +212,11 @@ final class UserController
         }
 
         return response()->json([
-            'purchase' => $purchase,
+            'status' => 'success',
             'message' => 'purchase created successfully'
         ]);
-
     }
+
 
     public function fetchPurchase(): JsonResponse
     {

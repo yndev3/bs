@@ -36,10 +36,6 @@ function ModalBuyButton({id: tokenId, itemData}) {
   const {data: readData} = useContractReads({
     contracts,
   });
-  // const {data: fetchBalanceResult} = useBalance({
-  //   address: address,
-  //   token: ERC_20_TOKEN_CONTRACT,
-  // });
 
   const {
     writeAsync: erc20Contract,
@@ -64,7 +60,6 @@ function ModalBuyButton({id: tokenId, itemData}) {
   };
 
   const handleTransfer = async (selling, tokenId) => {
-    setStatus('waiting for Transfer...');
     const sellingResult = await sellingContract?.({
       args: [
         tokenId,
@@ -72,6 +67,7 @@ function ModalBuyButton({id: tokenId, itemData}) {
         ERC_20_TOKEN_CONTRACT,
       ],
     });
+    setStatus('waiting for Transaction...');
     return await waitForTransaction(sellingResult);
   };
 
@@ -83,7 +79,7 @@ function ModalBuyButton({id: tokenId, itemData}) {
         tokenId: Number(tokenId),
         buyer: address,
         price: price,
-        hash: transferReceipt.hash,  // Note: Changed from 'sellingResult.hash'
+        hash: transferReceipt.transactionHash,  // Note: Changed from 'sellingResult.hash'
       },
     });
   };
@@ -116,8 +112,11 @@ function ModalBuyButton({id: tokenId, itemData}) {
       }
 
       const transferReceipt = await handleTransfer(selling, tokenId);
+      console.log(transferReceipt);
       if (transferReceipt.status !== 'success') {
-        throw new Error('Transfer failed');
+        const error = new new Error('Transfer failed');
+        error.additionalData = transferReceipt;
+        throw error;
       }
 
       const purchaseReceipt = await handleSavePurchase(price, transferReceipt); // assuming it's async
@@ -130,6 +129,7 @@ function ModalBuyButton({id: tokenId, itemData}) {
       setErrorMessage(error.message);
       setStatus('error');
     } finally {
+      console.log('finally');
       setLoading(false);
     }
   };
@@ -226,7 +226,7 @@ function ModalBuyButton({id: tokenId, itemData}) {
                               onClick={ handleBuy }
                               disabled={ loading }
                           >
-                            { loading ? (
+                            { loading && status !== 'Complete!' ? (
                                 <><i
                                     className="fas fa-spinner fa-spin mr-2"/>{ status }</>
                             ) : (
@@ -242,7 +242,7 @@ function ModalBuyButton({id: tokenId, itemData}) {
                             <i className="icon-wallet mr-md-2"/> Wallet Connect
                           </Link>
                       )}
-                      { status === 'Completed!' && <div className="alert alert-success mt-3 text-center">Completed!</div> }
+                      { status === 'Complete!' && <div className="alert alert-success mt-3 text-center">Complete!</div> }
                       { errorMessage && <div className="alert alert-danger mt-3 text-center">Something Error
                         Occurred.Please try again.</div> }
                     </div>
