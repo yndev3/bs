@@ -112,7 +112,6 @@ function ModalBuyButton({id: tokenId, itemData}) {
       }
 
       const transferReceipt = await handleTransfer(selling, tokenId);
-      console.log(transferReceipt);
       if (transferReceipt.status !== 'success') {
         const error = new new Error('Transfer failed');
         error.additionalData = transferReceipt;
