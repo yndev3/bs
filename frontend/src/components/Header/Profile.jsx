@@ -20,7 +20,7 @@ const Profile = () => {
                         <li className="nav-item"><Link to={'/account'} className="nav-link">My Account</Link></li>
                         <li className="nav-item"><Link to={'/activity'} className="nav-link">Activity</Link></li>
                         <li className="nav-item"><Link to={'/exchange-reservation'} className="nav-link">Exchange Reservation</Link></li>
-                        <li className="nav-item"><Link to="./wallet-connect" className="nav-link" onClick={disconnect}>Disconnect</Link></li>
+                        <li className="nav-item"><Link to="/wallet-connect" className="nav-link" onClick={ () => disconnect() }>Disconnect</Link></li>
                     </ul>
                 </li>
             </ul>

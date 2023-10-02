@@ -1,5 +1,5 @@
 import React from 'react';
-import { NavLink, Link } from 'react-router-dom';
+import { NavLink, Link, useHistory } from 'react-router-dom';
 import { useAccount, useNetwork } from 'wagmi';
 import Profile from './Profile';
 import { useAuth } from '../../providers/AuthProvider';

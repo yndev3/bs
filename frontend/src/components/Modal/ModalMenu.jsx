@@ -1,9 +1,14 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
-import { useAccount } from 'wagmi';
+import { Link, useHistory } from 'react-router-dom';
+import { useAccount, useDisconnect } from 'wagmi';
+import { useAuth } from '../../providers/AuthProvider';
 
 const ModalMenu = () => {
-  const { isConnected} = useAccount();
+  const {isConnected} = useAccount();
+  const {isAuthenticated, isLoading} = useAuth();
+  const {disconnect} = useDisconnect();
+  const history = useHistory();
+
   const [showExploreDropdown, setShowExploreDropdown] = useState(false);
   const [showUserDropdown, setShowUserDropdown] = useState(false);
 
@@ -65,8 +70,14 @@ const ModalMenu = () => {
                       </li>
                     </ul>
                   </li>
+                  <li className="nav-item dropdown">
+                    <Link aria-current="page" className="nav-link active" to="/store-list" onClick={removeModalBackdrop}>
+                      Store
+                    </Link>
+                  </li>
                 </ul>
-                {isConnected && (
+
+                {isConnected && isAuthenticated && (
                 <ul className="navbar-nav items mx-auto">
                   <li className="nav-item dropdown">
                     <a className="nav-link" href="#" onClick={toggleUserDropdown}>
@@ -93,7 +104,18 @@ const ModalMenu = () => {
                         <Link className="nav-link" to="/account" onClick={removeModalBackdrop}>My Account</Link>
                       </li>
                       <li className="nav-item">
-                        <Link className="nav-link" to="/wallet-connect" onClick={removeModalBackdrop}>Disconnect</Link>
+                        <Link className="nav-link" to="/activity" onClick={removeModalBackdrop}>Activity</Link>
+                      </li>
+                      <li className="nav-item">
+                        <Link className="nav-link" to="/exchange-reservation" onClick={removeModalBackdrop}>Exchange Reservation</Link>
+                      </li>
+                      <li className="nav-item">
+                      <Link className="nav-link" to="/wallet-connect" onClick={(e) => {
+                        e.preventDefault(); 
+                        removeModalBackdrop(e);
+                        disconnect();
+                        history.push("/wallet-connect"); 
+                      }}>Disconnect</Link>
                       </li>
                     </ul>
                   </li>
