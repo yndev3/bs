@@ -40,13 +40,13 @@ const Footer = () => {
                                     <a className="discord disable-link" href="#">
                                         <i className="fab fa-discord" />
                                     </a>
-                                    <a className="twitter" href="https://twitter.com/brandswap">
+                                    <a className="twitter" href="https://twitter.com/brandswap" target='blank'>
                                         <i className="fab fa-twitter" />
                                     </a>
-                                    <a className="github" href="https://github.com/BrandSwap">
+                                    <a className="github" href="https://github.com/BrandSwap" target='blank'>
                                         <i className="fab fa-github" />
                                     </a>
-                                    <a className="LinkTree disable-link" href="#">
+                                    <a className="LinkTree disable-link" href="https://linktr.ee/brandswap" target='blank'>
                                         <i className="fa fa-tree" />
                                     </a>
                                 </div>
