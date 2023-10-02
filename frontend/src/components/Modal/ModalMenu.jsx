@@ -19,6 +19,7 @@ const ModalMenu = () => {
     const backdrop = document.querySelector('.modal-backdrop.fade.show');
     if (backdrop) {
       backdrop.classList.remove('show');
+      backdrop.style.display = 'none';
     }
   };
 
