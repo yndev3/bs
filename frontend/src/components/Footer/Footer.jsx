@@ -46,7 +46,7 @@ const Footer = () => {
                                     <a className="github" href="https://github.com/BrandSwap" target='blank'>
                                         <i className="fab fa-github" />
                                     </a>
-                                    <a className="LinkTree disable-link" href="https://linktr.ee/brandswap" target='blank'>
+                                    <a className="LinkTree" href="https://linktr.ee/brandswap" target='blank'>
                                         <i className="fa fa-tree" />
                                     </a>
                                 </div>
