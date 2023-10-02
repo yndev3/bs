@@ -93,7 +93,7 @@ const Footer = () => {
                                 {/* Subscribe Form */}
                                 <div className="subscribe-form d-flex align-items-center">
                                     <input type="email" className="form-control" placeholder="🔗 Access Form" disabled/>
-                                    <a href="https://forms.gle/JCs24y31zPWLGvpx5" className="btn">
+                                    <a href="https://forms.gle/JCs24y31zPWLGvpx5" className="btn" target='blank'>
                                         <i className="icon-paper-plane" />
                                     </a>
                                 </div>
