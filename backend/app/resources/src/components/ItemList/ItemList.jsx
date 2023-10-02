@@ -162,7 +162,7 @@ export default function StickyHeadTable() {
   // フィルタリングされた行を取得
   const filteredRows = rows.filter((row) =>
     row.name.toLowerCase().includes(nameSearchValue.toLowerCase()) &&
-    row.id.toString().includes(idSearchValue) &&
+    row.token_id.toString().includes(idSearchValue) &&
     isSaleFilters.includes(row.is_sale.toString()) &&
     isBurnFilters.includes(row.is_burn.toString()) &&
     categoryFilters[row.category] // 選択されたカテゴリでフィルタリング
