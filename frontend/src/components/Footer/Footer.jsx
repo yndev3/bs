@@ -76,7 +76,7 @@ const Footer = () => {
                                         <li><Link to="/account">My Account</Link></li>
                                         <li><Link to="/activity">Activity</Link></li>
                                         <li><Link to="/exchange-reservation">Exchange Reservation</Link></li>
-                                        <li><Link to="/wallet-connect" onClick={disconnect}>Disconnect</Link></li>
+                                        <li><Link to="/wallet-connect" onClick={ () => disconnect() }>Disconnect</Link></li>
                                         </>
                                     ) : (
                                         <li><Link to="/wallet-connect">Please Wallet Connect</Link></li>
