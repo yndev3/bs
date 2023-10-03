@@ -51,7 +51,7 @@ const initialMaterialFormInput = {
 const Create = () => {
     const {fetchFromApi} = useFetchFromApi();
     const [success, setSuccess] = useState(false);
-    const [errorMessage, setErrorMessage] = useState(null);
+    const [exception, setException] = useState(null);
     const {isConnected} = useAccount();
     const [loading, setLoading] = useState(false);
     const [selectedFile, setSelectedFile] = useState('');
@@ -166,7 +166,7 @@ const Create = () => {
             const mergedJsonInput = {...jsonInput, option: optionInput};
             await executeMint(selectedFile, mergedJsonInput);
         } catch (error) {
-            setErrorMessage(error.message);
+            setException(error.message);
             // 例外発生時はローディングを解除
             setLoading(false);
         } finally {
@@ -202,7 +202,7 @@ const Create = () => {
             }).then(function(response) {
                 setSuccess(true);
             }).catch(function(error) {
-                setErrorMessage(error.message);
+                setException(error);
             }).finally(function() {
                 setLoading(false);
             });
@@ -210,12 +210,12 @@ const Create = () => {
     });
 
     useEffect(() => {
-        if (errorMessage) {
+        if (exception) {
             (async () => {
-                await logErrorToBackend(errorMessage);
+                await logErrorToBackend(exception);
             })();
         }
-    }, [errorMessage]);
+    }, [exception]);
 
     return (
         <>
@@ -439,7 +439,7 @@ const Create = () => {
                                         </button>
                                         { success &&
                                             <div className="alert alert-success mt-3 text-center">Completed!</div> }
-                                        { errorMessage && <div className="alert alert-danger mt-3 text-center">Something Error
+                                        { exception && <div className="alert alert-danger mt-3 text-center">Something Error
                                             Occurred.Please try again.</div> }
                                     </div>
                                 </div>
