@@ -20,13 +20,9 @@ final class ItemRegistrationController
     {
         try {
             DB::beginTransaction();
-            if (!$request->isMethod('post')) {
-                throw new \Exception('Method not allowed');
-            }
-
             $tokenId = $request->input('tokenId');
 
-            $owner = $request->input('owner');
+            $owner = strtolower($request->input('owner'));
             $uri = $request->input('uri');
             $metaUrl = $this->convertIpfsLink($uri);
             $response = Http::get($metaUrl);
@@ -40,7 +36,7 @@ final class ItemRegistrationController
             DB::commit();
         } catch (\Exception $e) {
             DB::rollBack();
-            Log::error($e->getMessage());
+            Log::error(__FILE__.':'. __LINE__.'=>', ['error' => $e->getMessage()]);
             return response()->json([
                 'error' => true,
                 'message' => $e->getMessage(),

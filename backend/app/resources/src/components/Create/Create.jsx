@@ -65,6 +65,22 @@ const Create = () => {
         initialMaterialFormInput);
     const [optionInput, setOptionInput] = useState({});
     const [category, setCategory] = useState('');
+    const [receipt, setReceipt] = useState(null);
+    const [uri, setUri] = useState('');
+    const [tokenId, setTokenId] = useState('');
+    const [sender, setSender] = useState('');
+
+    useContractEvent({
+        address: BRAND_SWAP_CONTRACT,
+        abi: BRAND_SWAP_ABI,
+        eventName: 'nftMinted',
+        listener(log) {
+            const {uri, tokenId, sender} = log[0].args;
+            setUri(uri);
+            setTokenId(tokenId.toString());
+            setSender(sender);
+        },
+    });
 
 
     // 任意のフォームの入力値を更新する
@@ -83,7 +99,7 @@ const Create = () => {
     const handleChangeSku = debounce(async (e) => {
         const {name, value} = e.target;
         if (name === 'sku' && value.length > 3) {
-            debounceSkuCheck(value);
+            await debounceSkuCheck(value);
         }
         updateFormInput(jsonInput, setJsonInput, name, value);
     }, 2000);// 2sec の遅延
@@ -164,17 +180,20 @@ const Create = () => {
         try {
             setLoading(true);
             const mergedJsonInput = {...jsonInput, option: optionInput};
-            await executeMint(selectedFile, mergedJsonInput);
+            const receipt = await executeMint(selectedFile, mergedJsonInput);
+            setReceipt(receipt);
         } catch (error) {
-            setException(error.message);
+            if (!error.message.includes('User rejected the request.')) {
+                setException(error);
+            }
             // 例外発生時はローディングを解除
             setLoading(false);
         } finally {
-            resetForm();
+            await resetForm();
         }
     };
 
-    const resetForm = () => {
+    const resetForm = async () => {
         setJsonInput(initialJsonInput);
         setWatchFormInput(initialWatchFormInput);
         setJewelryFormInput(initialJewelryFormInput);
@@ -185,29 +204,26 @@ const Create = () => {
         setValidationErrors({});
     };
 
-    useContractEvent({
-        address: BRAND_SWAP_CONTRACT,
-        abi: BRAND_SWAP_ABI,
-        eventName: 'nftMinted',
-        listener(log) {
-            const {uri, tokenId, sender} = log[0].args;
-            fetchFromApi({
+
+    const sendToBackend = async () => {
+        try {
+            await fetchFromApi({
                 endpoint: '/api/admin/item',
                 method: 'POST',
-                data: {
-                    uri: uri,
-                    tokenId: tokenId.toString(),
-                    owner: sender,
-                },
-            }).then(function(response) {
-                setSuccess(true);
-            }).catch(function(error) {
-                setException(error);
-            }).finally(function() {
-                setLoading(false);
+                data: { uri, tokenId, owner: sender },
             });
-        },
-    });
+            setSuccess(true);
+        } catch {
+            const exception = new Error('Failed to send to backend.');
+            exception.additionalData = {
+                level: 'error',
+                additional_info: receipt,
+            };
+            setException(exception);
+        } finally {
+            setLoading(false);
+        }
+    };
 
     useEffect(() => {
         if (exception) {
@@ -216,6 +232,22 @@ const Create = () => {
             })();
         }
     }, [exception]);
+
+    useEffect(() => {
+        if (receipt && uri && tokenId && sender) {
+            (async () => {
+                await sendToBackend(uri, tokenId, sender);
+            })();
+        }
+    }, [uri, tokenId, sender, receipt]);
+
+    useEffect(() => {
+        if(exception || success){
+            setTimeout(() => {
+                window.location.reload();
+            }, 3000);
+        }
+    }, [exception, success]);
 
     return (
         <>

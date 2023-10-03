@@ -6,7 +6,7 @@ import {
     BRAND_SWAP_ABI,
     BRAND_SWAP_CONTRACT,
 } from '../helpers/constants';
-import { useFetchFromApi } from './fetchFromApi.jsx';
+import { waitForTransaction } from '@wagmi/core';
 
 const useMintSubmit = () => {
     const [state, setState] = useState({});
@@ -42,11 +42,13 @@ const useMintSubmit = () => {
             if (!jsonRes.success) {
                 throw new Error(jsonRes.message);
             }
+            const metadata = `${ jsonRes.metadata }/metadata.json`;
             setState({message: 'Minting NFT', progress: 75});
             const result = await writeAsync?.({
-                args: [`${ jsonRes.metadata }/metadata.json`],
+                args: [metadata],
             });
-            setState({message: 'Minted NFT', progress: 100});
+            setState({message: 'waiting for Transaction...', progress: 80});
+            return await waitForTransaction(result);
         } catch (error) {
             throw new Error(error.message);
         }

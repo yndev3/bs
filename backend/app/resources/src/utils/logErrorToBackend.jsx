@@ -9,7 +9,7 @@ export const logErrorToBackend = async (error) => {
     ));
   }
   try {
-    const response = await axios.post(`${ process.env.REACT_APP_BASE_URL }/api/log-error`,
+    await axios.post(`${ import.meta.env.VITE_BASE_URL }/api/log-error`,
         {
           level: error.additionalData?.level || null,
           message: error.message,
