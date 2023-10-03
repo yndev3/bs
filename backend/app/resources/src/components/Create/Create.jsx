@@ -181,7 +181,9 @@ const Create = () => {
             setLoading(true);
             const mergedJsonInput = {...jsonInput, option: optionInput};
             const receipt = await executeMint(selectedFile, mergedJsonInput);
-            setReceipt(receipt);
+            if (receipt.status === 'success') {
+                setReceipt(receipt);
+            }
         } catch (error) {
             if (!error.message.includes('User rejected the request.')) {
                 setException(error);

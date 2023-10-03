@@ -82,7 +82,7 @@ final class AdminController
                 'is_sale' => (int)$validated['saleStatus'],
             ]);
         } catch (\Exception $e) {
-            Log::info($e->getMessage());
+            Log::error(__FILE__.':'. __LINE__.'=>', ['error' => $e->getMessage()]);
             return response()->json(['message' => 'Failed to update product', 'error' => $e->getMessage()], 500);
         }
 

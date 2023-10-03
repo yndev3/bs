@@ -21,7 +21,7 @@ const ItemForm = ({price, tokenId, saleStatus}) => {
   const {fetchFromApi} = useFetchFromApi();
   const [loading, setLoading] = useState(false);
   const [isComplete, setIsComplete] = useState(false);
-  const [errorMessage, setErrorMessage] = useState('');
+  const [exception, setException] = useState(null);
   const [status, setStatus] = useState('');
   const {
     writeAsync: sellingContract,
@@ -31,18 +31,39 @@ const ItemForm = ({price, tokenId, saleStatus}) => {
     functionName: 'setSale',
   });
 
+  const sendDataToBackend = async (receipt, price, tokenId, saleStatus) => {
+    try {
+       await fetchFromApi({
+        endpoint: '/api/admin/item/' + tokenId + '/sales',
+        method: 'POST',
+        data: {
+          tokenId,
+          price: formatEther(price),
+          saleStatus
+        },
+      });
+      setIsComplete(true);
+    } catch {
+      const error = new Error('Failed to send to backend.');
+      error.additionalData = {
+        level: 'error',
+        additional_info: receipt,
+      };
+      setException(error);
+    }
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setIsComplete(false)
-    setErrorMessage('');
     setLoading(true);
-    const price = parseEther(e.target.price.value);
+    const inputPrice = parseEther(e.target.price.value);
     const saleStatus = e.target.status.value === ON_SALE;
     try {
       const sellingResult = await sellingContract?.({
         args: [
           tokenId,
-          price,
+          inputPrice,
           saleStatus,
         ],
       });
@@ -50,26 +71,12 @@ const ItemForm = ({price, tokenId, saleStatus}) => {
       const tx = await waitForTransaction(sellingResult);
 
       if (tx.status === 'success') {
-        const updateResult = await fetchFromApi({
-          endpoint: '/api/admin/item/' + tokenId + '/sales',
-          method: 'POST',
-          data: {
-            tokenId,
-            price: formatEther(price),
-            saleStatus
-          },
-        });
-
-        if (updateResult.status !== 'success') {
-          throw new Error('DB update failed');
-        }
-        setIsComplete(true);
+        await sendDataToBackend(tx, inputPrice, tokenId, saleStatus);
       } else {
         throw new Error('Set sale Transaction failed');
       }
     } catch (error) {
-      setErrorMessage(error.message);
-      await logErrorToBackend(error.message);
+      setException(error);
     } finally {
       setLoading(false);
     }
@@ -87,6 +94,22 @@ const ItemForm = ({price, tokenId, saleStatus}) => {
       setStatus(saleStatus === 1 ? ON_SALE : STOP_SALE);
     }
   }, [saleStatus]);
+
+  useEffect(() => {
+    if (exception) {
+      (async () => {
+        await logErrorToBackend(exception);
+      })();
+    }
+  }, [exception]);
+
+  useEffect(() => {
+    if(exception || isComplete) {
+      setTimeout(() => {
+        window.location.reload();
+      }, 3000);
+    }
+  }, [exception, isComplete]);
 
   return (
       <>
@@ -155,7 +178,7 @@ const ItemForm = ({price, tokenId, saleStatus}) => {
             </button>
           </form>
           { isComplete && <div className="alert alert-success mt-3 text-center">Completed!</div> }
-          { errorMessage && <div className="alert alert-danger mt-3 text-center">Something Error
+          { exception && <div className="alert alert-danger mt-3 text-center">Something Error
             Occurred.Please try again.</div> }
         </div>
       </>
