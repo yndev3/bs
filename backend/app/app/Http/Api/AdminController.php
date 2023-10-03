@@ -82,7 +82,7 @@ final class AdminController
                 'is_sale' => (int)$validated['saleStatus'],
             ]);
         } catch (\Exception $e) {
-            Log::info($e->getMessage());
+            Log::error(__FILE__.':'. __LINE__.'=>', ['error' => $e->getMessage()]);
             return response()->json(['message' => 'Failed to update product', 'error' => $e->getMessage()], 500);
         }
 
@@ -95,22 +95,35 @@ final class AdminController
 
     public function setBurn(Request $request, string $tokenId): JsonResponse
     {
-        $product = Product::withoutGlobalScopes()
-            ->where('token_id', $tokenId)
-            ->first();
-
-        if (!$product) {
-            return response()->json(['message' => 'Product not found'], 404);
-        }
-
-        // update product
-        $product->update([
-            'is_burn' => $request->input('is_burn'),
+        $request->validate([
+            'is_burn' => 'required|boolean',
         ]);
+
+        try {
+            $product = Product::withoutGlobalScopes()
+                ->where('token_id', $tokenId)
+                ->firstOrFail();
+
+            $product->update([
+                'is_sale' => 0, // sale status is false when burn
+                'is_burn' => $request->input('is_burn'),
+            ]);
+
+        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
+            Log::error(__FILE__.':'. __LINE__.'=>', ['error' => $e->getMessage()]);
+            return response()->json(['message' => 'Product not found'], 404);
+        } catch (\Illuminate\Database\QueryException $e) {
+            Log::error(__FILE__.':'. __LINE__.'=>', ['error' => $e->getMessage()]);
+            // データベースエラーをキャッチします
+            return response()->json(['message' => 'Database error'], 500);
+        } catch (\Exception $e) {
+            Log::error(__FILE__.':'. __LINE__.'=>', ['error' => $e->getMessage()]);
+            // 他の予期しないエラーをキャッチします
+            return response()->json(['message' => 'An unexpected error occurred'], 500);
+        }
 
         return response()->json($product);
     }
-
 
     public function fetchBooking(): JsonResponse
     {

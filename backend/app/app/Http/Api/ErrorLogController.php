@@ -25,7 +25,7 @@ final class ErrorLogController
             // DB保存処理
             ErrorLog::create([
                 'user_address' => $user->address ?? null,
-                'level' => $data['level'],
+                'level' => $data['level'] ?? 'warning',
                 'message' => $data['message'],
                 'stack' => $data['stack'],
                 'additional_info' => $data['additional_info'] ? json_encode($data['additional_info']) : null
