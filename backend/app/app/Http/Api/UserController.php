@@ -99,7 +99,7 @@ final class UserController
                 ->firstOrFail();  // Productが見つからなかった場合のエラーハンドリング
 
             // 商品の取得した日付をどうやって保持するか
-            $updatedAt = new Carbon($product->last_hold_at);
+            $updatedAt = new Carbon($product->transfer_at);
             if ($updatedAt->lt($dateThreshold)) {
                 // 商品は所有から90日以上経過している必要がある
                 return response()->json([
@@ -129,12 +129,12 @@ final class UserController
                 'message' => 'Booking created successfully'
             ]);
         } catch (QueryException $e) { // QueryExceptionをキャッチ
-            Log::error($e->getMessage());
+            Log::error(__FILE__.':'. __LINE__.'=>'.$e->getMessage());
             return response()->json([
                 'error' => 'Database error occurred while processing your request.',
             ], 500);
         } catch (\Exception $e) { // その他の例外
-            Log::error($e->getMessage());
+            Log::error(__FILE__.':'. __LINE__.'=>'.$e->getMessage());
             return response()->json([
                 'error' => 'An unexpected error occurred while processing your request.',
             ], 500);
@@ -151,7 +151,7 @@ final class UserController
             ->get();
 
         if (!$bookings) {
-            Log::info('bookings not found');
+            Log::info(__FILE__.':'. __LINE__.'=>'.'bookings not found');
             return response()->json([
                 'error' => 'bookings not found'
             ], 404);
@@ -192,6 +192,8 @@ final class UserController
             // product status update
             $product->update([
                 'is_sale' => 2,
+                'owner_address' => $buyer,
+                'transfer_at' => Carbon::now()
             ]);
 
             Purchase::create([
@@ -205,7 +207,7 @@ final class UserController
             DB::commit();
         } catch (\Exception $e) {
             DB::rollBack();
-            Log::error($e->getMessage());
+            Log::info(__FILE__.':'. __LINE__.'=>'.$e->getMessage());
             return response()->json([
                 'error' => 'Failed to create purchase'
             ], 500);
@@ -227,7 +229,7 @@ final class UserController
             ->get();
 
         if (!$purchases) {
-            Log::info('purchases not found');
+            Log::info(__FILE__.':'. __LINE__.'=>'.'purchases not found');
             return response()->json([
                 'error' => 'purchases not found'
             ], 404);

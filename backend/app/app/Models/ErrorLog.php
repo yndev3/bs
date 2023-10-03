@@ -11,6 +11,9 @@ class ErrorLog extends Model
 
     protected $fillable = [
         'user_address',
-        'error_message',
+        'level',
+        'message',
+        'stack',
+        'additional_info',
     ];
 }
