@@ -99,7 +99,7 @@ final class UserController
                 ->firstOrFail();  // Productが見つからなかった場合のエラーハンドリング
 
             // 商品の取得した日付をどうやって保持するか
-            $updatedAt = new Carbon($product->last_hold_at);
+            $updatedAt = new Carbon($product->transfer_at);
             if ($updatedAt->lt($dateThreshold)) {
                 // 商品は所有から90日以上経過している必要がある
                 return response()->json([
@@ -192,6 +192,8 @@ final class UserController
             // product status update
             $product->update([
                 'is_sale' => 2,
+                'owner_address' => $buyer,
+                'transfer_at' => Carbon::now()
             ]);
 
             Purchase::create([
