@@ -95,7 +95,6 @@ final class AdminController
 
     public function setBurn(Request $request, string $tokenId): JsonResponse
     {
-        abort(403, 'This function is not available');
         $request->validate([
             'is_burn' => 'required|boolean',
         ]);
