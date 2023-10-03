@@ -2,17 +2,17 @@ import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { waitForTransaction } from '@wagmi/core';
 import {
+  erc20ABI,
   useAccount,
   useContractReads,
   useContractWrite,
-  erc20ABI,
 } from 'wagmi';
 import {
+  ERC_20_TOKEN_CONTRACT,
   SELLING_ABI,
   SELLING_CONTRACT,
-  ERC_20_TOKEN_CONTRACT,
 } from '../../helpers/constants';
-import { formatEther, TransactionExecutionError } from 'viem';
+import { formatEther } from 'viem';
 import { useFetchFromApi } from '../../hooks/fetchFromApi';
 import { logErrorToBackend } from '../../utils/logErrorToBackend';
 
@@ -31,7 +31,7 @@ function ModalBuyButton({id: tokenId, itemData}) {
   const [loading, setLoading] = useState(false);
   const [status, setStatus] = useState('Purchase');
   const [contracts, setContracts] = useState(null);
-  const [errorMessage, setErrorMessage] = useState(null);
+  const [exception, setException] = useState(null);
   const {address, isConnected} = useAccount();
   const {data: readData} = useContractReads({
     contracts,
@@ -72,16 +72,21 @@ function ModalBuyButton({id: tokenId, itemData}) {
   };
 
   const handleSavePurchase = async (price, transferReceipt) => {
-    return await fetchFromApi({
-      endpoint: '/api/purchase',
-      method: 'POST',
-      data: {
-        tokenId: Number(tokenId),
-        buyer: address,
-        price: price,
-        hash: transferReceipt.transactionHash,  // Note: Changed from 'sellingResult.hash'
-      },
-    });
+    try {
+      return await fetchFromApi({
+        endpoint: '/api/purchase',
+        method: 'POST',
+        data: {
+          tokenId: Number(tokenId),
+          buyer: address,
+          price: price,
+          hash: transferReceipt.transactionHash,  // Note: Changed from 'sellingResult.hash'
+        },
+      });
+    } catch (error) {
+      console.log('modal buy error', error);
+      return { status: 'error' };
+    }
   };
 
   const handleBuy = async (e) => {
@@ -91,6 +96,7 @@ function ModalBuyButton({id: tokenId, itemData}) {
     try {
       const selling = readData[0].result;
       if (!selling.isSale) {
+        // ブロックチェーンに販売状態を問い合わせる
         alert('The token is not for sale');
         return;
       }
@@ -113,22 +119,28 @@ function ModalBuyButton({id: tokenId, itemData}) {
 
       const transferReceipt = await handleTransfer(selling, tokenId);
       if (transferReceipt.status !== 'success') {
-        const error = new new Error('Transfer failed');
-        error.additionalData = transferReceipt;
-        throw error;
+        throw new Error('Transfer failed');
       }
 
       const purchaseReceipt = await handleSavePurchase(price, transferReceipt); // assuming it's async
       if (purchaseReceipt.status !== 'success') {
-        throw new Error('Save purchase failed');
+        const error = new Error('Save purchase failed');
+        error.additionalData = {
+          level: 'error',
+          additional_info: transferReceipt,
+        };
+        throw error;
       }
 
       setStatus('Complete!');
     } catch (error){
-      setErrorMessage(error.message);
+      if (error.message.includes('User rejected the request.')) {
+        setStatus('User cancelled the transaction');
+      } else {
+        setException(error);
+      }
       setStatus('error');
     } finally {
-      console.log('finally');
       setLoading(false);
     }
   };
@@ -163,12 +175,20 @@ function ModalBuyButton({id: tokenId, itemData}) {
   }, [address]);
 
   useEffect(() => {
-    if (errorMessage) {
+    if (exception) {
       (async () => {
-        await logErrorToBackend(errorMessage);
+        await logErrorToBackend(exception);
       })();
     }
-  }, [errorMessage]);
+  }, [exception]);
+
+  useEffect(() => {
+    if(status === 'Complete!' || status === 'error'){
+      setTimeout(() => {
+        window.location.reload();
+      }, 3000);
+    }
+  }, [status]);
 
   return (
       <div id="buybutton" className="modal fade p-0">
@@ -242,7 +262,7 @@ function ModalBuyButton({id: tokenId, itemData}) {
                           </Link>
                       )}
                       { status === 'Complete!' && <div className="alert alert-success mt-3 text-center">Complete!</div> }
-                      { errorMessage && <div className="alert alert-danger mt-3 text-center">Something Error
+                      { exception && <div className="alert alert-danger mt-3 text-center">Something Error
                         Occurred.Please try again.</div> }
                     </div>
 

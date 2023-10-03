@@ -129,12 +129,12 @@ final class UserController
                 'message' => 'Booking created successfully'
             ]);
         } catch (QueryException $e) { // QueryExceptionをキャッチ
-            Log::error($e->getMessage());
+            Log::error(__FILE__.':'. __LINE__.'=>'.$e->getMessage());
             return response()->json([
                 'error' => 'Database error occurred while processing your request.',
             ], 500);
         } catch (\Exception $e) { // その他の例外
-            Log::error($e->getMessage());
+            Log::error(__FILE__.':'. __LINE__.'=>'.$e->getMessage());
             return response()->json([
                 'error' => 'An unexpected error occurred while processing your request.',
             ], 500);
@@ -151,7 +151,7 @@ final class UserController
             ->get();
 
         if (!$bookings) {
-            Log::info('bookings not found');
+            Log::info(__FILE__.':'. __LINE__.'=>'.'bookings not found');
             return response()->json([
                 'error' => 'bookings not found'
             ], 404);
@@ -205,7 +205,7 @@ final class UserController
             DB::commit();
         } catch (\Exception $e) {
             DB::rollBack();
-            Log::error($e->getMessage());
+            Log::info(__FILE__.':'. __LINE__.'=>'.$e->getMessage());
             return response()->json([
                 'error' => 'Failed to create purchase'
             ], 500);
@@ -227,7 +227,7 @@ final class UserController
             ->get();
 
         if (!$purchases) {
-            Log::info('purchases not found');
+            Log::info(__FILE__.':'. __LINE__.'=>'.'purchases not found');
             return response()->json([
                 'error' => 'purchases not found'
             ], 404);

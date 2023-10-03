@@ -9,7 +9,7 @@ const App = () => {
   const { setAuth } = useAuth();
   const {disconnect} = useDisconnect();
   const {logout} = useLogout();
-  const {connector: activeConnector} = useAccount({
+  const {connector: activeConnector, isConnected} = useAccount({
     onDisconnect() {
       logout().then(() => {
         setAuth(false);
@@ -33,6 +33,12 @@ const App = () => {
       activeConnector?.off('change', handleConnectorUpdate);
     };
   }, [activeConnector]);
+
+  useEffect(() => {
+    if (!isConnected) {
+      setAuth(false);
+    }
+  }, [isConnected]);
 
   return (
       <>
