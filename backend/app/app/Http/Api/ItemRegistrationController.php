@@ -4,6 +4,7 @@ namespace App\Http\Api;
 
 use App\Models\Product;
 use Illuminate\Http\Request;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
@@ -11,36 +12,39 @@ use Illuminate\Support\Facades\Log;
 final class ItemRegistrationController
 {
 
-    public function __construct(private Product $product)
+    public function __construct(private readonly Product $product)
     {
     }
 
     public function __invoke(Request $request): \Illuminate\Http\JsonResponse
     {
-        // todo 管理者認証
         try {
             DB::beginTransaction();
-            if (!$request->isMethod('post')) {
-                throw new \Exception('Method not allowed');
-            }
+            $tokenId = $request->input('tokenId');
 
-            $tokenId = $request->tokenId;
-            $metaUrl = $this->convertIpfsLink($request->uri);
+            $owner = strtolower($request->input('owner'));
+            $uri = $request->input('uri');
+            $metaUrl = $this->convertIpfsLink($uri);
             $response = Http::get($metaUrl);
             $metaData = $response->object();
-            $metaData->imageList = json_encode($metaData->imageList);
-            $product = $this->product->productCreate($tokenId , $metaData);
+            $metaData->imageList = json_encode(Arr::map($metaData->imageList, function ($value) {
+                return $this->convertIpfsLink($value);
+            }));
+
+            $product = $this->product->productCreate($owner, $tokenId, $metaData, $metaUrl);
 
             DB::commit();
         } catch (\Exception $e) {
             DB::rollBack();
+            Log::error(__FILE__.':'. __LINE__.'=>', ['error' => $e->getMessage()]);
             return response()->json([
-                'message' => 'error',
-                'error' => $e->getMessage(),
+                'error' => true,
+                'message' => $e->getMessage(),
             ], 500);
         }
 
         return response()->json([
+            'success' => true,
             'message' => 'success',
             'data' => $product
         ]);

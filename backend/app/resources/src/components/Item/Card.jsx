@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 
 const Card = (props) => {
   const item = props.item;
@@ -17,10 +18,10 @@ const Card = (props) => {
         <div className="mt-3 col-12 col-sm-6 col-lg-3">
           <div className="card">
             <div className="image-over">
-              <a href={ `/item-details/${ item.id }` }>
+              <Link to={ `/item-details/${ item.id }` }>
                 <img className="card-img-top"
                      src={ convertIpfsLink(item.image) } alt=""/>
-              </a>
+              </Link>
             </div>
             {/* Card Caption */ }
             <div className="card-caption col-12 p-0">
@@ -31,14 +32,17 @@ const Card = (props) => {
                   <span>Brand by</span>
                   <h6 className="mb-0">{ item.brand }</h6>
                 </div>
-                <div className="card-bottom text-right">
-                  <span className="">{ item.price } USDT</span>
+                <div className="card-bottom d-flex justify-content-between">
+                    <span>{item.price} USDT</span>
+                    <span>1 of 1</span>
                 </div>
                 <div className="col-12 text-center mt-2">
-                  <a className="btn btn-bordered-white btn-smaller mt-3"
-                     href={ `/item-details/${ item.id }` }>
-                    <i className="icon-handbag mr-2"/>Show
-                  </a>
+
+                  <Link className="btn btn-bordered-white btn-smaller mt-3"
+                     to={ `/item-details/${ item.id }` }>
+                      <i className="fa fa-arrow-circle-right mr-2" aria-hidden="true"></i>
+                     ItemDetail
+                  </Link>
                 </div>
               </div>
             </div>

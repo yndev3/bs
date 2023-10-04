@@ -1,15 +1,5 @@
 /*----------------------------------------------
 *
-* [Main Stylesheet]
-*
-* Theme    : Netstorm
-* Version  : 1.0
-* Author   : Themeland
-* Support  : hridoy1272@gmail.com
-* 
-----------------------------------------------*/
-/*----------------------------------------------
-*
 * [Font Import]
 *
 * Jost    : https://fonts.google.com
@@ -230,6 +220,11 @@ table {
 word-break: break-all;
 }
 
+.disable-link {
+  pointer-events: none;
+  cursor: default;
+  text-decoration: none;
+}
 
 /* #endregion Reset */
 /*----------------------------------------------
@@ -266,7 +261,11 @@ a:active:not(.btn) {
   color: var(--primary-color);
   text-decoration: none;
 }
-
+.btn-disabled{
+  background-color: #343a40 !important;
+  background-image: none !important;
+  pointer-events: none;
+}
 a:not([href]),
 a:not([href]):hover,
 a:not([href]) i,
@@ -301,6 +300,14 @@ p:last-child {
 
 .swiper-wrapper.odd p {
   opacity: 0.8;
+}
+
+.white {
+  color: var(--white-color);
+}
+
+hr.white {
+  border-top: 1px solid var(--white-color);
 }
 
 h1 {
@@ -468,7 +475,7 @@ input:focus, textarea:focus, select:focus {
 
 input {
   border-color: var(--primary-p-color);
-  color: var(--primary-p-color);
+  color: var(--white-color);
 }
 
 input:focus {
@@ -533,6 +540,15 @@ select option {
 select:focus {
   border-color: var(--primary-t-color);
   color: var(--primary-t-color);
+}
+
+/*# modal.reserves-form */
+
+select.reserves {
+  border-color: var(--primary-p-color);
+}
+select.reserves:invalid {
+  color: #757575 !important;
 }
 
 hr {
@@ -601,7 +617,10 @@ aside {
   padding: 0;
   max-width: 1170px;
 }
-
+.container.w720{
+  padding: 0;
+  max-width: 720px !important;
+}
 .container.header {
   max-width: 1140px;
 }
@@ -818,6 +837,24 @@ aside {
   white-space: nowrap;
 }
 
+.single-tab-list {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+}
+
+.activity-content {
+  flex: 1; 
+  min-width: 0; 
+}
+
+.ellipsis {
+  width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
 .list-group-item {
   margin: 0;
   background: none;
@@ -844,12 +881,14 @@ aside {
 .post-holder {
   list-style: none;
   width: 100%;
-  border-left: 5px solid var(--primary-color);
+  border-left: 5px solid #dc3545;
   background-color: var(--card-bg-color);
   padding: 25px;
   margin-top: 35px;
 }
-
+.w100{
+  width: 100%;
+}
 .posted-on a:not(.btn) {
   font-weight: 600;
 }
@@ -1685,20 +1724,34 @@ header .navbar-expand .dropdown:hover > .dropdown-menu {
 }
 
 .card .card-body h5 {
-  font-size: 110%;
-  width: 100%;
+  font-size: 18px;
+  line-height: 1.2; /* Optional, adjust as needed */
+  margin: 0;
+  padding: 10px 0;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
   overflow: hidden;
   text-overflow: ellipsis;
-  white-space: nowrap;
+  min-height: 53.2px; /* 2 lines */
+  max-height: 53.2px; /* 2 lines */
 }
-
+.card .card-body .card-price {
+  font-size: 110%;
+  font-weight: 500;
+}
 .card-caption .card-body .seller {
   font-size: 90%;
 }
 .card .card-body .card-bottom span {
   color: var(--white-color);
 }
-
+.card-min {
+  min-height: 476px !important;
+}
+.card-img-top {
+  aspect-ratio: 1 / 1;
+}
 .card .card-footer {
   border-radius: 0;
   background: none;
@@ -2027,6 +2080,15 @@ padding: 100px 0 140px !important;
   position: relative;
   -webkit-box-shadow: none;
           box-shadow: none;
+}
+.explore-area .sort-select {
+  width: 140px !important;
+  border-radius: 5px;
+  border-color: rgb(65, 64, 64);
+  margin-left: 5px;
+  padding: 5px;
+  height: 35px;
+  color: gray !important; 
 }
 
 .explore-area .explore-menu .btn::after {
@@ -2517,7 +2579,21 @@ padding: 100px 0 140px !important;
 .wallet-connect-area .single-wallet:hover h4 {
   color: var(--primary-color);
 }
-
+@media (max-width: 575px) {
+  .wallet-btn {
+  padding: 9px 10px !important;
+  font-size: 90%;
+  }
+  .wallet-btn i{
+    margin-right: 5px;
+  }
+  .breadcrumb-area{
+    height: 238px !important;
+  }
+  .breadcrumb-content{
+    padding-top: 51px !important;
+  }
+}
 .help-center-area .card {
   padding: 45px;
   min-height: 300px;
@@ -3195,5 +3271,16 @@ padding: 100px 0 140px !important;
   /* #endregion Modal */
 }
 
+/* splide__slide */
+.item-details-area .item-info img {
+  aspect-ratio: 1 / 1;
+}
+.square-image {
+  aspect-ratio: 1 / 1 !important;
+}
+
 /* #endregion All Media Queries */
 /*# sourceMappingURL=style.css.map */
+
+
+

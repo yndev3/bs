@@ -19,24 +19,56 @@ class ProductSeeder extends Seeder
     public function run()
     {
         $faker = Faker::create();
+        $preset_addresses = [
+            '0xD38Eb334caC02650c1Dc01f6f98b78dbdFAC7A67',
+            // 他のプリセットアドレス
+            '0xF5255246E7BDEBA1CfAE3710Fd0d0a0e6f6FE3AC',
+        ];
+
+        $brands = [
+            "ROREX",
+            "PATEK PHILIPPE",
+            "AUDEMARS PIGUET",
+            "Richard Mille",
+            "Harry Winston",
+            "Cartier",
+            "CHANEL",
+            "OMEGA",
+            "HERMES",
+            "BVLGARI",
+            "GUCCI",
+            "CHOPARD",
+            "HUBLOT",
+            "BREITLING",
+            "LOUIS VUITTON",
+            "Van Cleef & Arpels",
+            "LOUIS VUITTON",
+            "FENDI",
+            "CHAUMET",
+            "Tiffany&Co",
+            "PANERAI"
+           ];
 
         for ($i = 0; $i < 1000; $i++) {
             $product = Product::create([
                 'token_id' => $i + 1,
-                'name' => $faker->word,
+                'owner_address' => strtolower($preset_addresses[array_rand($preset_addresses)]),
+                'transfer_at' => now(),
+                'meta_url' => $faker->url,
+                'name' => $faker->sentence(5, false),
                 'description' => $faker->sentence,
                 'image' => $faker->imageUrl(),
                 'image_list' => json_encode([$faker->imageUrl(), $faker->imageUrl()]),
-                'price' => $faker->numberBetween(100, 10000),
+                'price' => (string)$faker->numberBetween(100, 10000),
                 'sku' => 'SKU' . str_pad($i + 1, 5, '0', STR_PAD_LEFT),
                 'category' => $faker->randomElement(['Watch', 'Jewelry', 'Material']),
-                'brand' => $faker->company,
+                'brand' =>  $faker->randomElement($brands),
                 'color' => $faker->colorName,
                 'material' => $faker->randomElement(['Metal', 'Leather', 'Plastic']),
                 'size' => $faker->randomElement(['Small', 'Medium', 'Large']),
                 'accessories' => $faker->word,
-                'is_sale' => $faker->boolean,
-                'is_burn' => $faker->boolean,
+                'is_sale' => 1,
+                'is_burn' => false,
                 'note' => $faker->text(50)
             ]);
 

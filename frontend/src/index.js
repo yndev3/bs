@@ -7,8 +7,13 @@ import { polygon, polygonMumbai } from 'wagmi/chains';
 import { alchemyProvider } from 'wagmi/providers/alchemy';
 import { publicProvider } from 'wagmi/providers/public';
 import { MetaMaskConnector } from 'wagmi/connectors/metaMask';
-import { EthereumClient, w3mConnectors, w3mProvider } from '@web3modal/ethereum';
+import {
+  EthereumClient,
+  w3mConnectors,
+  w3mProvider,
+} from '@web3modal/ethereum';
 import { Web3Modal } from '@web3modal/react';
+import { AuthProvider } from './providers/AuthProvider';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 const projectId = process.env.REACT_APP_WALLET_CONNECT_ID;
@@ -16,30 +21,31 @@ const {chains, publicClient} = configureChains(
     [polygonMumbai, polygon],
     [
       alchemyProvider({apiKey: process.env.REACT_APP_ALCHEMY_KEY}),
-      // w3mProvider({projectId}),
+      w3mProvider({projectId}),
       publicProvider(),
     ],
 );
-const config = createConfig({
+const wagmiConfig = createConfig({
   autoConnect: true,
   connectors: [
-  // ...w3mConnectors({chains, projectId}),
+    ...w3mConnectors({chains, projectId}),
     new MetaMaskConnector({
       chains: [polygonMumbai, polygon],
     }),
   ],
-  // connectors:  w3mConnectors({chains, projectId}),
   publicClient,
 });
-// const ethereumClient = new EthereumClient(config, chains);
+const ethereumClient = new EthereumClient(wagmiConfig, chains);
 
 root.render(
-  <React.StrictMode>
-    <WagmiConfig config={ config }>
-    <App />
-    </WagmiConfig>
-    {/*<Web3Modal projectId={projectId} ethereumClient={ethereumClient} />*/}
-  </React.StrictMode>
+    <React.StrictMode>
+      <WagmiConfig config={ wagmiConfig }>
+        <AuthProvider>
+          <App/>
+        </AuthProvider>
+      </WagmiConfig>
+      <Web3Modal projectId={ projectId } ethereumClient={ ethereumClient }/>
+    </React.StrictMode>,
 );
 
 // If you want to start measuring performance in your app, pass a function

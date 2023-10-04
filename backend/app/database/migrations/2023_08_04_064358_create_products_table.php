@@ -16,11 +16,15 @@ return new class extends Migration
             $table->bigInteger('token_id')
                 ->index()
                 ->unsigned();
+            $table->string('owner_address')
+                ->index();
+            $table->timestamp('transfer_at'); // 最終所有日時
+            $table->string('meta_url'); // メタデータのURL
             $table->string('name');
             $table->string('description');
             $table->string('image');
             $table->json('image_list');
-            $table->integer('price')->unsigned();
+            $table->string('price')->default('0');
             $table->string('sku')->unique();
             $table->enum('category', ['Watch', 'Jewelry', 'Material']);
             $table->string('brand')->index();
@@ -28,7 +32,7 @@ return new class extends Migration
             $table->string('material')->nullable();
             $table->string('size')->nullable();
             $table->string('accessories')->nullable();
-            $table->boolean('is_sale')->default(false);
+            $table->tinyInteger('is_sale')->default(0); // 0:販売停止 1:発売中、2:販売済み
             $table->boolean('is_burn')->default(false);
             $table->text('note')->nullable();
             $table->timestamps();

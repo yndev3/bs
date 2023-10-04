@@ -1,15 +1,5 @@
 /*----------------------------------------------
 *
-* [Main Stylesheet]
-*
-* Theme    : Netstorm
-* Version  : 1.0
-* Author   : Themeland
-* Support  : hridoy1272@gmail.com
-* 
-----------------------------------------------*/
-/*----------------------------------------------
-*
 * [Font Import]
 *
 * Jost    : https://fonts.google.com
@@ -303,6 +293,14 @@ p:last-child {
   opacity: 0.8;
 }
 
+.white {
+  color: var(--white-color);
+}
+
+hr.white {
+  border-top: 1px solid var(--white-color);
+}
+
 h1 {
   margin-bottom: 1.5rem;
   font-size: var(--h1-size);
@@ -415,7 +413,12 @@ img {
 ::placeholder {
   color: var(--primary-p-color) !important;
 }
-
+.inline-block {
+  display: inline-block;
+}
+.width150 {
+  width: 150px !important;
+}
 table {
   border-collapse: separate;
   border-spacing: 10px;
@@ -468,7 +471,7 @@ input:focus, textarea:focus, select:focus {
 
 input {
   border-color: var(--primary-p-color);
-  color: var(--primary-p-color);
+  color: var(--white-color);
 }
 
 input:focus {
@@ -533,6 +536,15 @@ select option {
 select:focus {
   border-color: var(--primary-t-color);
   color: var(--primary-t-color);
+}
+
+/*# modal.reserves-form */
+
+select.reserves {
+  border-color: var(--primary-p-color);
+}
+select.reserves:invalid {
+  color: #757575 !important;
 }
 
 hr {
@@ -3195,5 +3207,15 @@ padding: 100px 0 140px !important;
   /* #endregion Modal */
 }
 
+/* splide__slide */
+.item-details-area .item-info img {
+  aspect-ratio: 1 / 1;
+}
+.square-image {
+  aspect-ratio: 1 / 1 !important;
+}
 /* #endregion All Media Queries */
 /*# sourceMappingURL=style.css.map */
+
+
+

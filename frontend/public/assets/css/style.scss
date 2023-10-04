@@ -1,16 +1,5 @@
 /*----------------------------------------------
 *
-* [Main Stylesheet]
-*
-* Theme    : Netstorm
-* Version  : 1.0
-* Author   : Themeland
-* Support  : hridoy1272@gmail.com
-* 
-----------------------------------------------*/
-
-/*----------------------------------------------
-*
 * [Font Import]
 *
 * Jost    : https://fonts.google.com
@@ -316,7 +305,6 @@ h1 {
     font-size: var(--h1-size);
     font-weight: var(--h1-weight);
     line-height: 1.2;
-    font-family: var(--primary-font);
     color: var(--primary-color);
     -ms-word-wrap: break-word;
     word-wrap: break-word;
@@ -332,7 +320,6 @@ h2 {
     font-size: var(--h2-size);
     font-weight: var(--h2-weight);
     line-height: 1.2;
-    font-family: var(--primary-font);
     color: var(--primary-t-color);
     -ms-word-wrap: break-word;
     word-wrap: break-word;
@@ -347,7 +334,6 @@ h3 {
     font-size: 2rem;
     font-weight: 600;
     line-height: 1.2;
-    font-family: var(--primary-font);
     color: var(--primary-t-color);
     -ms-word-wrap: break-word;
     word-wrap: break-word;
@@ -358,7 +344,6 @@ h4 {
     font-size: 1.5rem;
     font-weight: 600;
     line-height: 1.2;
-    font-family: var(--primary-font);
     color: var(--primary-t-color);
     -ms-word-wrap: break-word;
     word-wrap: break-word;
@@ -373,7 +358,6 @@ h5 {
     font-size: 1.2rem;
     font-weight: 600;
     line-height: 1.2;
-    font-family: var(--primary-font);
     color: var(--primary-t-color);
     -ms-word-wrap: break-word;
     word-wrap: break-word;
@@ -384,7 +368,6 @@ h6 {
     font-size: 1rem;
     font-weight: 600;
     line-height: 1.2;
-    font-family: var(--primary-font);
     color: var(--primary-t-color);
     -ms-word-wrap: break-word;
     word-wrap: break-word;

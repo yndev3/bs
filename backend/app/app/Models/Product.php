@@ -24,7 +24,7 @@ class Product extends Model
     {
         parent::boot();
         static::addGlobalScope('is_sale', function ($query) {
-            $query->where('is_sale', true);
+            $query->whereIn('is_sale', [1, 2]);
         });
         static::addGlobalScope('is_burn', function ($query) {
             $query->where('is_burn', false);
@@ -49,14 +49,20 @@ class Product extends Model
 
     public function users(): \Illuminate\Database\Eloquent\Relations\BelongsToMany
     {
-        return $this->belongsToMany(User::class);
+        return $this->belongsToMany(User::class, 'user_product');
     }
 
-    public function productCreate($tokenId, $metaData)
+    /**
+     * @throws \Exception
+     */
+    public function productCreate($owner, $tokenId, $metaData, $metaUrl)
     {
         $product = $this->create([
             'token_id' => $tokenId,
             'name' => $metaData->name,
+            'owner_address' => $owner,
+            'transfer_at' => now(),
+            'meta_url' => $metaUrl,
             'description' => $metaData->description,
             'image' => $metaData->image,
             'image_list' => $metaData->imageList,
@@ -67,9 +73,8 @@ class Product extends Model
             'material' => $metaData->material,
             'size' => $metaData->size,
             'accessories' => $metaData->accessories,
-            'is_sale' => true,
+            'is_sale' => 1,
             'note' => $metaData->note,
-            'price' => 10,
         ]);
 
         $option = match ($product->category) {
