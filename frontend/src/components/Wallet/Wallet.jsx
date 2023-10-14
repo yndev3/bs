@@ -43,6 +43,11 @@ export default function Wallet() {
 
   const handleConnect = async (connector) => {
     try {
+      // CSRF cookie設定
+      await fetchFromApi({
+        endpoint: '/sanctum/csrf-cookie',
+        method: 'GET',
+      });
       const data = await fetchFromApi({endpoint: '/api/statement'});
       setStatementData(data);
       if (connector.id === 'walletConnect') {

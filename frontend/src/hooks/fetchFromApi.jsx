@@ -13,14 +13,6 @@ export const useFetchFromApi = () => {
     setLoading(true);
     setError(null);
 
-    // CSRF cookie設定
-    if (!isAuthenticated && method === 'POST') {
-      await fetchFromApi({
-        endpoint: '/sanctum/csrf-cookie',
-        method: 'GET',
-      });
-    }
-
     const config = {
       method,
       url: `${ process.env.REACT_APP_BASE_URL }${ endpoint }`,
