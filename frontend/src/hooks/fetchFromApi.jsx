@@ -20,6 +20,10 @@ export const useFetchFromApi = () => {
         'Content-Type': 'application/json',
         ...headers,
       },
+      auth:{
+        username: process.env.REACT_APP_BASIC_USER,
+        password: process.env.REACT_APP_BASIC_PASS,
+      },
       withCredentials: true,
       data,
       params,
